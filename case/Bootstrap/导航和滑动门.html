@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>导航和滑动门</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap-4.5.0-dist/css/bootstrap.css">
+    <style>
+        body{
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <ul class="nav">
+        <li><a class="nav-link" href="">Home</a></li>
+        <li><a class="nav-link" href="">Java</a></li>
+        <li><a class="nav-link" href="">Python</a></li>
+        <li><a class="nav-link disabled" href="">PHP</a></li>
+    </ul>
+    
+    <br>
+    <nav class="nav">
+        <a href="#" class="nav-link">Home</a>
+        <a href="#" class="nav-link">Java</a>
+        <a href="#" class="nav-link">Python</a>
+        <a href="#" class="nav-link disabled">PHP</a>
+    </nav>
+
+    <br>
+    <nav class="nav justify-content-center">
+        <a href="#" class="nav-link">Home</a>
+        <a href="#" class="nav-link">Java</a>
+        <a href="#" class="nav-link">Python</a>
+        <a href="#" class="nav-link disabled">PHP</a>
+    </nav>
+
+    <br>
+    <nav class="nav flex-column">
+        <a href="#" class="nav-link">Home</a>
+        <a href="#" class="nav-link">Java</a>
+        <a href="#" class="nav-link">Python</a>
+        <a href="#" class="nav-link disabled">PHP</a>
+    </nav>
+
+    <br>
+    <nav class="nav nav-tabs">
+        <a href="#" class="nav-link nav-item">Home</a>
+        <a href="#" class="nav-link nav-item">Java</a>
+        <a href="#" class="nav-link nav-item">Python</a>
+        <a href="#" class="nav-link nav-item disabled">PHP</a>
+    </nav>
+
+    <br>
+    <nav class="nav nav-pills">
+        <a href="#" class="nav-link nav-item">Home</a>
+        <a href="#" class="nav-link nav-item">Java</a>
+        <a href="#" class="nav-link nav-item">Python</a>
+        <a href="#" class="nav-link nav-item disabled">PHP</a>
+    </nav>
+
+    <br>
+    <nav class="nav nav-pills  nav-justified">
+        <a href="#" class="nav-link nav-item">Home</a>
+        <a href="#" class="nav-link nav-item">Java</a>
+        <a href="#" class="nav-link nav-item">Python</a>
+        <a href="#" class="nav-link nav-item disabled">PHP</a>
+    </nav>
+
+    <br>
+    <nav class="nav nav-pills">
+        <a href="#home" class="nav-link nav-item active" data-toggle="tab">Home</a>
+        <a href="#java" class="nav-link nav-item" data-toggle="tab">Java</a>
+        <a href="#python" class="nav-link nav-item" data-toggle="tab">Python</a>
+    </nav>
+
+    <div>
+        <div id="home" class="tab-pane fade show active">Home内容.....</div>
+        <div id="java" class="tab-pane fade">Java内容.....</div>
+        <div id="python" class="tab-pane fade">Python内容.....</div>
+    </div>
+    <script src="bootstrap-4.5.0-dist/js/jquery-3.5.0.js"></script>
+    <script src="bootstrap-4.5.0-dist/js/bootstrap.bundle.js"></script>
+    <script src="bootstrap-4.5.0-dist/js/bootstrap.js"></script>
+</body>
+</html>

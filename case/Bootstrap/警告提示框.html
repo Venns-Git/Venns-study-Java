@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>警告提示框</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap-4.5.0-dist/css/bootstrap.css">
+</head>
+<body>
+    
+    <div class="alert alert-success">hello world</div>
+    <div class="alert alert-danger">hello world</div>
+    <div class="alert alert-dark">hello world</div>
+    <div class="alert alert-info">hello world</div>
+    <div class="alert alert-light">hello world</div>
+    <div class="alert alert-warning">hello world</div>
+    <div class="alert alert-primary">hello world</div>
+    <div class="alert alert-secondary">hello world</div>
+
+    <div class="alert alert-success">
+        hello world
+        <a href="https://www.venns.cn" class="alert-link">Venns.cn</a>
+    </div>
+
+    <div class="alert alert-success">
+        <h4 class="alert-heading">hello world</h4>
+        <hr>
+        <a href="https://www.venns.cn" class="alert-link">Venns.cn</a>
+        <p>hello world!</p>
+    </div>
+
+    <div class="alert alert-warning one">
+        yes or no ?
+        <button class="close two">&times;</button>
+    </div>
+
+    <div class="alert alert-warning">
+        yes or no ?
+        <button class="close" data-dismiss="alert">&times;</button>
+    </div>
+    
+    <script src="bootstrap-4.5.0-dist/js/jquery-3.5.0.js"></script>
+    <script src="bootstrap-4.5.0-dist/js/bootstrap.bundle.js"></script>
+    <script src="bootstrap-4.5.0-dist/js/bootstrap.js"></script>
+
+    <script>
+        $(".two").click(function(){
+            $(".one").alert('close');
+        });
+    </script>
+</body>
+</html>
