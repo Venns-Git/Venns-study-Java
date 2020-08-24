@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button>开灯</button>
+    <button>关灯</button>
+
+</body>
+</html>
+<script src="jquery-3.5.0.js"></script>
+<script>
+    $(function (){
+        //需求：给按钮添加点击事件，设置body的背景色
+
+        //1.获取到按钮
+        var btns = document.getElementsByTagName("button");
+
+        //2.给关灯按钮设置点击事件
+        btns[1].onclick = function() {
+            $('body').css('backgroundColor','black');
+        }
+
+        //3.给开灯设置一个点击事件
+        $(btns[0]).click(function (){
+            $('body')[0].style.backgroundColor = 'white';
+        });
+    });
+</script>

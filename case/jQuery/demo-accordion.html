@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        ul{
+            list-style: none;
+        }
+        .parentWrap{
+            width: 200px;
+            text-align: center;
+        }
+        .menuGroup{
+            border: 1px solid #999;
+            background-color: #e0ecff;
+        }
+        .groupTitle{
+            display: block;
+            height: 20px;
+            line-height: 20px;
+            font-size: 16px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .menuGroup > div {
+            height: 200px;
+            background-color: #fff;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <ul class="parentWrap">
+        <li class="menuGroup">
+            <span class="groupTitle">标题1</span>
+            <div>我是弹出来的div1</div>
+        </li>
+        <li class="menuGroup">
+            <span class="groupTitle">标题2</span>
+            <div>我是弹出来的div2</div>
+        </li>
+        <li class="menuGroup">
+            <span class="groupTitle">标题3</span>
+            <div>我是弹出来的div3</div>
+        </li>
+        <li class="menuGroup">
+            <span class="groupTitle">标题4</span>
+            <div>我是弹出来的div4</div>
+        </li>
+    </ul>
+</body>
+</html>
+<script src="jquery-3.5.0.js"></script>
+<script>
+    $(function () {
+        //需求：点击标题li标签，对应的div显示，他的兄弟标签li下面的div隐藏
+        $('.parentWrap>.menuGroup').click(function () {
+            //jq特征：隐式迭代
+            //jq特征：链式编程
+            $(this).children('div').show().parent().siblings('li').children('div').hide();
+        });
+    });
+</script>

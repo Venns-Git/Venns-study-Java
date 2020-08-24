@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        ul{
+            list-style: none;
+        }
+        body{
+            background: #000;
+        }
+        .wrap{
+            margin: 100px auto 0;
+            width: 630px;
+            height: 394px;
+            padding: 10px 0 0 10px;
+            background: #000;
+            overflow: hidden;
+            border: 1px solid #fff;
+        }
+        .wrap li{
+            float: left;
+            margin: 0 10px 10px 0;
+        }
+        .wrap img{
+            width: 200px;
+            height: auto;
+            display: block;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <ul>
+            <li><a href="#"><img src="img/list2-1.webp" alt=""></a></li>
+            <li><a href="#"><img src="img/list2-2.webp" alt=""></a></li>
+            <li><a href="#"><img src="img/list2-3.webp" alt=""></a></li>
+            <li><a href="#"><img src="img/list3-1.webp" alt=""></a></li>
+            <li><a href="#"><img src="img/list3-2.webp" alt=""></a></li>
+            <li><a href="#"><img src="img/list3-3.webp" alt=""></a></li>
+        </ul>
+    </div>
+</body>
+</html>
+<script src="jquery-3.5.0.js"></script>
+<script>
+    $(function () {
+        //需求1：给图片说在的li标签设置鼠标移入书简，当前的li标签透明度为1，其余兄弟透明度为0.4
+        //需求2：鼠标离开大盒子，所有的li标签透明度改为1
+
+        //获取小人物们所在的li
+        //$('.wrap li') 可行
+        //$('.wrap').find('li') 可行
+
+        //1.
+        $('.wrap').find('li').mouseenter(function () {
+            $(this).css('opacity',1).siblings('li').css('opacity',0.4);
+        });
+
+        //2.
+        $('.wrap').mouseleave(function() {
+            $(this).find('li').css('opacity',1);
+        });
+    });
+</script>

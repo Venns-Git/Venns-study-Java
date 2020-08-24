@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .wrap{
+            width: 410px;
+            margin: 100px auto 0;
+        }
+        table{
+            border-collapse: collapse;
+            border-spacing: 0;
+            border: 1px solid #c0c0c0;
+        }
+        th,td{
+            border: 1px solid #d0d0d0;
+            color: #404060;
+            padding: 10px;
+        }
+        th{
+            background-color: #09c;
+            font: bold 16px "Î¢ÈíÑÅºÚ";
+            color: #fff;
+        }
+        td{
+            font: 14px "Î¢ÈíÑÅºÚ";
+        }
+        td a.get{
+            text-decoration: none;
+        }
+        tbody tr{
+            background-color: #f0f0f0;
+        }
+        tbody tr:hover{
+            cursor: pointer;
+            background-color: #fafafa;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <input type="button" value="清空内容" id="btn">
+        <table>
+            <thead>
+                <tr>
+                    <th>课程名称</th>
+                    <th>授课老师</th>
+                    <th>操作</th>
+                </tr>      
+            </thead>
+            <tbody id="j_tb">
+                <tr>
+                    <td>JavaScript</td>
+                    <td>张</td>
+                    <td><a href="javascript:;"class="get">DELETE</a></td>
+                </tr>
+                <tr>
+                    <td>css</td>
+                    <td>王</td>
+                    <td><a href="javascript:;"class="get">DELETE</a></td>
+                </tr>
+                <tr>
+                    <td>jQuery</td>
+                    <td>李</td>
+                    <td><a href="javascript:;"class="get">DELETE</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+<script src="jquery-3.5.0.js"></script>
+<script>
+    $(function () {
+
+        //1.清空内容
+        $('#btn').click(function () {
+            $('#j_tb').empty();
+        });
+
+        //2.删除对应行
+        $('#j_tb .get').click(function () {
+            $(this).parent().parent().remove();
+        });
+    });
+</script>

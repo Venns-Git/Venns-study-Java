@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        ul{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        .wrapper{
+            width: 298px;
+            height: 248px;
+            margin: 100px auto 0;
+            border: 1px solid pink;
+            overflow: hidden;
+        }
+        #left,#center,#right{
+            float: left;
+        }
+        #left li ,#right li{
+            background: #db79af;
+        }
+        #left li a,#right li a{
+            display: block;
+            width: 48px;
+            height: 82px;
+            border-bottom: 1px solid pink;
+            line-height: 82px;
+            text-align: center;
+            color: black;
+        }
+        #left li a:hover,#right li a:hover{
+            background: #ff00d4;
+        }
+        #center{
+            border-left: 1px solid pink;
+            border-right: 1px solid pink;
+        }
+        img{
+            width: 200px;
+            height: 250px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <ul id="left">
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+        </ul>
+
+        <ul id="center">
+            <li><a href="#"></a><img src="img/list2-1.webp" alt=""></li>
+            <li><a href="#"></a><img src="img/list2-2.webp" alt=""></li>
+            <li><a href="#"></a><img src="img/list2-3.webp" alt=""></li>
+            <li><a href="#"></a><img src="img/list3-1.webp" alt=""></li>
+            <li><a href="#"></a><img src="img/list3-2.webp" alt=""></li>
+            <li><a href="#"></a><img src="img/list3-3.webp" alt=""></li>
+        </ul>
+
+        <ul id="right">
+            <li><a href="#">4</a></li>
+            <li><a href="#">5</a></li>
+            <li><a href="#">6</a></li>
+        </ul>
+    </div>
+</body>
+</html>
+<script src="jquery-3.5.0.js"></script>
+<script>
+    $(function (){
+        //需求1：给左边的li标签设置鼠标移入事件，让中间的索引对应的li显示，其他的li隐藏
+        //需求2：右边同上
+
+        //1.
+        $('#left>li').mouseenter(function () {
+            //获取当前鼠标移入的li标签索引
+            var idx = $(this).index();
+            
+            //让中间索引对应的li显示，其他的隐藏
+            $('#center>li').eq(idx).show().siblings('li').hide();
+        });
+
+        //2.
+        $('#right>li').mouseenter(function () {
+            var idx = $(this).index();
+            idx += 3;//3式左边li的个数
+            $('#center>li').eq(idx).show().siblings('li').hide();
+        });
+    });
+</script>
