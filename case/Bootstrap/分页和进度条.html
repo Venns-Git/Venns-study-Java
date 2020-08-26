@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>分页和进度条</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap-4.5.0-dist/css/bootstrap.css">
+    <style>
+        body{
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <!--分页-->
+    <ul class="pagination pagination-lg">
+        <li class="page-item"><a href="#" class="page-link">Home</a></li>
+        <li class="page-item"><a href="#" class="page-link">1</a></li>
+        <li class="page-item"><a href="#" class="page-link">2</a></li>
+        <li class="page-item"><a href="#" class="page-link">3</a></li>
+        <li class="page-item"><a href="#" class="page-link">4</a></li>
+        <li class="page-item"><a href="#" class="page-link">5</a></li>
+        <li class="page-item"><a href="#" class="page-link">6</a></li>
+        <li class="page-item"><a href="#" class="page-link">7</a></li>
+        <li class="page-item disabled"><a href="#" class="page-link">下一页</a></li>
+    </ul>
+    
+    <ul class="pagination pagination-sm">
+        <li class="page-item"><a href="#" class="page-link">Home</a></li>
+        <li class="page-item"><a href="#" class="page-link">1</a></li>
+        <li class="page-item"><a href="#" class="page-link">2</a></li>
+        <li class="page-item"><a href="#" class="page-link">3</a></li>
+        <li class="page-item"><a href="#" class="page-link">4</a></li>
+        <li class="page-item"><a href="#" class="page-link">5</a></li>
+        <li class="page-item"><a href="#" class="page-link">6</a></li>
+        <li class="page-item"><a href="#" class="page-link">7</a></li>
+        <li class="page-item disabled"><a href="#" class="page-link">下一页</a></li>
+    </ul>
+
+    <ul class="pagination pagination-sm justify-content-end">
+        <li class="page-item"><a href="#" class="page-link">Home</a></li>
+        <li class="page-item"><a href="#" class="page-link">1</a></li>
+        <li class="page-item"><a href="#" class="page-link">2</a></li>
+        <li class="page-item"><a href="#" class="page-link">3</a></li>
+        <li class="page-item"><a href="#" class="page-link">4</a></li>
+        <li class="page-item"><a href="#" class="page-link">5</a></li>
+        <li class="page-item"><a href="#" class="page-link">6</a></li>
+        <li class="page-item"><a href="#" class="page-link">7</a></li>
+        <li class="page-item disabled"><a href="#" class="page-link">下一页</a></li>
+    </ul>
+
+    <br>
+    <!--进度条-->
+    <div class="progress">
+        <div class="progress-bar w-25"></div>
+    </div>
+
+    <br>
+    <div class="progress">
+        <div class="progress-bar w-25" style="width: 33%;"></div>
+    </div>
+
+    <br>
+    <div class="progress" style="height: 30px;">
+        <div class="progress-bar w-25" style="width: 33%;"></div>
+    </div>
+    
+    <br>
+    <div class="progress">
+        <div class="progress-bar w-25 bg-danger" style="width: 33%;"></div>
+    </div>
+
+    <br>
+    <div class="progress">
+        <div class="progress-bar w-25 bg-info"></div>
+        <div class="progress-bar w-25 bg-primary"></div>
+        <div class="progress-bar w-25 bg-success"></div>
+    </div>
+
+    <br>
+    <div class="progress">
+        <div class="progress-bar bg-warning progress-bar-striped  progress-bar-animated w-25"></div>
+    </div>
+    <script src="bootstrap-4.5.0-dist/js/jquery-3.5.0.js"></script>
+    <script src="bootstrap-4.5.0-dist/js/bootstrap.bundle.js"></script>
+    <script src="bootstrap-4.5.0-dist/js/bootstrap.js"></script>
+</body>
+</html>
