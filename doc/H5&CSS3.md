@@ -291,8 +291,82 @@ demo
 <output name="x" for="a b"></output>
 </form>
 ```
-## 
+## 表单属性
+- `autocomplete `(form,input) 自动填充
+- `novalidate`(form) 在提交表单时不验证form或input域
+- `autofocus`(input) 页面加载时，域自动获取焦点
+- `from`(input) 输入域所属表单
+- `formaction`(input) 描述表单提交的url地址
+- `fromenctype`(input) 描述表单提交到服务器的数据编码
+- `formmethod`(input)  定义表单提交方式
+- `formnovalidate`(input) 提交表单时无需验证input
+- `formtarget` (input) 指定一个名称或一个关键字来指明表单提交数据接收后的展示
+- `heigth width`(input) input的宽高
+- `list`(input) 输入选项列表
+- `min max`(input) 规定输入的最值
+- `multiple`(input) 选择多个值
+- `pattern`(input) 正则来验证input的值
+- `placeholder`(input) 规定非空
+- `step`(input) 规定输入域合法数字间隔
+## 语义元素
+> 够清楚的描述其意义给浏览器和开发者
+- `<section>` 节，区段
+- `<article>` 独立内容
+- `<nav>` 导航
+- `<aside>` 主区域以外的内容(侧边栏...)
+- `<header>` 头部
+- `<footer>` 底部
+- `<figure>` 独立流内容(图像，表格，代码....)
+- `<figcaption>` 定义figure标题
+## Web存储
+> 在本地存储用户的浏览数据
+- `localStorage`  用于长久保存整个网站的数据，保存的数据没有过期时间，直到手动去除
+- `sessionStorage`  用于临时保存同一窗口(或标签页)的数据，在关闭窗口或标签页之后将会删除这些数据   
 
+检查浏览器是否支持
+```javascript
+if(typeof(Storage)!=="undefined")
+{
+    // 是的! 支持 localStorage  sessionStorage 对象!
+    // 一些代码.....
+} else {
+    // 抱歉! 不支持 web 存储。
+}
+```
+### localStorage
+```javascript
+localStorage.sitename="hello world!";
+document.getElementById("result").innerHTML="网站名：" + localStorage.sitename;
+```
+- 使用 key="sitename" 和 value="菜鸟教程" 创建一个 localStorage 键/值对
+- 检索键值为"sitename" 的值然后将数据插入 id="result"的元素中   
+- 键/值对通常以字符串存储，你可以按自己的需要转换该格式   
+
+另一种写法:
+```javascript
+// 存储
+localStorage.sitename = "菜鸟教程";
+// 查找
+document.getElementById("result").innerHTML = localStorage.sitename;
+```
+常用API(sessionStorage同样适用)
+- 保存数据：`localStorage.setItem(key,value)`
+- 读取数据：`localStorage.getItem(key)`
+- 删除单个数据：`localStorage.removeItem(key)`
+- 删除所有数据：`localStorage.clear()`
+- 得到某个索引的key：`localStorage.key(index)`
+### sessionStorage
+```javascript
+if (sessionStorage.clickcount)
+{
+    sessionStorage.clickcount=Number(sessionStorage.clickcount)+1;
+}
+else
+{
+    sessionStorage.clickcount=1;
+}
+document.getElementById("result").innerHTML="在这个会话中你已经点击了该按钮 " + sessionStorage.clickcount + " 次 ";
+```
 # CSS3
 ## 边框
 - `border-radius` 圆角
@@ -308,11 +382,264 @@ demo
 - 径向渐变（Radial Gradients）- 由它们的中心定义  
 
 ### 线性渐变  
-从上到下  
+- 从上到下  
 `background-image: linear-gradient(#e66465, #9198e5);`  
-从左到右  
+- 从左到右  
 `background-image: linear-gradient(to right, red , yellow);`  
+- 对角(左上到右下)  
+`background-image: linear-gradient(to bottom right, red, yellow);`
+- 多个颜色   
+`background-image: linear-gradient(red, yellow, green);`
+- 带透明度(transparent)  
+`background-image: linear-gradient(red, yellow, green);`
+- 重复   
+`background-image: repeating-linear-gradient(red, yellow 10%, green 20%);`
+### 径向渐变
+- 均匀分布   
+`background-image: radial-gradient(red, yellow, green);`
+- 不均匀分布  
+`background-image: radial-gradient(red 5%, yellow 15%, green 60%);`
+- 设置形状(circle 为圆 ellipse 为椭圆)  
+`background-image: radial-gradient(circle, red, yellow, green);`
+- 重复  
+`background-image: repeating-radial-gradient(red, yellow 10%, green 15%);`
+- 不同尺寸  
+`background-image: radial-gradient(closest-side at 60% 55%, red, yellow, black);`
+  1. closest-side
+  2. farthest-side
+  3. closest-corner
+  4. farthest-corner
+## 文本效果
+- `text-shadow`文本阴影
+- `box-shadow` 盒子阴影
+- `text-overflow` 文本溢出显示方式(ellipsis为... clip为隐藏)
+- 换行(`word-wrap:break-word` 强制文本换行 `word-break:keep-all` 单词换行 `word-break:break-all` 强制换行)
+## 字体
+- `font-family` 字体名称
+- `font-weigth` 字体粗细(100-900)
+## 2D转换
+### `translate()`
+根据左(X轴)和顶部(Y轴)位置给定的参数，从当前元素位置移动
+```css
+div
+{
+  transform: translate(50px,100px);
+  -ms-transform: translate(50px,100px); /* IE 9 */
+  -webkit-transform: translate(50px,100px); /* Safari and Chrome */
+}
+```
+### `rotate()`
+在一个给定度数顺时针旋转的元素
+```css
+div
+{
+  transform: rotate(30deg);
+  -ms-transform: rotate(30deg); /* IE 9 */
+  -webkit-transform: rotate(30deg); /* Safari and Chrome */
+}
+```
+### `scale()`
+素增加或减少的大小，取决于宽度（X轴）和高度（Y轴）的参数
+```css
+div
+{
+  -ms-transform:scale(2,3); /* IE 9 */
+  -webkit-transform: scale(2,3); /* Safari */
+  transform: scale(2,3); /* 标准语法 */
+}
+```
+### `skew()`
+包含两个参数值，分别表示X轴和Y轴倾斜的角度
+```css
+div
+{
+  transform: skew(30deg,20deg);
+  -ms-transform: skew(30deg,20deg); /* IE 9 */
+  -webkit-transform: skew(30deg,20deg); /* Safari and Chrome */
+}
+```
+### `matrix()`
+matrix 方法有六个参数，包含旋转，缩放，移动（平移）和倾斜功能
+```css
+div
+{
+  transform:matrix(0.866,0.5,-0.5,0.866,0,0);
+  -ms-transform:matrix(0.866,0.5,-0.5,0.866,0,0); /* IE 9 */
+  -webkit-transform:matrix(0.866,0.5,-0.5,0.866,0,0); /* Safari and Chrome */
+}
+```
+## 3D转换
+### `rotateX()`
+围绕其在一个给定度数X轴旋转的元素
+```css
+div
+{
+  transform: rotateX(120deg);
+  -webkit-transform: rotateX(120deg); /* Safari 与 Chrome */
+}
+```
+### `rotateY()`
+围绕其在一个给定度数Y轴旋转的元素
+```css
+div
+{
+  transform: rotateY(130deg);
+  -webkit-transform: rotateY(130deg); /* Safari 与 Chrome */
+}
+```
+## 过渡
+- 指定要添加效果的CSS属性
+- 指定效果的持续时间  
+
+应用于宽度属性的过渡效果
+```css
+div
+{
+  transition: width 2s;
+  -webkit-transition: width 2s; /* Safari */
+}
+div:hover
+{
+  width:300px;
+}
+```
+多项改变
+```css
+div
+{
+  transition: width 2s, height 2s, transform 2s;
+  -webkit-transition: width 2s, height 2s, -webkit-transform 2s;
+}
+```
+## 动画
+### `@keyframes`
+- 创建动画
+- 内指定一个 CSS 样式和动画将逐步从目前的样式更改为新的样式   
+
+背景变色动画
+```css
+@keyframes myfirst
+{
+    from {background: red;}
+    to {background: yellow;}
+}
  
+@-webkit-keyframes myfirst /* Safari 与 Chrome */
+{
+    from {background: red;}
+    to {background: yellow;}
+}
+```
+把自定义背景变色动画绑定到div
+```css
+div
+{
+    animation: myfirst 5s;
+    -webkit-animation: myfirst 5s; /* Safari 与 Chrome */
+}
+```
+另一种写法:
+```css
+@keyframes myfirst
+{
+    0%   {background: red;}
+    25%  {background: yellow;}
+    50%  {background: blue;}
+    100% {background: green;}
+}
+ 
+@-webkit-keyframes myfirst /* Safari 与 Chrome */
+{
+    0%   {background: red;}
+    25%  {background: yellow;}
+    50%  {background: blue;}
+    100% {background: green;}
+}
+```
+- %代表动画时间
+## 多列
+### 创建多列(`column-count`)
+将div分为3列
+```css
+div {
+    -webkit-column-count: 3; /* Chrome, Safari, Opera */
+    -moz-column-count: 3; /* Firefox */
+    column-count: 3;
+}
+```
+### 多列间隙(`column-gap`)
+指定div列与列间隙为40px
+```css
+div {
+    -webkit-column-gap: 40px; /* Chrome, Safari, Opera */
+    -moz-column-gap: 40px; /* Firefox */
+    column-gap: 40px;
+}
+```
+### 列边框
+- `column-rule-style` 属性指定了列与列间的边框样式
+```css
+div {
+    -webkit-column-rule-style: solid; /* Chrome, Safari, Opera */
+    -moz-column-rule-style: solid; /* Firefox */
+    column-rule-style: solid;
+}
+```
+- `column-rule-width` 属性指定了两列的边框厚度
+```css
+div {
+    -webkit-column-rule-width: 1px; /* Chrome, Safari, Opera */
+    -moz-column-rule-width: 1px; /* Firefox */
+    column-rule-width: 1px;
+}
+```
+- `column-rule-color` 属性指定了两列的边框颜色
+```css
+div {
+    -webkit-column-rule-color: lightblue; /* Chrome, Safari, Opera */
+    -moz-column-rule-color: lightblue; /* Firefox */
+    column-rule-color: lightblue;
+}
+```
+- `column-width` 属性指定了列的宽度
+```css
+div {
+    -webkit-column-width: 100px; /* Chrome, Safari, Opera */
+    column-width: 100px;
+}
+```
+## 用户界面
+- `resize`调整尺寸  
 
+由用户指定一个div元素尺寸大小
+```css
+div
+{
+    resize:both;
+    overflow:auto;
+}
+```
+- `box-sizing` 方框大小调整  
 
+规定两个并排的带边框方框
+```css
+div
+{
+    box-sizing:border-box;
+    -moz-box-sizing:border-box; /* Firefox */
+    width:50%;
+    float:left;
+}
+```
+- `outline-offset` 外形修饰  
+
+规定边框边缘之外 15 像素处的轮廓
+```css
+div
+{
+    border:2px solid black;
+    outline:2px solid red;
+    outline-offset:15px;
+}
+```
 
