@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+        a{
+            text-decoration: none;
+            color: currentColor;
+        }
+        #top{
+            border: 1px 1px 0 1px solid black;
+            width: 100%;
+            height: 80px;
+            box-shadow: 0 2px 4px 2px rgba(0,0,0,.09);
+            line-height: 80px;
+            background: #fff;
+            position: fixed;
+            top:0;
+            z-index: 10;
+        }
+        #logo{
+            text-align: center;
+            margin-left: 5%;
+            border-bottom: 1px black solid;
+            width: 120px;
+            height: 53px;
+            float: left;
+        }
+        #logo > span:first-child{
+            font-size: 30px;
+            font-weight: 300;
+        }
+        #logo > span:last-child{
+            letter-spacing: 8px;
+        }
+        section{
+            position: relative;
+            min-height: 100vh;
+            background:linear-gradient(to bottom,rgb(243, 240, 239),rgb(214, 210, 212)); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px ;
+        }
+        section .container{
+            position: relative;
+            width: 800px;
+            height: 500px;
+            background: #fff;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        section .container .user{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+        section .container .user .imgBx{
+            position: relative;
+            width: 50%;
+            height: 100%;
+            background:linear-gradient(to bottom,rgb(243, 240, 239),rgb(247, 247, 247)); 
+            transition: .5s;
+        }
+
+        section .container .user .imgBx img{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        section .container .user .formBx{
+            position: relative;
+            width: 50%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            transition: .5s;
+        }
+
+        section .container .user .formBx form h2{
+            font-size: 18px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        section .container .user .formBx form input{
+            position: relative;
+            width: 100%;
+            padding: 10px;
+            background: #f5f5f5;
+            color: #333;
+            border: none;
+            outline: none;
+            box-shadow: none;
+            margin: 8px 0;
+            font-size: 14px;
+            letter-spacing: 1px;
+            font-size: 300;
+        }
+
+        section .container .user .formBx form input[type="button"]{
+            max-width: 100px;
+            background: #677eff;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: .5s;
+        }
+        section .container .user .formBx form .signup{
+            position: relative;
+            margin-top: 20px;
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: #555;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+        section .container .user .formBx form .signup a{
+            font-weight: 600;
+            text-decoration: none;
+            color: #677EFF;
+        }
+        section .container .singupBx{
+            pointer-events: none;
+        }
+        section .container.active .singupBx{
+            pointer-events: initial;
+        }
+        section .container .singupBx .formBx{
+            left: 100%;
+        }
+        section .container.active .singupBx .formBx{
+            left: 0;
+        }
+        section .container .singupBx .imgBx{
+            left: -100%;
+        }
+        section .container.active .singupBx .imgBx{
+            left: 0;
+        }
+       section .container .singinBx .formBx{
+            left: 0;
+        }
+        section .container.active .singinBx .formBx{
+            left: 100%;
+        }
+        section .container .singinBx .imgBx{
+            left: 0;
+        }
+        section .container.active .singinBx .imgBx{
+            left: 100%;
+        }
+        @media (max-width: 991px){
+            section .container{
+                max-width: 400px;
+            }
+            section .container .imgBx{
+                display: none;
+            }
+            section .container .user .formBx{
+                width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="top">
+        <div id="logo"><span>O&nbsp;</span><span>livia</span></div>
+        <span>&nbsp;|&nbsp;登&nbsp;录</span>
+    </div>
+    <section>
+        <div class="container">
+            <div class="user singinBx">
+                <!--侧边空白区-->
+                <div class="imgBx">
+                </div>
+                <div class="formBx">
+                    <form>
+                        <h2>Sign In</h2>
+                        <input type="text" placeholder="用户名" id="username">
+                        <input type="password" placeholder="密码" id="password">
+                        <input type="button" value="Login" onclick="signIn()">
+                        <p class="signup">没有账号?<a href="#" onclick="
+                            toggleForm();">注册.</a></p>
+                    </form>
+                </div>
+            </div>
+            <div class="user singupBx">
+                <div class="formBx">
+                    <form>
+                        <h2>Create an Account</h2>
+                        <input type="text" placeholder="用户名" id="newUsername">
+                        <input type="email" placeholder="电子邮箱">
+                        <input type="password" placeholder="输入密码">
+                        <input type="password" placeholder="确认密码" id="newPassword">
+                        <input type="button" value="Sign up" onclick="signUp()">
+                        <p class="signup">已有账号?<a href="#" onclick="toggleForm();">登录.</a></p>
+                    </form>
+                </div>
+                <div class="imgBx"></div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function toggleForm(){
+            var container = document.querySelector('.container');
+            container.classList.toggle('active')
+        }
+        var usernameSet = ['admin'];
+        var passwordSet = ['admin'];
+        function signIn(){
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            if((usernameSet.indexOf(username) == passwordSet.indexOf(password)) && (usernameSet.indexOf(username) == 0))
+            {
+                window.location.replace("admin.html");
+            }else if((usernameSet.indexOf(username) == passwordSet.indexOf(password)) && (usernameSet.indexOf(username) == -1))
+            {
+                alert("用户名不存在!");
+                
+            }else {
+                window.location.replace("index.html");
+            }
+        }
+        function signUp(){
+            var newUsername = document.getElementById("newUsername").value;
+            var newPassword = document.getElementById("newPassword").value;
+            usernameSet.push(newUsername);
+            passwordSet.push(newPassword);
+            alert("注册成功");
+            toggleForm();
+        }
+    </script>
+</body>
+</html>
