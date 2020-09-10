@@ -19,6 +19,9 @@ public class LambdaTest03 {
         invokeCalc(10,20,(int a,int b) ->{
             return a + b;
         });
+
+        //省略Lambda表达式
+        invokeCalc(10,20,(a,b) -> a + b);
     }
 
     /*

@@ -20,6 +20,9 @@ public class LambdaTest {
         invokeCook(() -> {
             System.out.println("吃饭了~~~");
         });
+
+        //优化省略Lambda
+        invokeCook(() -> System.out.println("吃饭了~~~"));
     }
 
     //定义一个方法，参数传递Cook接口，方法内部调用Cook接口的makeFood方法

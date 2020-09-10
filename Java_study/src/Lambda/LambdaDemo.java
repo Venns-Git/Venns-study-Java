@@ -19,6 +19,10 @@ package Lambda;
         2.(参数列表):括号中的参数如果只有一个，那么和类型和括号都可以省略
         3.{一些代码}:{}中的代码只有一行，无论是否有返回值，都可以省略({},return,;)
             注意:要省略，必须一起省略
+
+    Lambda的使用前提
+        1.使用Lambda必须具有接口，且要求接口中有且仅有一个抽象方法
+        2.使用Lambda必须具有上下文推断
  */
 public class LambdaDemo {
     public static void main(String[] args) {
@@ -34,5 +38,8 @@ public class LambdaDemo {
         new Thread(() ->{
                 System.out.println(Thread.currentThread().getName()+"创建了新线程");
             }).start();
+
+        //优化省略Lambda
+        new Thread(()-> System.out.println(Thread.currentThread().getName()+"创建了新线程")).start();
     }
 }
