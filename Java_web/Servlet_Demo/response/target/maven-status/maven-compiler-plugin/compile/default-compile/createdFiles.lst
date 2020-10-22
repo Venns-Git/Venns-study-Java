@@ -1,0 +1,4 @@
+com\venns\servlet\RequestTest.class
+com\venns\servlet\FileServlet.class
+com\venns\servlet\RedirectServlet.class
+com\venns\servlet\ImageServlet.class

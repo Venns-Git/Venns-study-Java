@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                         http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0"
+         metadata-complete="true">
+    <!--配置一些web应用的初始化参数-->
+    <context-param>
+        <param-name>url</param-name>
+        <param-value>jdbc:mysql://localhost:3306/mybatis</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>hello</servlet-name>
+        <servlet-class>com.venns.servlet.HelloServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>hello</servlet-name>
+        <url-pattern>/hello</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>getc</servlet-name>
+        <servlet-class>com.venns.servlet.GetServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>getc</servlet-name>
+        <url-pattern>/getc</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>gp</servlet-name>
+        <servlet-class>com.venns.servlet.ServletDemo03</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>gp</servlet-name>
+        <url-pattern>/gp</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>sd4</servlet-name>
+        <servlet-class>com.venns.servlet.ServletDemo04</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>sd4</servlet-name>
+        <url-pattern>/sd4</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>sd5</servlet-name>
+        <servlet-class>com.venns.servlet.ServletDemo05</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>sd5</servlet-name>
+        <url-pattern>/sd5</url-pattern>
+    </servlet-mapping>
+</web-app>
