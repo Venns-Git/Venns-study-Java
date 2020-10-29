@@ -26,4 +26,9 @@
   <!-- 只要是/servlet的任何请求，都会经过这个过滤器   -->
     <url-pattern>/servlet/*</url-pattern>
   </filter-mapping>
+  
+  <!-- 注册监听器-->
+  <listener>
+    <listener-class>com.venns.listener.OnlineCountListener</listener-class>
+  </listener>
 </web-app>

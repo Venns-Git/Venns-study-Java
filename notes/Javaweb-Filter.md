@@ -1,6 +1,8 @@
-# Javaweb-Filter过滤器
+# Javaweb-Filter过滤器和监听器
 
-Filter：过滤器，用来过滤网站的数据
+## Filter
+
+过滤器，用来过滤网站的数据
 
 - 处理中文乱码
 - 登录验证
@@ -61,4 +63,61 @@ Filter：过滤器，用来过滤网站的数据
 	  </filter-mapping>
 	```
 
-	
+## 监听器
+
+实现一个监听器的接口(有N种)
+
+1. 编写一个监听器
+
+	实现监听器的接口
+
+	```java
+	//统计网络在线人数：统计session
+	public class OnlineCountListener implements HttpSessionListener {
+	    //创建session监听
+	    //一旦创建session，就会触发一个这个事件
+	    @Override
+	    public void sessionCreated(HttpSessionEvent httpSessionEvent) {
+	        ServletContext servletContext = httpSessionEvent.getSession().getServletContext();
+	        Integer onlineCount = (Integer) servletContext.getAttribute("OnlineCount");
+	        if (onlineCount == null){
+	            onlineCount = 1;
+	        }else {
+	            int count = onlineCount;
+	            onlineCount = count + 1;
+	        }
+	        servletContext.setAttribute("OnlineCount",onlineCount);
+	    }
+	    //销毁session监听
+	    //一旦销毁session，就会触发一个这个事件
+	    /*
+	        session销毁：
+	            1.手动销毁：httpSessionEvent.getSession().invalidate();
+	            2.自动销毁：web.xml中设置session存活时间
+	     */
+	    @Override
+	    public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
+	        ServletContext servletContext = httpSessionEvent.getSession().getServletContext();
+	        Integer onlineCount = (Integer) servletContext.getAttribute("OnlineCount");
+	        System.out.println(httpSessionEvent.getSession().getId());
+	        if (onlineCount == null){
+	            onlineCount = 0;
+	        }else {
+	            int count = onlineCount;
+	            onlineCount = count - 1;
+	        }
+	        servletContext.setAttribute("OnlineCount",onlineCount);
+	    }
+	}
+	```
+
+2. web.xml中注册监听器
+
+	```xml
+	 <!-- 注册监听器-->
+	  <listener>
+	    <listener-class>com.venns.listener.OnlineCountListener</listener-class>
+	  </listener>
+	```
+
+3. 看情况使用
