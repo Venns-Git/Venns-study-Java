@@ -83,7 +83,7 @@ INSERT INTO `user`(`id`,`name`,`pwd`)VALUES
 	        <dependency>
 	            <groupId>mysql</groupId>
 	            <artifactId>mysql-connector-java</artifactId>
-	            <version>6.0.6</version>
+	            <version>8.0.16</version>
 	        </dependency>
 	        <!--Mybatis-->
 	        <dependency>
@@ -109,7 +109,6 @@ INSERT INTO `user`(`id`,`name`,`pwd`)VALUES
 	<!DOCTYPE configuration
 	        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	        "http://mybatis.org/dtd/mybatis-3-config.dtd">
-	<!--核心配置文件-->
 	<configuration>
 	    <environments default="development">
 	        <environment id="development">
@@ -250,18 +249,24 @@ INSERT INTO `user`(`id`,`name`,`pwd`)VALUES
 	public class UserDaoTest {
 	    @Test
 	    public void test(){
-	        //第一步：获得SqlSession
-	        SqlSession sqlSession = MybatisUtils.getSqlSession();
-	        //方式一：执行SQL
-	        UserDao userDao = sqlSession.getMapper(UserDao.class);
-	        List<User> userList = userDao.getUserList();
-	
-	        for (User user:userList){
-	            System.out.println(user);
+	        //第一步：获得SqlSession对象
+	        SqlSession sqlSession = null;
+	        try {
+	            //方式一：执行SQL
+	            sqlSession = MybatisUtils.getSqlSession();
+	            UserDao userDao = sqlSession.getMapper(UserDao.class);
+	            List<User> userList = userDao.getUserList();
+	            //方式二：
+	            //sqlSession.selectList("com.venns.dao.UserDao.getUserList");
+	            for (User user:userList){
+	                System.out.println(user);
+	            }
+	        }catch (Exception e){
+	            e.printStackTrace();
+	        }finally {
+	            //关闭SqlSession
+	            sqlSession.close();
 	        }
-	
-	        //关闭SqlSession
-	        sqlSession.close();
 	    }
 	}
 	```
@@ -274,3 +279,90 @@ INSERT INTO `user`(`id`,`name`,`pwd`)VALUES
 4. 返回类型不对
 5. Maven导出资源问题
 
+# 3.CRUD
+
+## 1.namespace
+
+namespace中的包名要和Dao/Mapper接口中的包名一致
+
+## 2.select
+
+选择，查看
+
+- id：就是对应的namespace中的方法名
+- resultType：Sql语句执行的返回值
+- parameter：参数类型
+
+
+
+1. 编写接口
+
+	```java
+	//根据id查询用户
+	User getUserById(int id);
+	```
+
+	
+
+2. 编写对应mapper中的sql语句
+
+	```xml
+	    <select id="getUserById" parameterType="int" resultType="com.venns.pojo.User">
+	        select * from mybatis.user where id = #{id}
+	    </select>
+	```
+
+	
+
+3. 测试
+
+	```java
+	    @Test
+	    public void getUserById(){
+	        SqlSession sqlSession = MybatisUtils.getSqlSession();
+	        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+	        User user = mapper.getUserById(1);
+	        System.out.println(user);
+	        sqlSession.close();
+	    }
+	```
+
+	
+
+## 3.Insert
+
+```xml
+    <insert id="addUser" parameterType="com.venns.pojo.User">
+        insert into mybatis.user (id,name,pwd) values (#{id},#{name},#{pwd})
+    </insert>
+```
+
+
+
+## 4.Update
+
+```xml
+    <update id="updateUser" parameterType="com.venns.pojo.User">
+        update mybatis.user set name=#{name},pwd=#{pwd} where id = #{id}
+    </update>
+```
+
+
+
+## 5.Delete
+
+```xml
+    <delete id="deleteUser" parameterType="int">
+        delete from  mybatis.user where id = #{id}
+    </delete>
+```
+
+注意点：
+
+- 增删改需要提交事务
+
+	```java
+	sqlSession.commit();
+	```
+
+	
