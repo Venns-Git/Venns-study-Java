@@ -418,4 +418,253 @@ Map传递参数，直接在sql取出key即可 【parameterType="map"】
 	</select>
 	```
 
-	
+# 4.配置解析
+
+## 1.核心配置文件
+
+- mybatis-config.xml
+
+- MyBatis 的配置文件包含了会深深影响 MyBatis 行为的设置和属性信息
+
+	```xml
+	properties（属性）
+	settings（设置）
+	typeAliases（类型别名）
+	typeHandlers（类型处理器）
+	objectFactory（对象工厂）
+	plugins（插件）
+	environments（环境配置）
+	environment（环境变量）
+	transactionManager（事务管理器）
+	dataSource（数据源）
+	databaseIdProvider（数据库厂商标识）
+	mappers（映射器）
+	```
+
+## 2.环境配置
+
+Mybatis 可以配置成适应多种环境
+
+**不过要记住：尽管可以配置多个环境，但 每个 SqlSessionFactory 实例只能选择一种环境**
+
+学会使用配置多套运行环境
+
+Mybatis默认的事务管理器就是JDBC，连接池：POOLED
+
+## 3.属性（properties）
+
+我们可以通过properties属性来实现引用配置文件
+
+这些属性都是可外部配置且可动态替换的，既可以在典型的Java属性文件中配置，亦可通过properties元素的子元素来传递【db.properties】
+
+编写一个配置文件
+
+db.properties
+
+```properties
+driver=com.mysql.cj.jdbc.Driver
+url=jdbc:mysql://localhost:3306/mybatis?useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+username=root
+password=123456
+```
+
+在核心配置文件中引入（注意顺序）
+
+```xml
+<properties resource="db.properties">
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+</properties>
+```
+
+- 可以直接引入外部文件
+- 可以在其中增加一些属性配置
+- 如果两个文件中有同一个字段，优先使用外部配置文件的
+
+## 4.类型别名（typeAliases）
+
+- 类型别名为Java类型设置的一个短的名字
+- 存在的意义仅在于用来减少类完全限定名的冗余
+
+```xml
+    <typeAliases>
+        <typeAlias type="com.venns.pojo.User" alias="User" />
+    </typeAliases>
+```
+
+扫描实体类的包，它的别名就为这个类的类名，首字母小写
+
+```xml
+    <typeAliases>
+        <package name="com.venns.pojo"/>
+    </typeAliases>
+```
+
+在实体类比较少的时候，使用第一种方式
+
+如果实体类十分多，建议使用第二种
+
+第一种可以DIY别名，第二种则不行，如果非要改，需要在实体类上增加注解
+
+```java
+@Alias("user")
+public class User{}
+```
+
+## 5.设置
+
+这是mybatis中极为重要的设置，他们会改变mybatis的运行时行为
+
+| 设置名             | 描述                  | 有效值                                                       | 默认值 |
+| ------------------ | --------------------- | ------------------------------------------------------------ | ------ |
+| cacheEnabled       | 加载缓存              | true，false                                                  | true   |
+| lazyLoadingEnabled | 懒加载                | true，false                                                  | false  |
+| logImpl            | 指定mybatis的具体实现 | SLF4J ，LOG4J ，LOG4J2 ，JDK_LOGGING ，COMMONS_LOGGING ，STDOUT_LOGGING ，NO_LOGGING |        |
+
+## 6.其他配置
+
+- typeHandlers（类型处理器）
+- objectFactory（对象工厂）
+- plugins（插件）
+	- mybatis-generator-core
+	- mybatis-plus
+	- 通用mapper
+
+## 7.映射器（mappers）
+
+MapperRegistry：注册绑定我们的Mapper文件
+
+方式一:【推荐使用】
+
+```xml
+<mappers>
+    <mapper resource="com/venns/dao/UserMapper.xml"/>
+</mappers>
+```
+
+方式二：使用class文件绑定注册
+
+```xml
+<mappers>
+	<mapper class="com.venns.dao.UserDao" />
+</mappers>
+```
+
+注意点：
+
+- 接口和它的Mapper配置文件必须同名
+- 接口和它的Mapper配置文件必须在同一个包下
+
+方式三：使用扫描包进行注入绑定
+
+```xml
+<mappers>
+	<package name="com.venns.dao" />
+</mappers>
+```
+
+注意点：
+
+- 接口和它的Mapper配置文件必须同名
+- 接口和它的Mapper配置文件必须在同一个包下
+
+## 8.生命周期和作用域
+
+生命周期和作用域是至关重要的，因为错误的使用会导致非常严重的**并发问题**
+
+**SqlSessionFactoryBuilder：**
+
+- 一旦创建了SqlSessionFactory，就不再需要它了
+- 局部变量
+
+**SqlSessionFactory：**
+
+- 说白了就是可以想象为：数据库连接池
+- 一旦被创建就应该在运行期间一直存在，**没有任何理由丢弃它或重新创建另一个实例**
+
+- 因此，最佳作用域是应用作用域
+- 最简单的就是使用**单例模式**或者静态单例模式
+
+**SqlSession：**
+
+- 连接到连接池的一个请求
+- SqlSession的实例不是线程安全的，因此是不能被共享的，所以它的最佳作用域是请求或者方法作用域
+- 用完之后需要赶紧关闭，否则资源被占用
+
+# 5.解决属性名和字段名不一致的问题
+
+## 1.问题
+
+新建一个项目，拷贝之前的，测试实体类字段不一致的情况
+
+```java
+public class User {
+    private int id;
+    private String name;
+    private String password;
+}
+```
+
+测试出现问题 password=null
+
+解决方案:
+
+1. 起别名
+
+	```xml
+	    <select id="getUserById" parameterType="int" resultType="com.venns.pojo.User">
+	        select id,name,pwd as password from mybatis.user where id = #{id}
+	    </select>
+	```
+
+## 2.resultMap
+
+结果集映射
+
+```
+id name pwd
+id name password
+```
+
+```xml
+<resultMap id="UserMap" type="User">
+    <result column="id" property="id" />
+    <result column="name" property="name" />
+    <result column="pwd" property="password" />
+</resultMap>
+<select id="getUserById" resultType="UserMap">
+    select * from mybatis.user where id = #{id}
+</select>
+```
+
+- resultMap元素是Mybatis中最重要最强大的元素
+- resultMap的设计思想是，对于简单的语句不需要配置显式的结过映射，而对于复杂一嗲的语句只需要描述它们的关系就行了
+- resultMap最有效的地方在于，虽然你已经对它相当了解了，但是根本就不要显式的用到他们
+
+# 6.日志
+
+## 1.日志工厂
+
+如果一个数据库操作出现了异常，我们需要排错，日志就是最好的助手
+
+曾经：sout，debug
+
+现在：日志工厂
+
+- SLF4J 
+
+- LOG4J 【掌握】
+
+- LOG4J2 
+
+- JDK_LOGGING 
+
+- COMMONS_LOGGING 
+
+- STDOUT_LOGGING 【掌握】
+
+- NO_LOGGING
+
+在mybatis中具体实现哪个日志实现，在设置中设定
+
+**STDOUT_LOGGING标准日志输出**
