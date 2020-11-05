@@ -4,6 +4,8 @@ import com.venns.pojo.User;
 import com.venns.utils.MybatisUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
+
+import java.util.HashMap;
 import java.util.List;
 
 public class UserMapperTest {
@@ -37,6 +39,16 @@ public class UserMapperTest {
         System.out.println(user);
         sqlSession.close();
     }
+    @Test
+    public void getUserListLike(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        List<User> userList = mapper.getUserListLike("%t%");
+        for (User user : userList) {
+            System.out.println(user);
+        }
+        sqlSession.close();
+    }
     //增删改需要提交事务
     @Test
     public void addUser(){
@@ -48,6 +60,17 @@ public class UserMapperTest {
         }
         //提交事务
         sqlSession.commit();
+        sqlSession.close();
+    }
+    @Test
+    public void addUser2(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("userid",5);
+        map.put("username","nico");
+        map.put("password","666666");
+        mapper.addUser2(map);
         sqlSession.close();
     }
     @Test
@@ -66,4 +89,5 @@ public class UserMapperTest {
         sqlSession.commit();
         sqlSession.close();
     }
+
 }

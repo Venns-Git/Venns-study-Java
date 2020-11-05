@@ -365,4 +365,57 @@ namespace中的包名要和Dao/Mapper接口中的包名一致
 	sqlSession.commit();
 	```
 
+## 6.万能的Map
+
+假设，我们的实体类，或者数据库中的表，字段或者参数过多，我们应当考虑使用Map
+
+```java
+    //万能的map
+    User addUser2(Map<String,Object> map);
+```
+
+```xml
+    <insert id="addUser2" parameterType="map">
+        insert into mybatis.user (id,name,pwd) values (#{userid},#{username},#{password})
+    </insert>
+```
+
+```java
+    @Test
+    public void addUser2(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("userid",5);
+        map.put("username","nico");
+        map.put("password","666666");
+        mapper.addUser2(map);
+        sqlSession.close();
+    }
+```
+
+Map传递参数，直接在sql取出key即可 【parameterType="map"】
+
+对象传递参数，直接在sql中取出对象的属性即可 【parameterType="Object"】
+
+只有一个基本类型参数的情况下，可以直接在sql中渠道 【】
+
+多个参数用Map，**或者注解**
+
+## 7.模糊查询
+
+1. java代码执行的时候的，传递通配符 % %
+
+	```java
+	List<User> userList = mapper.getUserListLike("%t%");
+	```
+
+2. 在sql拼接中使用通配符
+
+	```xml
+	<select id="getUserListLike" resultType="com.venns.pojo.User">
+	    select * from mybatis.user where name like #{value}
+	</select>
+	```
+
 	

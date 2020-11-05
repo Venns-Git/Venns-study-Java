@@ -9,8 +9,14 @@
     <select id="getUserById" parameterType="int" resultType="com.venns.pojo.User">
         select * from mybatis.user where id = #{id}
     </select>
+    <select id="getUserListLike" resultType="com.venns.pojo.User">
+        select * from mybatis.user where name like #{value}
+    </select>
     <insert id="addUser" parameterType="com.venns.pojo.User">
         insert into mybatis.user (id,name,pwd) values (#{id},#{name},#{pwd})
+    </insert>
+    <insert id="addUser2" parameterType="map">
+        insert into mybatis.user (id,name,pwd) values (#{userid},#{username},#{password})
     </insert>
     <update id="updateUser" parameterType="com.venns.pojo.User">
         update mybatis.user set name=#{name},pwd=#{pwd} where id = #{id}
@@ -18,4 +24,5 @@
     <delete id="deleteUser" parameterType="int">
         delete from  mybatis.user where id = #{id}
     </delete>
+    
 </mapper>
