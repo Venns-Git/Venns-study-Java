@@ -759,4 +759,48 @@ id name password
 		logger.error("error:进入了testLog4j方法");
 		```
 
-	
+# 7.分页
+
+- 减少数据的处理量
+
+## 1.Limit
+
+```sql
+SELECT * from user limit startIndex,pageSize;
+```
+
+使用mybatis实现分页，核心：sql
+
+1. 接口
+
+	```java
+	//分页
+	List<User> getUserByLimit(Map<String,Integer> map);
+	```
+
+2. Mapper.xml
+
+	```xml
+	<select id="getUserByLimit" parameterType="map" resultType="user" resultMap="UserMap">
+	    select * from mybatis.user limit #{startIndex},#{pageSize}
+	</select>
+	```
+
+3. 测试
+
+	```java
+	@Test
+	public void getUserByLimit(){
+	    SqlSession sqlSession = MybatisUtils.getSqlSession();
+	    UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+	    HashMap<String, Integer> map = new HashMap<>();
+	    map.put("startIndex",0);
+	    map.put("pageSize",2);
+	    List<User> userList = mapper.getUserByLimit(map);
+	    for (User user : userList) {
+	        System.out.println(user);
+	    }
+	```
+
+## 2.RowBounds
+

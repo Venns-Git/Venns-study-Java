@@ -9,5 +9,8 @@
     <select id="getUserById" resultMap="UserMap" >
         select * from mybatis.user where id = #{id}
     </select>
+    <select id="getUserByLimit" parameterType="map" resultType="user" resultMap="UserMap">
+        select * from mybatis.user limit #{startIndex},#{pageSize}
+    </select>
     
 </mapper>
