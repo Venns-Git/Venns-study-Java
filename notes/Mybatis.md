@@ -918,3 +918,71 @@ int deleteUser(@Param("uid")int id);
 - 引用类型不需要加
 - 如果只有一个基本类型的话，可以忽略，建议加上
 - 在sql中引用的就是@Param()中设定的属性名
+
+# 9.Lombox
+
+Java开发插件，偷懒用的，不建议使用
+
+使用步骤：
+
+1. 在idea中安装Lombox插件
+
+2. 在项目中导入lombox的jar包
+
+	```xml
+	<dependency>
+	    <groupId>org.projectlombok</groupId>
+	    <artifactId>lombok</artifactId>
+	    <version>1.18.16</version>
+	</dependency>
+	```
+
+3. 在实体类上加上注解即可
+
+	```java
+	@Data:无参构造，get，set，tostring，hashcode，equals
+	@AllArgsConstructorL:全参构造
+	@NoArgsConstructor：无参构造   
+	```
+
+# 10.多对一处理
+
+多对一
+
+- 多个学生，对应一个老师
+- 对于学生而言，关联，多个学生，关联一个老师【多对一】
+- 对于老师而言，集合，一个老师有很多学生【一对多】
+
+SQL
+
+```sql
+CREATE TABLE `teacher` (
+  `id` INT(10) NOT NULL,
+  `name` VARCHAR(30) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8
+INSERT INTO teacher(`id`, `name`) VALUES (1, '秦老师'); 
+CREATE TABLE `student` (
+  `id` INT(10) NOT NULL,
+  `name` VARCHAR(30) DEFAULT NULL,
+  `tid` INT(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fktid` (`tid`),
+  CONSTRAINT `fktid` FOREIGN KEY (`tid`) REFERENCES `teacher` (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8
+INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('1', '小明', '1'); 
+INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('2', '小红', '1'); 
+INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('3', '小张', '1'); 
+INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('4', '小李', '1'); 
+INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('5', '小王', '1');
+```
+
+**测试环境搭建**
+
+1. 导入lombox
+
+2. 新建实体类Teacher，Student
+3. 建议Mapper接口
+4. 建议Mapper.xml文件
+5. 在核心配置文件中绑定注册我们的Mapper接口【方式不唯一】
+6. 测试查询是否能够成功
