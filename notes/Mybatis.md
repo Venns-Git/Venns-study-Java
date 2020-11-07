@@ -804,3 +804,117 @@ SELECT * from user limit startIndex,pageSize;
 
 ## 2.RowBounds
 
+不再使用SQL实现分页
+
+1. 接口
+
+	```java
+	List<User> getUserByRowBounds();
+	```
+
+2. mapper.xml
+
+	```xml
+	<select id="getUserByRowBounds" parameterType="map" resultType="user" resultMap="UserMap">
+	    select * from mybatis.user
+	</select>
+	```
+
+3. 测试
+
+	```java
+	@Test
+	public void getUserByRowBounds(){
+	    SqlSession sqlSession = MybatisUtils.getSqlSession();
+	
+	    //RowBounds
+	    RowBounds rowBounds = new RowBounds(1, 2);
+	    //通过Java代码层面实现分页
+	    List<User> userList = sqlSession.selectList("com.venns.dao.UserMapper.getUserByRowBounds",null,rowBounds);
+	    for (User user : userList) {
+	        System.out.println(user);
+	    }
+	
+	}
+	```
+
+## 3.分页插件
+
+**PageHelper**
+
+# 8.使用注解开发
+
+## 1.使用注解开发
+
+1. 注解在接口上实现
+
+	```java
+	@Select("select * from user")
+	List<User> getUsers();
+	```
+
+2. 需要在核心配置文件中绑定接口
+
+	```xml
+	<mappers>
+	    <mapper class="com.venns.dao.UserMapper" />
+	</mappers>
+	```
+
+3. 测试
+
+	```java
+	@Test
+	public void test(){
+	    SqlSession sqlSession = MybatisUtils.getSqlSession();
+	    //底层主要应用反射
+	    UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+	    List<User> users = mapper.getUsers();
+	    for (User user : users) {
+	        System.out.println(user);
+	    }
+	    sqlSession.close();
+	}
+	```
+
+本质：反射机制实现
+
+底层：动态代理
+
+## 2.CRUD
+
+我们可以在工具类创建的时候实现自动提交事务
+
+```java
+public static SqlSession getSqlSession(){
+    return sqlSessionFactory.openSession(true);
+}
+```
+
+编写接口，增加注解
+
+```java
+//方法存在多个参数，所有的参数前面必须加上@Param("参数名")注解
+@Select("select * from user where id = #{id}")
+User getUserById(int id);
+
+@Insert("insert into user(id,name,pwd) values (#{id},#{name},#{password})")
+int addUser(User user);
+
+@Update("update user set name=#{name},pwd=#{password} where id=#{id}")
+int updateUser(User user);
+
+@Delete("delete from user where id=#{uid}")
+int deleteUser(@Param("uid")int id);
+```
+
+测试类
+
+注意：我们必须要讲接口注册绑定到我们的核心配置文件中
+
+## 3.关于@Param()注解
+
+- 基本类型的参数或者String类型，需要加上
+- 引用类型不需要加
+- 如果只有一个基本类型的话，可以忽略，建议加上
+- 在sql中引用的就是@Param()中设定的属性名
