@@ -977,12 +977,86 @@ INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('4', '小李', '1');
 INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('5', '小王', '1');
 ```
 
-**测试环境搭建**
+## 测试环境搭建
 
 1. 导入lombox
-
 2. 新建实体类Teacher，Student
 3. 建议Mapper接口
 4. 建议Mapper.xml文件
 5. 在核心配置文件中绑定注册我们的Mapper接口【方式不唯一】
-6. 测试查询是否能够成功
+6. 测试查询是否能够成功  
+
+## 按照查询嵌套处理
+
+```xml
+<!--
+	思路:
+		1.查询所有的学生信息
+		2。根据查询出来学生tid，寻找对应的老师，子查询
+-->
+<select id="getStudent" resultMap="StudentTeacher">
+    select * from student
+</select>
+<resultMap id="StudentTeacher" type="student">
+    <result property="id" column="id" />
+    <result property="name" column="name" />
+    <!--复杂的属性，我们需要单独处理，对象：association 集合：collection -->
+    <association property="teacher" column="tid" javaType="teacher" select="getTeacher"/>
+</resultMap>
+<select id="getTeacher" resultType="teacher">
+    select * from teacher where id=#{id}
+</select>
+```
+
+## 按照结果嵌套处理
+
+```xml
+    <select id="getStudent" resultMap="StudentTeacher">
+        select s.id sid,s.name sname,t.name tname
+        from student s,teacher t
+        where s.tid=t.id
+    </select>
+    <resultMap id="StudentTeacher" type="student">
+        <result property="id" column="sid" />
+        <result property="name" column="sname" />
+        <association property="teacher" javaType="teacher">
+            <result property="name" column="tname" />
+        </association>
+    </resultMap>
+</mapper>
+```
+
+回顾MySQL多对一的查询方式
+
+- 子查询
+- 联表查询
+
+# 11.一对多处理
+
+比如：一个老师拥有多个学生，
+
+对于老师而言，就是一对多的关系
+
+1. 环境搭建，和刚才一样
+
+**实体类**
+
+```java
+@Data
+public class Student {
+    private int id;
+    private String name;
+    private int tid;
+}
+```
+
+```java
+@Data
+public class Teacher {
+    private int id;
+    private String name;
+
+    //老师拥有多个学生
+    private List<Student> students;
+}
+```
