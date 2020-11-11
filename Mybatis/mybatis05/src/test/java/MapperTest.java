@@ -13,4 +13,9 @@ public class MapperTest {
         System.out.println(teacher);
         sqlSession.close();
     }
+    @Test
+    public void test2(){
+        Teacher teacher = MybatisUtils.getSqlSession().getMapper(TeacherMapper.class).getTeacher2(1);
+        System.out.println(teacher);
+    }
 }

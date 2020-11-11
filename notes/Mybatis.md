@@ -1037,6 +1037,8 @@ INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('5', '小王', '1');
 
 对于老师而言，就是一对多的关系
 
+## 环境搭建
+
 1. 环境搭建，和刚才一样
 
 **实体类**
@@ -1060,3 +1062,164 @@ public class Teacher {
     private List<Student> students;
 }
 ```
+
+## 按照结果嵌套处理
+
+```xml
+<select id="getTeacher" resultMap="TeacherStudent">
+    select s.id sid,s.name sname,t.name tname,t.id tid
+    from student s,teacher t
+    where s.tid=t.id and t.id=#{tid}
+</select>
+<resultMap id="TeacherStudent" type="teacher">
+    <result property="id" column="tid" />
+    <result property="name" column="tname" />
+    <collection property="students" ofType="student">
+        <result property="id" column="sid" />
+        <result property="name" column="sname" />
+        <result property="tid" column="tid" />
+    </collection>
+```
+
+## 按照查询嵌套处理
+
+```xml
+<select id="getTeacher2" resultMap="TeacherStudent2">
+    select * from mybatis.teacher where id = #{tid}
+</select>
+<resultMap id="TeacherStudent2" type="teacher">
+    <collection property="students" javaType="ArrayList" ofType="student" select="getStudentByTeacherId" column="id" />
+</resultMap>
+<select id="getStudentByTeacherId" resultType="student">
+    select * from mybatis.student where tid=#{tid}
+</select>
+```
+
+**小结**
+
+1. 关联-association 【多对一】
+2. 集合-collection【一对多】
+
+3. javaType & ofType
+	1. javaType 用来指定实体类中属性的类型
+	2. ofType  用来指定映射到list或者集合中的pojo类型，泛型中的约束类型
+
+主题点：
+
+- 保证SQL的可读性，尽量保证通俗易懂
+- 注意一对多和多对一中，属性名和字段的问题
+- 如果问题不好排错，可以使用日志，建议使用Log4j
+
+# 12.动态SQL
+
+**动态SQL：就是指根据不同的条件生成不同的SQL语句**
+
+- if
+- choose（when，otherwise）
+- trim（where，set）
+- foreach
+
+## 搭建环境
+
+```sql
+CREATE TABLE `blog`(
+`id` VARCHAR(50) NOT NULL COMMENT '博客id',
+`title` VARCHAR(100) NOT NULL COMMENT '博客标题',
+`author` VARCHAR(30) NOT NULL COMMENT '博客作者',
+`create_time` DATETIME NOT NULL COMMENT '创建时间',
+`views` INT(30) NOT NULL COMMENT '浏览量'
+)ENGINE=INNODB DEFAULT CHARSET=utf8
+```
+
+创建一个基础工程
+
+1. 导包
+
+2. 编写配置文件
+
+3. 编写实体类
+
+	```java
+	@Data
+	public class Blog {
+	    private int id;
+	    private String title;
+	    private String author;
+	    private Date createTime;
+	    private int views;
+	
+	}
+	```
+
+4. 编写实体类Mapper接口和Mapper.xml文件
+
+## IF
+
+```xml
+<select id="queryBlogIF" parameterType="map" resultType="blog">
+    select * from mybatis.blog where 1=1
+    <if test="title != null">
+        and title = #{title}
+    </if>
+    <if test="author != null">
+        and author = #{author}
+    </if>
+</select>
+```
+
+## choose（when，otherwise）
+
+```xml
+<select id="queryBlogChoose" parameterType="map" resultType="blog">
+    select * from mybatis.blog
+    <where>
+        <choose>
+            <when test="title != null">
+                title = #{title}
+            </when>
+            <when test="author != null">
+                and author = #{author}
+            </when>
+            <otherwise>
+                and views = #{views}
+            </otherwise>
+        </choose>
+    </where>
+</select>
+```
+
+## trim（where，set）
+
+```xml
+<select id="queryBlogIF" parameterType="map" resultType="blog">
+    select * from mybatis.blog
+    <where>
+        <if test="title != null">
+            title = #{title}
+        </if>
+        <if test="author != null">
+            author = #{author}
+        </if>
+    </where>
+</select>
+```
+
+```xml
+<update id="updateBlog" parameterType="map">
+    update mybatis.blog
+    <set>
+        <if test="title != null">
+            title = #{title},
+        </if>
+        <if test="author != null">
+            author = #{author}
+        </if>
+    </set>
+    where id = #{id}
+</update>
+```
+
+**所谓的动态SQL，本质还是SQL语句，只是我们可以在SQL层面去执行一些逻辑代码**
+
+## Foreach
+

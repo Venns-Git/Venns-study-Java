@@ -17,4 +17,15 @@
             <result property="tid" column="tid" />
         </collection>
     </resultMap>
+    
+    
+    <select id="getTeacher2" resultMap="TeacherStudent2">
+        select * from mybatis.teacher where id = #{tid}
+    </select>
+    <resultMap id="TeacherStudent2" type="teacher">
+        <collection property="students" javaType="ArrayList" ofType="student" select="getStudentByTeacherId" column="id" />
+    </resultMap>
+    <select id="getStudentByTeacherId" resultType="student">
+        select * from mybatis.student where tid=#{tid}
+    </select>
 </mapper>

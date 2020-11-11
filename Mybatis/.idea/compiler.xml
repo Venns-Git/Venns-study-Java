@@ -11,11 +11,11 @@
         <module name="Mybatis02" />
         <module name="Mybatis03" />
         <module name="mybatis05" />
+        <module name="mybatis06" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="14">
       <module name="Mybatis04" target="14" />
-      <module name="mybatis06" target="14" />
     </bytecodeTargetLevel>
   </component>
 </project>
