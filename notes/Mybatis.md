@@ -1221,5 +1221,188 @@ CREATE TABLE `blog`(
 
 **所谓的动态SQL，本质还是SQL语句，只是我们可以在SQL层面去执行一些逻辑代码**
 
+## SQL片段
+
+有的时候， 我们可能需要将一些功能的部分抽取出来，方便复用
+
+1. 使用sql标签抽取公共部分
+
+	```xml
+	<sql id="if-title-author">
+	    <if test="title != null">
+	        title = #{title}
+	    </if>
+	    <if test="author != null">
+	        and author = #{author}
+	    </if>
+	</sql>
+	```
+
+2. 在需要使用的地方使用include标签引用即可
+
+	```xml
+	<select id="queryBlogIF" parameterType="map" resultType="blog">
+	    select * from mybatis.blog
+	    <where>
+	        <include refid="if-title-author"></include>
+	    </where>
+	</select>
+	```
+
+注意事项
+
+- 最好基于单表来定义sql片段
+- 不要存在where标签
+
 ## Foreach
 
+- collection ：select语句参数map中的键
+- item：循环参数名
+- open：前缀
+- close：后缀
+- separato：连接词
+
+```xml
+<select id="queryBlogForeach" parameterType="map" resultType="blog">
+    select * from  mybatis.blog
+    <where>
+        <foreach collection="ids" item="id" open="and (" close=")" separator="or">
+            id = #{id}
+        </foreach>
+    </where>
+</select>
+```
+
+```java
+@Test
+public void queryBlogForeach(){
+    SqlSession sqlSession = MybatisUtils.getSqlSession();
+    BlogMapper mapper = sqlSession.getMapper(BlogMapper.class);
+    HashMap map = new HashMap();
+    ArrayList<Integer> ids = new ArrayList<>();
+    ids.add(1);
+    ids.add(2);
+    map.put("ids",ids);
+    List<Blog> blogs = mapper.queryBlogForeach(map);
+    for (Blog blog : blogs) {
+        System.out.println(blog);
+    }
+    sqlSession.close();
+}
+```
+
+动态SQL就是在拼接SQL语句，我们只要保证SQL的正确性，按照SQL的格式，进行排列组合就行了
+
+建议：
+
+- 先在MySQL中写出完整的SQL语句，再对应的去修改我们的动态SQL，实现通用
+
+# 13.缓存
+
+## 简介
+
+查询 ---> 连接数据库 ---> 耗资源
+一次查询的结果，暂存在一个可以直接取到的地方 --> 内存：缓存
+再次查询相同数据的时候，直接走缓存，不用再次连接数据库
+
+1. 什么是缓存【Cache】
+	- 存在内存中的临时数据
+	- 将用户经常查询的数据放在缓存中，用户去查询数据就不用从磁盘上查询，提高查询效率，解决高并发系统的性能问题
+
+2. 为什么使用缓存
+	- 减少和数据库的交互次数，减少系统开销，提高系统效率
+3. 什么样的数据能使用缓存
+	- 经常查询并且不经常改变的数据
+
+## Mybatis缓存
+
+默认定义了两级缓存，**一级缓存**和**二级缓存**
+
+- 默认情况下，只有一级缓存开启。（SqlSession级别的缓存，也称为本地缓存）
+- 二级缓存需要手动开启和配置，他是基于namespace级别的缓存
+- 为了提高扩展性，Mybatis定义了缓存接口Cache，我们可以通过实现Cache接口来定义二级缓存
+
+## 一级缓存
+
+一级缓存也叫本地缓存：SqlSession
+
+- 与数据库同义词会话期间查询到的数据会放在本地缓存中
+- 以后如果需要获取相同的数据，直接从缓存拿走，没必要再去查询数据库
+
+测试步骤：
+
+1. 开启日志
+2. 测试在一个Seesion中查询两次相同的记录
+3. 查看日志输出
+
+缓存失效情况：
+
+1. 查询不同的东西
+
+2. 增删改操作，可能会改变原来的数据，所以必定会刷新缓存
+
+3. 查询不同的Mapper.xml
+
+4. 手动清理缓存
+
+	```java
+	sqlSession.clearCache();
+	```
+
+小结：一级缓存默认是开启的，只在一个SqlSession中有效，也就是拿到连接到关闭连接这个区间段
+
+一级缓存就是一个Map
+
+## 二级缓存
+
+- 二级缓存也叫全局缓存，比一级缓存作用于更高
+- 基于namespace级别的缓存，一个名称空间，对应一个二级缓存
+- 工作机制
+	- 一个会话查询一条数据，这个数据就会被放在当前会话的一级缓存中
+	- 如果当前会话关闭了，这个会话对应的一级缓存就没了，一级缓存中的数据会被保存到二级缓存中
+	- 新的会话查询信息，就可以从二级缓存中获取内容
+	- 不同的mapper查出的数据会放在自己对应的缓存(map)中
+
+步骤：
+
+1. 开启全局缓存
+
+	```xml
+	<setting name="cacheEnabled" value="true"/>
+	```
+
+2. 在要使用二级缓存的Mapper中开启
+
+	```xml
+	<cache />
+	```
+
+	也可以自定义参数
+
+	```xml
+	<cache  eviction="FIFO"
+	        flushInterval="60000"
+	        size="512"
+	        readOnly="true"/>
+	```
+
+3. 测试
+	1. 问题：我们需要将实体类序列化，否则就会报错
+
+小结：
+
+- 只要开启了二级缓存，在同一个Mapper下就有效
+- 所有的数据都会先放在一级缓存中
+- 只有当会话提交，或者关闭的时候，才会提交到二级缓存中
+
+## 自定义缓存
+
+> Ehcache 是一种广泛使用的开源Java分布式缓存，主要面向通向缓存
+
+要在程序中使用ehcache，要先导包
+
+然后再mapper中指定使用我们的ehcache缓存实现
+
+```xml
+<cache type=" " />
+```
