@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--第一种：下标赋值-->
+<!--    <bean id="user" class="com.venns.pojo.User">-->
+<!--        <constructor-arg index="0" value="venns" />-->
+<!--    </bean>-->
+    <!--第二种：类型赋值-->
+<!--    <bean id="user" class="com.venns.pojo.User">-->
+<!--        <constructor-arg type="java.lang.String" value="venns" />-->
+<!--    </bean>-->
+    <!--第三种：直接通过参数名-->
+    <bean id="user" class="com.venns.pojo.User">
+        <constructor-arg name="name" value="venns" />
+    </bean>
+    <!--别名，如果添加了别名，我们也可以使用别名获取到这个对象-->
+    <alias name="user" alias="userNew" />
+    <!--
+        id：bean的唯一标识符，也就是相当于我们学的对象名
+        class：bean对象所对应的全限定名：包名+类名
+        name：也是别名，更加高级，可以同时去多个别名
+    -->
+
+</beans>
