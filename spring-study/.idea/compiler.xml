@@ -9,6 +9,7 @@
         <module name="hello-spring" />
         <module name="ioc2" />
         <module name="ioc1" />
+        <module name="di" />
       </profile>
     </annotationProcessing>
   </component>

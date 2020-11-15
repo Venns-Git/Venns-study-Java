@@ -245,9 +245,127 @@ public void setUserDao(UserDao userDao){
 【环境搭建】
 
 1. 复杂类型
-2. 真是测试对象
+
+	```java
+	public class Address {
+	    private String address;
+	
+	    public String getAddress() {
+	        return address;
+	    }
+	
+	    public void setAddress(String address) {
+	        this.address = address;
+	    }
+	}
+	```
+
+2. 真实测试对象
+
+	```java
+	public class Student {
+	    private String name;
+	    private Address address;
+	    private String[] books;
+	    private List<String> hobbys;
+	    private Map<String,String> card;
+	    private Set<String> games;
+	    private String wife;
+	    private Properties info;
+	}
+	```
+
+3. beans.xml
+
+	```xml
+	<?xml version="1.0" encoding="UTF-8"?>
+	<beans xmlns="http://www.springframework.org/schema/beans"
+	       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	    <bean id="student" class="com.venns.pojo.Student">
+	        <!--普通注入：value-->
+	        <property name="name" value="venns" />
+	    </bean>
+	</beans>
+	```
+
+4. 测试类
+
+	```java
+	public class MyTest {
+	    public static void main(String[] args) {
+	        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+	        Student student = (Student) context.getBean("student");
+	        System.out.println(student.getName());
+	    }
+	}
+	```
+
+完善注册信息
+
+```xml
+<bean id="address" class="com.venns.pojo.Address">
+    <property name="address" value="成都" />
+</bean>
+<bean id="student" class="com.venns.pojo.Student">
+    <!--普通注入:value-->
+    <property name="name" value="venns" />
+
+    <!--Bean注入:ref-->
+    <property name="address" ref="address" />
+
+    <!--数组-->
+    <property name="books">
+        <array>
+            <value>三国演义</value>
+            <value>水浒传</value>
+            <value>红楼梦</value>
+            <value>西游记</value>
+        </array>
+    </property>
+
+    <!--list-->
+    <property name="hobbys">
+        <list>
+            <value>看电影</value>
+            <value>敲代码</value>
+            <value>听歌</value>
+        </list>
+    </property>
+
+    <!--map-->
+    <property name="card">
+        <map>
+            <entry key="身份证" value="12345678" />
+            <entry key="银行卡" value="11111111" />
+            <entry key="学生证" value="12332112" />
+        </map>
+    </property>
+
+    <!--set-->
+    <property name="games">
+        <set>
+            <value>LOL</value>
+            <value>COC</value>
+            <value>PUBG</value>
+        </set>
+    </property>
+
+    <!--null-->
+    <property name="wife">
+        <null />
+    </property>
+
+    <!--property-->
+    <property name="info">
+        <props>
+            <prop key="学号">20200101</prop>
+            <prop key="性别">男</prop>
+        </props>
+    </property>
+</bean>
+```
 
 ## 拓展方式
-
-
 

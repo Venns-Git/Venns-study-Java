@@ -12,6 +12,7 @@
         <module>ioc1</module>
         <module>hello-spring</module>
         <module>ioc2</module>
+        <module>di</module>
     </modules>
 
     <dependencies>
