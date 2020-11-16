@@ -369,3 +369,42 @@ public void setUserDao(UserDao userDao){
 
 ## 拓展方式
 
+可以使用p命名空间和c命名空间进行注入：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--p命名空间注入，可以直接注入属性的值，property-->
+    <bean id="user" class="com.venns.pojo.User" p:name="venns" p:age="18" />
+    <!--c命名空间注入，通过构造器注入，construct-args-->
+    <bean id="user2" class="com.venns.pojo.User" c:name="venns2" c:age="19"/>
+</beans>
+```
+
+测试
+
+```java
+@Test
+public void test2(){
+    ApplicationContext context = new ClassPathXmlApplicationContext("userbeans.xml");
+    User user = context.getBean("user", User.class);
+    System.out.println(user);
+    User user2 = context.getBean("user2", User.class);
+    System.out.println(user2);
+}
+```
+
+注意：c命名空间和p命名空间不能直接使用，需要导入xml约束
+
+```xml
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:c="http://www.springframework.org/schema/c"
+```
+
+## bean的作用域
+
