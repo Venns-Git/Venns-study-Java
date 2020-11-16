@@ -13,6 +13,8 @@
         <module>hello-spring</module>
         <module>ioc2</module>
         <module>di</module>
+        <module>autowired</module>
+        <module>anno</module>
     </modules>
 
     <dependencies>
