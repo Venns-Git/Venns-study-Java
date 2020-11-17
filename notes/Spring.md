@@ -603,3 +603,76 @@ spring4之后，要使用注解开发，必须要保证aop的导入
 		<context:component-scan base-package="com.venns" />
 		```
 
+# 9.使用Java的方式配置Spring
+
+javaConfig是Spring的一个子项目，在Spring4之后，成为了核心功能
+
+实体类：
+
+```java
+//这里的注解就是表明这个类被Spring接管了，注册到了容器中
+@Component
+public class User {
+    private String name;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Value("venns")
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+配置类：
+
+```java
+//这个注解也会被Spring托管，注册到容器中，本身就是一个@Component
+//@Configuration代表这就是一个配置类，和bean.xml一样
+@Configuration
+@ComponentScan("com.venns.pojo")
+public class VennsConfig {
+
+    //注册一个bean，相当于我们之前写的一个bean标签
+    //bean的id为方法的名字
+    //bean的class为方法的返回值
+    @Bean
+    public User User(){
+        return new User();
+    }
+}
+```
+
+测试类：
+
+```java
+public class MyTest {
+    public static void main(String[] args) {
+
+        //如果完全使用配置类方式，就只能通过 AnnotationConfigApplicationContext 获取容器，通过配置类的class对象加载
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(VennsConfig.class);
+        User getUser = (User) context.getBean("User");
+        System.out.println(getUser.getName());
+    }
+}
+```
+
+这种纯Java的配置方式没在SpringBoot中随处可见
+
+# 10.代理模式
+
+**这是SpringAOP的底层**
+
+代理模式的分类：
+
+- 静态代理
+- 动态代理

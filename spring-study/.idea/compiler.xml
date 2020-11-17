@@ -12,6 +12,7 @@
         <module name="ioc2" />
         <module name="ioc1" />
         <module name="di" />
+        <module name="appconfig" />
       </profile>
     </annotationProcessing>
   </component>

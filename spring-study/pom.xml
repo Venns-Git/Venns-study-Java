@@ -15,6 +15,7 @@
         <module>di</module>
         <module>autowired</module>
         <module>anno</module>
+        <module>appconfig</module>
     </modules>
 
     <dependencies>
