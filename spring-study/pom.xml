@@ -16,6 +16,7 @@
         <module>autowired</module>
         <module>anno</module>
         <module>appconfig</module>
+        <module>proxy</module>
     </modules>
 
     <dependencies>

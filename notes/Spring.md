@@ -676,3 +676,128 @@ public class MyTest {
 
 - 静态代理
 - 动态代理
+
+## 静态代理
+
+角色分析：
+
+- 抽象角色：一般会使用接口或者抽象类来解决
+- 真实角色：被代理的角色
+- 代理角色：代理真实角色，代理真是角色后，一般会做一些附属操作
+- 客户：访问代理对象的人
+
+代码步骤:
+
+1. 接口
+
+	```java
+	//租房
+	public interface Rent {
+	    public void rent();
+	}
+	```
+
+2. 真实角色
+
+	```java
+	//房东
+	public class Host implements Rent{
+	    @Override
+	    public void rent() {
+	        System.out.println("房东要出租房子");
+	    }
+	}
+	```
+
+3. 代理角色
+
+	```java
+	public class Proxy implements Rent{
+	    private Host host;
+	
+	    public Proxy() {
+	    }
+	
+	    public Proxy(Host host) {
+	        this.host = host;
+	    }
+	
+	    @Override
+	    public void rent() {
+	        seeHouse();
+	        host.rent();
+	        hetong();
+	        fare();
+	    }
+	
+	    //看房
+	    public void seeHouse(){
+	        System.out.println("中介带你看房");
+	    }
+	
+	    //收中介费
+	    public void fare(){
+	        System.out.println("收中介费");
+	    }
+	
+	    //签合同
+	    public void hetong(){
+	        System.out.println("签租赁合同");
+	    }
+	}
+	```
+
+4. 客户端访问代理角色
+
+	```java
+	public class Client {
+	    public static void main(String[] args) {
+	        //房东要出租房子
+	        Host host = new Host();
+	        //代理，中介帮房东出租房子，但是会有一些附属操作
+	        Proxy proxy = new Proxy(host);
+	        //不用面对房东，直接找中介租房即可
+	        proxy.rent();
+	    }
+	}
+	```
+
+代理模式的好处：
+
+- 可以使真实角色的操作更加纯粹，不用再去关注一些公共的业务
+- 公共也就交给代理角色，实现了业务的分工
+- 公共业务发生扩展的时候，方便集中管理
+
+缺点：
+
+- 一个真实角色就会产生一个代理角色，代码量过大，开发效率会变低
+
+## 加深理解
+
+代码：对应proxy-demo02
+
+![image-20201117173631087](image-20201117173631087.png)
+
+## 动态代理
+
+- 动态代理和静态代理角色一样
+
+- 动态代理的动态代理类是动态生成的
+
+- 动态代理分为两大类：基于接口的动态代理，基于类的动态代理
+
+	- 基于接口---JDK动态代理 【采用】
+	- 基于类---cglib
+
+	- java字节码实现：
+
+需要谅解两个类：Proxy：代理，InvocationHandler：调用处理程序
+
+动态代理的好处：
+
+- 可以使真实角色的操作更加纯粹，不用再去关注一些公共的业务
+- 公共也就交给代理角色，实现了业务的分工
+- 公共业务发生扩展的时候，方便集中管理
+- 动态代理的代理的是一个接口，一般就是对应一类业务
+- 一个动态代理类可以代理多个类，只要是实现了同一个接口即可
+
