@@ -10,6 +10,7 @@
         <module name="proxy" />
         <module name="autowired" />
         <module name="anno" />
+        <module name="aop" />
         <module name="ioc2" />
         <module name="ioc1" />
         <module name="di" />

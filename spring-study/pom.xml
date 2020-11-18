@@ -17,6 +17,7 @@
         <module>anno</module>
         <module>appconfig</module>
         <module>proxy</module>
+        <module>aop</module>
     </modules>
 
     <dependencies>

@@ -1,4 +1,4 @@
-# 1.Spring
+#  1.Spring
 
 ## 简介
 
@@ -791,7 +791,53 @@ public class MyTest {
 
 	- java字节码实现：
 
-需要谅解两个类：Proxy：代理，InvocationHandler：调用处理程序
+需要理解两个类：Proxy：代理，InvocationHandler：调用处理程序
+
+```java
+public class ProxyInvocationHandler implements InvocationHandler {
+
+    //被代理的接口
+    private Object obj;
+
+    //得到被代理的接口
+    public void setObj(Object obj){
+        this.obj = obj;
+    }
+
+    //生成得到代理类
+    public Object getProxy(){
+        return Proxy.newProxyInstance(this.getClass().getClassLoader(), obj.getClass().getInterfaces(),this);
+    }
+
+    //处理代理实例
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        log(method.getName());
+        Object result = method.invoke(obj, args);
+        return result;
+    }
+    private void log(String msg){
+        System.out.println("执行了"+msg+"方法");
+    }
+}
+```
+
+```java
+public class Client {
+    public static void main(String[] args) {
+        //真实角色
+        UserServiceImpl userService = new UserServiceImpl();
+
+        //生成代理角色
+        ProxyInvocationHandler pih = new ProxyInvocationHandler();
+        pih.setObj(userService);//设置需要代理的角色
+        UserService proxy = (UserService) pih.getProxy();
+
+        //执行方法
+        proxy.add();
+    }
+}
+```
 
 动态代理的好处：
 
@@ -801,3 +847,191 @@ public class MyTest {
 - 动态代理的代理的是一个接口，一般就是对应一类业务
 - 一个动态代理类可以代理多个类，只要是实现了同一个接口即可
 
+# AOP
+
+## 什么是AOP
+
+AOP为Aspect Oriented Programming的缩写，意为：面向切面编程，通过预编译方式和运行期间动态代理实现程序功能的统一维护的一种技术。AOP是OOP的延续，是软件开发中的一个热点，也是Spring框架中的一个重要内容，是函数式编程的一种衍生范型。利用AOP可以对业务逻辑的各个部分进行隔离，从而使得业务逻辑各部分之间的耦合度降低，提高程序的可重用性，同时提高了开发的效率
+
+## AOP在Spring中的作用
+
+**提供声明式事务：允许用户自定义切面**
+
+## 使用Spring实现AOP
+
+使用AOP织入，需要导入依赖
+
+```xml
+ <dependency>
+     <groupId>org.aspectj</groupId>
+     <artifactId>aspectjweaver</artifactId>
+     <version>1.8.9</version>
+</dependency>
+```
+
+### 方式一：使用Spring的API接口
+
+接口：
+
+```java
+public interface UserService {
+    public void add();
+    public void delete();
+    public void update();
+    public void select();
+}
+```
+
+实现类：
+
+```Java
+public class UserServiceImpl implements UserService{
+    @Override
+    public void add() {
+        System.out.println("增加了一个用户");
+    }
+
+    @Override
+    public void delete() {
+        System.out.println("删除了一个用户");
+    }
+
+    @Override
+    public void update() {
+        System.out.println("更新了一个用户");
+    }
+
+    @Override
+    public void select() {
+        System.out.println("查询了一个用户");
+    }
+}
+```
+
+日志：
+
+```java
+public class Log implements MethodBeforeAdvice {
+
+    /*
+        method：要执行的目标对象的方法
+        args：参数
+        target：目标对象
+     */
+    @Override
+    public void before(Method method, Object[] args, Object target) throws Throwable {
+        System.out.println(target.getClass().getName()+"的"+method.getName()+"被执行了");
+    }
+}
+```
+
+```java
+public class AfterLog implements AfterReturningAdvice {
+
+    //returnValue:返回值
+    @Override
+    public void afterReturning(Object returnValue, Method method, Object[] objects, Object o1) throws Throwable {
+        System.out.println("执行了"+method.getName()+"方法，返回结果为"+returnValue);
+    }
+}
+```
+
+配置文件：
+
+```xml
+<bean id="userService" class="com.venns.service.UserServiceImpl" />
+<bean id="log" class="com.venns.log.Log" />
+<bean id="afterLog" class="com.venns.log.AfterLog" />
+
+<!--方式一：使用原生Spring API接口-->
+<!--配置aop:需要带入aop的约束-->
+<aop:config>
+    <!--切入点：expression:表达式，execution(要执行的位置)-->
+    <aop:pointcut id="pointcut" expression="execution(* com.venns.service.UserServiceImpl.*(..))"/>
+
+    <!--执行环绕增加-->
+    <aop:advisor advice-ref="log" pointcut-ref="pointcut" />
+    <aop:advisor advice-ref="afterLog" pointcut-ref="pointcut" />
+</aop:config>
+```
+
+测试：
+
+```java
+public class MyTest {
+    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("SpringApplicationConfig.xml");
+        //动态代理代理的是接口
+        UserService userService = context.getBean("userService", UserService.class);
+        userService.add();
+    }
+}
+```
+
+### 方式二：使用自定义类实现
+
+自定义类：
+
+```java
+public class DiyPointCut {
+    public void before(){
+        System.out.println("方法执行前");
+    }
+    public void after(){
+        System.out.println("方法执行后");
+    }
+}
+```
+
+xml
+
+```xml
+<bean id="diy" class="com.venns.diy.DiyPointCut" />
+<aop:config>
+    <!--自定义切面-->
+    <aop:aspect ref="diy">
+        <!--切入点-->
+        <aop:pointcut id="point" expression="execution(* com.venns.service.UserServiceImpl.*(..))"/>
+        <!--通知-->
+        <aop:before method="before" pointcut-ref="point" />
+        <aop:after method="after" pointcut-ref="point" />
+    </aop:aspect>
+</aop:config>
+```
+
+### 方式三：使用注解实现
+
+```java
+/*
+    使用注解方式实现AOP
+ */
+@Component
+@Aspect //标注这个类是一个切面
+public class AnnotationPointCut {
+    @Before("execution(* com.venns.service.UserServiceImpl.*(..))")
+    public void before(){
+        System.out.println("=====方法执行前=====");
+    }
+    @After("execution(* com.venns.service.UserServiceImpl.*(..))")
+    public void after(){
+        System.out.println("=====方法执行后=====");
+    }
+    @Around("execution(* com.venns.service.UserServiceImpl.*(..))")
+    public void around(ProceedingJoinPoint jp) throws Throwable {
+        System.out.println("环绕前");
+
+        //执行方法
+        Object proceed = jp.proceed();
+
+        System.out.println("环绕后");
+    }
+}
+```
+
+开启注解支持
+
+```xml
+<context:annotation-config />
+<context:component-scan base-package="com.venns" />
+<aop:aspectj-autoproxy/>
+```
