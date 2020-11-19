@@ -847,7 +847,7 @@ public class Client {
 - 动态代理的代理的是一个接口，一般就是对应一类业务
 - 一个动态代理类可以代理多个类，只要是实现了同一个接口即可
 
-# AOP
+# 11.AOP
 
 ## 什么是AOP
 
@@ -1035,3 +1035,33 @@ public class AnnotationPointCut {
 <context:component-scan base-package="com.venns" />
 <aop:aspectj-autoproxy/>
 ```
+
+# 12.整合Mybatis
+
+步骤：
+
+1. 导入相关jar包
+	- junit
+	- mybatis
+	- mysql
+	- spring
+	- aop
+	- mybatis-spring
+2. 编写配置文件
+3. 测试
+
+## 回忆mybatis
+
+1. 编写实体类
+2. 编写核心配置文件
+3. 编写接口
+4. 编写Mapper.xml
+5. 测试
+
+## Mybatis-Spring
+
+1. 编写数据源
+2. sqlSessionFactory
+3. sqlSessionTemplate
+4. 需要给接口加实现类【新增】
+5. 将自己写的实现类，注入到spring中即可

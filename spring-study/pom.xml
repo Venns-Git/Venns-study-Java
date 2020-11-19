@@ -18,6 +18,7 @@
         <module>appconfig</module>
         <module>proxy</module>
         <module>aop</module>
+        <module>mybatis</module>
     </modules>
 
     <dependencies>

@@ -67,6 +67,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
@@ -93,7 +94,7 @@
       <recent name="D:\学习\Venns_study\Venns-study\spring-study\hello-spring\src\main\resources" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.MyTest (1)">
+  <component name="RunManager" selected="JUnit.MyTest.test">
     <configuration name="Client (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.venns.demo02.Client" />
       <module name="proxy" />
@@ -133,19 +134,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.venns.demo01.Client" />
-      <module name="proxy" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.venns.demo01.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="MyTest (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="MyTest" />
       <module name="aop" />
@@ -153,26 +141,34 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MyTest.test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="mybatis" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="MyTest" />
+      <option name="METHOD_NAME" value="test" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.MyTest.test" />
         <item itemvalue="Application.MyTest (1)" />
         <item itemvalue="Application.Client (3)" />
         <item itemvalue="Application.Client (2)" />
         <item itemvalue="Application.Client (1)" />
-        <item itemvalue="Application.Client" />
       </list>
     </recent_temporary>
   </component>
@@ -193,6 +189,7 @@
       <workItem from="1605588852357" duration="2828000" />
       <workItem from="1605599011253" duration="9558000" />
       <workItem from="1605668194497" duration="10993000" />
+      <workItem from="1605759212375" duration="7833000" />
     </task>
     <servers />
   </component>
@@ -216,49 +213,57 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="880" y="99" key="#Project_Structure/0.0.1920.1050@0.0.1920.1050" timestamp="1605526399531" />
+    <state x="1032" y="187" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605760637900">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="1032" y="187" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1605760637900" />
     <state x="1186" y="329" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1605261897651">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="1186" y="329" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1050@0.0.1920.1050" timestamp="1605261897651" />
-    <state x="1245" y="241" key="#com.intellij.ide.util.MemberChooser" timestamp="1605670187408">
+    <state x="1245" y="241" key="#com.intellij.ide.util.MemberChooser" timestamp="1605768508753">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="1245" y="241" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1050@0.0.1920.1050" timestamp="1605670187408" />
+    <state x="1245" y="241" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1050@0.0.1920.1050" timestamp="1605768508753" />
     <state x="834" y="292" key="FileChooserDialogImpl" timestamp="1605238355791">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="834" y="292" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1605238355791" />
-    <state width="914" height="175" key="GridCell.Tab.0.bottom" timestamp="1605701097273">
+    <state width="914" height="175" key="GridCell.Tab.0.bottom" timestamp="1605769495373">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="914" height="175" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1605701097273" />
-    <state width="914" height="175" key="GridCell.Tab.0.center" timestamp="1605701097272">
+    <state width="914" height="175" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1605769495373" />
+    <state width="914" height="175" key="GridCell.Tab.0.center" timestamp="1605769495372">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="914" height="175" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1605701097272" />
-    <state width="914" height="175" key="GridCell.Tab.0.left" timestamp="1605701097272">
+    <state width="914" height="175" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1605769495372" />
+    <state width="914" height="175" key="GridCell.Tab.0.left" timestamp="1605769495372">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="914" height="175" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1605701097272" />
-    <state width="914" height="175" key="GridCell.Tab.0.right" timestamp="1605701097273">
+    <state width="914" height="175" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1605769495372" />
+    <state width="914" height="175" key="GridCell.Tab.0.right" timestamp="1605769495373">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="914" height="175" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1605701097273" />
+    <state width="914" height="175" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1605769495373" />
+    <state width="287" height="477" key="HiddenNamespacesPopup" timestamp="1605760654217">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="287" height="477" key="HiddenNamespacesPopup/0.0.1920.1050@0.0.1920.1050" timestamp="1605760654217" />
     <state x="880" y="169" key="SettingsEditor" timestamp="1605261804588">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="880" y="169" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1605261804588" />
-    <state x="669" y="185" key="new project wizard" timestamp="1605669435041">
+    <state x="669" y="185" key="new project wizard" timestamp="1605759961181">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="669" y="185" key="new project wizard/0.0.1920.1050@0.0.1920.1050" timestamp="1605669435041" />
+    <state x="669" y="185" key="new project wizard/0.0.1920.1050@0.0.1920.1050" timestamp="1605759961181" />
     <state x="1103" y="233" width="672" height="678" key="search.everywhere.popup" timestamp="1605270342782">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="1103" y="233" width="672" height="678" key="search.everywhere.popup/0.0.1920.1050@0.0.1920.1050" timestamp="1605270342782" />
-    <state x="1120" y="211" key="spring file set editor" timestamp="1605670492815">
+    <state x="1120" y="211" key="spring file set editor" timestamp="1605762086944">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="1120" y="211" key="spring file set editor/0.0.1920.1050@0.0.1920.1050" timestamp="1605670492815" />
+    <state x="1120" y="211" key="spring file set editor/0.0.1920.1050@0.0.1920.1050" timestamp="1605762086944" />
   </component>
 </project>
