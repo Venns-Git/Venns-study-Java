@@ -19,6 +19,7 @@
         <module>proxy</module>
         <module>aop</module>
         <module>mybatis</module>
+        <module>transaction</module>
     </modules>
 
     <dependencies>

@@ -1061,7 +1061,124 @@ public class AnnotationPointCut {
 ## Mybatis-Spring
 
 1. 编写数据源
+
+	```xml
+	    <!--
+	        DataSource：使用Spring的数据源替换Mybatis的配置 c3p0 dbcp druid
+	        这里使用Spring提供的JDBC : org.springframework.jdbc.datasource.DriverManagerDataSource
+	    -->
+	    <bean id="datasource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+	        <property name="url" value="jdbc:mysql://localhost:3306/mybatis?useSSL=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=GMT%2B8" />
+	        <property name="username" value="root" />
+	        <property name="password" value="123456"/>
+	    </bean>
+	```
+
 2. sqlSessionFactory
-3. sqlSessionTemplate
+
+	```xml
+	<!--sqlSessionFactory-->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	    <property name="dataSource" ref="datasource" />
+	    <!--绑定mybatis配置文件-->
+	    <property name="configLocation" value="classpath:mybatis-config.xml"/>
+	    <property name="mapperLocations" value="classpath:com/venns/mapper/*.xml" />
+	</bean>
+	```
+
+3. sqlSessionTemplate，就是sqlSession
+
+	```xml
+	<!--org.mybatis.spring.SqlSessionTemplate 就是我们使用的sqlSession -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	    <!--只能通过构造器注入，因为没有set方法-->
+	    <constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	```
+
 4. 需要给接口加实现类【新增】
+
+	- 方式一：私有化sqlSession
+
+		```java
+		public class UserMapperImpl implements UserMapper{
+		
+		    //我们的所有操作，都使用sqlSession来执行
+		    private SqlSessionTemplate sqlSessionTemplate;
+		
+		    public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
+		        this.sqlSessionTemplate = sqlSessionTemplate;
+		    }
+		
+		    @Override
+		    public List<User> selectUser() {
+		        UserMapper mapper = sqlSessionTemplate.getMapper(UserMapper.class);
+		        return mapper.selectUser();
+		    }
+		}
+		```
+
+	- 方式二：继承SqlSessionDaoSupport类
+
+		```java
+		public class UserMapperImpl2 extends SqlSessionDaoSupport implements UserMapper{
+		    @Override
+		    public List<User> selectUser() {
+		        return getSqlSession().getMapper(UserMapper.class).selectUser();
+		    }
+		}
+		```
+
 5. 将自己写的实现类，注入到spring中即可
+
+	```xml
+	<bean id="userMapper" class="com.venns.mapper.UserMapperImpl">
+	    <property name="sqlSessionTemplate" ref="sqlSession" />
+	</bean>
+	<bean id="userMapper2" class="com.venns.mapper.UserMapperImpl2">
+	    <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	```
+
+# 13.声明式事务
+
+## 1.回顾事务
+
+- 把一组业务当成一个业务来做，要么都成功，要么都失败
+- 事务在项目开发中十分重要，涉及到数据的一致性
+- 确保完整性和一致性
+
+事务的ACID原则：
+
+- 原子性
+- 一致性
+- 隔离性
+- 持久
+
+## 2.spring中的事务管理
+
+- 声明式事务：AOP
+
+- 编程式事务：需要在代码中，进行事务的管理
+
+	```xml
+	<!--结合AOP实现事务的织入-->
+	<!--配置事务通知  propagation:传播特性 默认required-->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+	    <tx:attributes>
+	        <tx:method name="add" propagation="REQUIRED"/>
+	        <tx:method name="delete"/>
+	        <tx:method name="update"/>
+	        <tx:method name="query" read-only="true"/>
+	        <tx:method name="*" propagation="REQUIRED"/>
+	    </tx:attributes>
+	</tx:advice>
+	
+	<!--配置事务切入-->
+	<aop:config>
+	    <aop:pointcut id="txAdvice" expression="execution(* com.venns.mapper.*.*(..))"/>
+	    <aop:advisor advice-ref="txAdvice" pointcut-ref="txAdvice" />
+	</aop:config>
+	```
+

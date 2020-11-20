@@ -16,6 +16,7 @@
         <module name="di" />
         <module name="mybatis" />
         <module name="appconfig" />
+        <module name="transaction" />
       </profile>
     </annotationProcessing>
   </component>
