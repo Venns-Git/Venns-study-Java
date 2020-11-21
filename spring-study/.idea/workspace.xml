@@ -28,9 +28,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1215eb1a-dde2-45a1-9da1-95362adc2ee9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,17 +137,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="MyTest.test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="mybatis" />
       <option name="PACKAGE_NAME" value="" />
@@ -192,7 +179,9 @@
       <workItem from="1605789493910" duration="696000" />
       <workItem from="1605790224242" duration="333000" />
       <workItem from="1605790590258" duration="413000" />
-      <workItem from="1605837370301" duration="5828000" />
+      <workItem from="1605837370301" duration="7291000" />
+      <workItem from="1605849742621" duration="602000" />
+      <workItem from="1605876059163" duration="58000" />
     </task>
     <servers />
   </component>
@@ -212,10 +201,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="880" y="99" key="#Project_Structure" timestamp="1605526399531">
+    <state x="880" y="99" key="#Project_Structure" timestamp="1605846949409">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="880" y="99" key="#Project_Structure/0.0.1920.1050@0.0.1920.1050" timestamp="1605526399531" />
+    <state x="880" y="99" key="#Project_Structure/0.0.1920.1050@0.0.1920.1050" timestamp="1605846949409" />
     <state x="1032" y="187" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605760637900">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
@@ -232,22 +221,22 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="834" y="292" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1605238355791" />
-    <state width="1877" height="175" key="GridCell.Tab.0.bottom" timestamp="1605845718291">
+    <state width="1877" height="175" key="GridCell.Tab.0.bottom" timestamp="1605847681547">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="175" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1605845718291" />
-    <state width="1877" height="175" key="GridCell.Tab.0.center" timestamp="1605845718290">
+    <state width="1877" height="175" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1605847681547" />
+    <state width="1877" height="175" key="GridCell.Tab.0.center" timestamp="1605847681546">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="175" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1605845718290" />
-    <state width="1877" height="175" key="GridCell.Tab.0.left" timestamp="1605845718290">
+    <state width="1877" height="175" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1605847681546" />
+    <state width="1877" height="175" key="GridCell.Tab.0.left" timestamp="1605847681546">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="175" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1605845718290" />
-    <state width="1877" height="175" key="GridCell.Tab.0.right" timestamp="1605845718290">
+    <state width="1877" height="175" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1605847681546" />
+    <state width="1877" height="175" key="GridCell.Tab.0.right" timestamp="1605847681547">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1877" height="175" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1605845718290" />
+    <state width="1877" height="175" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1605847681547" />
     <state width="287" height="477" key="HiddenNamespacesPopup" timestamp="1605760654217">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
@@ -260,10 +249,10 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="1170" y="330" key="com.intellij.database.dbimport.ImportUtil.ChooseTargetDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1605845635631" />
-    <state x="669" y="185" key="new project wizard" timestamp="1605838085942">
+    <state x="669" y="185" key="new project wizard" timestamp="1605876117046">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state x="669" y="185" key="new project wizard/0.0.1920.1050@0.0.1920.1050" timestamp="1605838085942" />
+    <state x="669" y="185" key="new project wizard/0.0.1920.1050@0.0.1920.1050" timestamp="1605876117046" />
     <state x="1103" y="233" width="672" height="678" key="search.everywhere.popup" timestamp="1605270342782">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
