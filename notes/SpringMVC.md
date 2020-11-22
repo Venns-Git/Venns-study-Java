@@ -217,6 +217,113 @@ Spring MVC特点:
 	HandlerMapping,HandlerMapping根据请求url查找Handler
 
 3. HandlerExecution表示具体Handler,其主要作用是根据url查找控制器，
+
 4. HandlerExecution将解析后的信息传递给DispatherServlet,如解析控制器映射等
+
 5. HandlerAdapter表示处理器适配器，其按照待定的规则去执行Handler
+
 6. Handler让具体的Controller执行
+
+7. Cntroller将具体的执行信息返回给HandlerAdapter,如ModelAndView
+
+8. HandlerAdapter将视图逻辑名或模型传递给DispatcherServlet
+
+9. DispatcherServlet调用视图解析器（ViewResolver）来解析HandlerAdapter传递的逻辑视图名
+
+10. 视图解析器将解析的逻辑视图名传给DispatcherServlet
+
+11. DispacherServlet根据逻辑解析器的视图结果，调用具体的视图
+
+12. 最终视图呈现给用户
+
+# 使用注解开发
+
+1. 创建空项目，添加web支持
+
+2. 注册DispatcherSetrvlet
+
+	```xml
+	<!--配置DispatcherServlet 这个是springMVC的核心：请求分发器，前端控制器-->
+	<servlet>
+	    <servlet-name>springmvc</servlet-name>
+	    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	    <!--DispatcherServlet 要绑定spring的配置文件-->
+	    <init-param>
+	        <param-name>contextConfigLocation</param-name>
+	        <param-value>classpath:springmvc-servlet.xml</param-value>
+	    </init-param>
+	    <!--启动级别 ： 1-->
+	    <load-on-startup>1</load-on-startup>
+	</servlet>
+	<!--
+	    在springmvc中：
+	    /   ：只匹配所以的请求，不会匹配jsp页面
+	    /*  ：匹配所有的请求，包括jsp页面
+	-->
+	<servlet-mapping>
+	    <servlet-name>springmvc</servlet-name>
+	    <url-pattern>/</url-pattern>
+	</servlet-mapping>
+	```
+
+3. 配置springmvc-servlet.xml
+
+	```xml
+	<?xml version="1.0" encoding="UTF-8"?>
+	<beans xmlns="http://www.springframework.org/schema/beans"
+	       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	       xmlns:context="http://www.springframework.org/schema/context"
+	       xmlns:mvc="http://www.springframework.org/schema/mvc"
+	       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd
+	       http://www.springframework.org/schema/context
+	       http://www.springframework.org/schema/context/spring-context.xsd
+	       http://www.springframework.org/schema/mvc
+	       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	
+	    <!--自动扫描包，让指定包下的注解生效，由IOC容器统一管理-->
+	    <context:component-scan base-package="com.venns.controller" />
+	
+	    <!--让springmvc 不处理静态资源 .css .js .html-->
+	    <mvc:default-servlet-handler />
+	
+	    <!--
+	    支持mvc注解驱动
+	        在spring中一般采用@RequsetMapping注解来完成映射关系
+	        想要@RequsetMapping注解生效
+	        必须在上下文中注册@DefalutAnontationHandlerMapping
+	        和一个AnnotationMethodHandlerAdapter 实例
+	        这两个实例分别在类级别和方法级别处理
+	        而annotation-driven 配置帮助我们自动完成上述两个实例的注入
+	    -->
+	    <mvc:annotation-driven />
+	
+	    <!--视图解析器-->
+	    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="internalResourceViewResolver">
+	        <!--前缀-->
+	        <property name="prefix" value="/WEB-INF/jsp/" />
+	        <!--后缀-->
+	        <property name="suffix" value=".jsp" />
+	    </bean>
+	</beans>
+	```
+
+4. 创建对应的jsp 和 controller 包
+
+5. 创建controller
+
+	```java
+	@Controller
+	public class HelloController {
+	    @RequestMapping("/hello")
+	    public String hello(Model model){
+	        //封装数据
+	        model.addAttribute("msg","hello springMVCAnnotation");
+	
+	
+	        return "hello"; //会被视图解析器处理 /WEB-INF/jsp/hello.jsp
+	    }
+	}
+	```
+
+6. 进行测试
