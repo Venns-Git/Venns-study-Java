@@ -327,3 +327,103 @@ Spring MVC特点:
 	```
 
 6. 进行测试
+
+# Controller
+
+- 负责提供访问应用程序的行为，通过通过接口定义或注解定义两种方式
+- 负责解析用户的请求并将其转化为一个模型
+- 在spring MVC中，一个控制器可以包含多个方法
+- 在spring MVC中，对于Controller的配置方式有很多种
+
+## 方式一：实现Controller接口
+
+```java
+//实现该接口的类获得控制器功能
+public interface Controller {
+    //处理请求并返回一个模型与视图对象
+    ModelAndView handleRequest(HttpServletRequest var1, HttpServletResponse var2) throws Exception;
+}
+```
+
+1. 编写类实现接口
+
+	```java
+	//只要实现了 Controller 接口的类 说明这就是一个控制器
+	public class ControllerTest1 implements Controller {
+	    @Override
+	    public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+	        ModelAndView mv = new ModelAndView();
+	
+	        mv.addObject("msg","ControllerTest1");
+	        mv.setViewName("test");
+	
+	        return mv;
+	    }
+	}
+	```
+
+2. 配置对应jsp文件
+
+	```jsp
+	<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+	<html>
+	<head>
+	    <title>Title</title>
+	</head>
+	<body>
+	${msg}
+	</body>
+	</html>
+	```
+
+3. 在springmvc配置文件中注册bean
+
+	```xml
+	<bean name="/t1" class="com.venns.controller.ControllerTest1" />
+	```
+
+4. 测试运行
+
+## 方式二：使用注解
+
+编写Controller
+
+```java
+@Controller
+public class ControllerTest2 {
+    @RequestMapping("/t2") //url地址
+    public String test1(Model model){
+        model.addAttribute("msg","ControllerTest2");
+        return "test";//视图
+    }
+}
+```
+
+- @Controller会被spring接管，不用手动注册bean，
+
+- @RequestMapping参数为Controllor接管的url地址
+
+- return 返回的参数为视图地址，会被视图解析器解析
+
+# Restful风格
+
+Restful就是一个资源得及资源操作的风格，不是标准也不是协议，基于这个风格实际的软件可以更简介，更有层次，更易于实现缓存等机制
+
+1. 新建RestfulController类
+
+	```java
+	@Controller
+	public class RestfulController {
+	
+	    //原来的：  http://localhost:8080/add?a=1&b=2
+	    //Restful：http://localhost:8080/add/a/b
+	    @RequestMapping("/add")
+	    public String test(int a, int b, Model model){
+	        int res = a + b;
+	        model.addAttribute("msg","结果为"+res);
+	        return "test";
+	    }
+	}
+	```
+
+2. 使用@PathVariable注解，让方法参数的值对应绑定要一个url模板变量上

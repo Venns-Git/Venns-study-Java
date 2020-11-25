@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="helloMVC" />
         <module name="annotation" />
+        <module name="controller" />
         <module name="servlet" />
       </profile>
     </annotationProcessing>

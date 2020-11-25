@@ -12,6 +12,7 @@
         <module>servlet</module>
         <module>helloMVC</module>
         <module>annotation</module>
+        <module>controller</module>
     </modules>
 
     <dependencies>
