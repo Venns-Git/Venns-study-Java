@@ -427,3 +427,139 @@ Restful就是一个资源得及资源操作的风格，不是标准也不是协�
 	```
 
 2. 使用@PathVariable注解，让方法参数的值对应绑定要一个url模板变量上
+
+	```java
+	@Controller
+	public class RestfulController {
+	
+	    //原来的：  http://localhost:8080/add?a=1&b=2
+	    //Restful：http://localhost:8080/add/a/b
+	    @RequestMapping("/add/{a}/{b}")
+	    public String test(@PathVariable int a,@PathVariable int b, Model model){
+	        int res = a + b;
+	        model.addAttribute("msg","结果为"+res);
+	        return "test";
+	    }
+	}
+	```
+
+- RequestMapping 可以添加第二个参数 method = RequestMethod.xxx xxx为请求方式，可以精简为xxxMapping
+
+	```java
+	@Controller
+	public class RestfulController {
+	
+	    //原来的：  http://localhost:8080/add?a=1&b=2
+	    //Restful：http://localhost:8080/add/a/b
+	    
+	    @GetMapping("/add/{a}/{b}")
+	    public String test(@PathVariable int a,@PathVariable int b, Model model){
+	        int res = a + b;
+	        model.addAttribute("msg","结果为"+res);
+	        return "test";
+	    }
+	}
+	```
+
+# 转发和重定向
+
+```java
+@Controller
+public class ModelTest1 {
+
+    //转发
+    @RequestMapping("/m1/t1")
+    public String test1(Model model){
+        model.addAttribute("msg","ModelTest1");
+        return "test";
+    }
+
+    //重定向
+    @RequestMapping("/m1/t2")
+    public String test2(Model model){
+        model.addAttribute("msg","ModelTset2");
+        return "redirect:/index.jsp";
+    }
+}
+```
+
+如果不配置视图解析器，则需要将路径写完整
+
+# 接收请求参数及数据回显
+
+## 数据处理
+
+1. 提交的域名称和条件方法的参数名一致
+
+	提交数据：http://loacl:8080/user/t1?name=venns
+
+	处理方法：
+
+	```java
+	@Controller
+	@RequestMapping("/user")
+	public class UserController {
+	    @GetMapping("/t1")
+	    public String test1(String name, Model model){
+	        //1.接受前端参数
+	        System.out.println("接受到的参数为:"+name);
+	
+	        //2.返回结果给前端
+	        model.addAttribute("msg",name);
+	
+	        //3.跳转视图
+	        return "test";
+	    }
+	}
+	
+	```
+
+2. 提交的域名称和条件方法的参数名不一致
+
+	提交数据：http://loacl:8080/user/t1?username=venns
+
+	处理方法：
+
+	```java
+	@Controller
+	@RequestMapping("/user")
+	public class UserController {
+	    @GetMapping("/t1")
+	    public String test1(@RequestParam("username") String name, Model model){
+	        //1.接受前端参数
+	        System.out.println("接受到的参数为:"+name);
+	
+	        //2.返回结果给前端
+	        model.addAttribute("msg",name);
+	
+	        //3.跳转视图
+	        return "test";
+	    }
+	}
+	```
+
+3. 提交的是一个对象
+
+	```java
+	/*
+	    1.接收请求，判断参数的名字，假设名字直接在方法上，可以直接使用
+	    2.假设传递的是一个对象User，匹配User对象中的字段名，如果名字一致则OK，分则匹配不到
+	 */
+	@GetMapping("/t2")
+	public String test2(User user){
+	    System.out.println(user);
+	    return "test";
+	}
+	```
+
+	注意：前端传递的参数必须和对象的字段名一致，否则为null
+
+## 数据显示到前端
+
+1. 通过ModelAndView
+2. 通过Model
+3. 通过ModelMap
+
+- Model 只有寥寥几个方法用于存储数据
+- ModelMap 继承了 LinkedMap 除了实现了自身的一些方法，同意的继承 LinkedMap 的方法和特性
+- ModelAndView 可以存储数据的同时，可以进行设置返回逻辑视图，进行控制展示层的跳转
