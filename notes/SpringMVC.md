@@ -563,3 +563,153 @@ public class ModelTest1 {
 - Model 只有寥寥几个方法用于存储数据
 - ModelMap 继承了 LinkedMap 除了实现了自身的一些方法，同意的继承 LinkedMap 的方法和特性
 - ModelAndView 可以存储数据的同时，可以进行设置返回逻辑视图，进行控制展示层的跳转
+
+# JSON
+
+前后端分离时代：
+
+后端部署后端，提供接口，提供数据
+
+​					JSON（数据交换格式）
+
+前端独立部署：负责渲染后端的数据
+
+## Controller返回JSON数据
+
+## 使用Jackson
+
+1. 导包
+
+	```xml
+	<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-databind</artifactId>
+	    <version>2.12.0</version>
+	</dependency>
+	```
+
+2. 配置web.xml
+
+	```xml
+	<?xml version="1.0" encoding="UTF-8"?>
+	<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+	         version="4.0">
+	    <!--配置DispatcherServlet-->
+	    <servlet>
+	        <servlet-name>springmvc</servlet-name>
+	        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	        <init-param>
+	            <param-name>contextConfigLocation</param-name>
+	            <param-value>classpath:springmvc-servlet.xml</param-value>
+	        </init-param>
+	    </servlet>
+	    <servlet-mapping>
+	        <servlet-name>springmvc</servlet-name>
+	        <url-pattern>/</url-pattern>
+	    </servlet-mapping>
+	
+	    <!--配置乱码过滤器-->
+	    <filter>
+	        <filter-name>encoding</filter-name>
+	        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+	    </filter>
+	    <filter-mapping>
+	        <filter-name>encoding</filter-name>
+	        <url-pattern>/*</url-pattern>
+	    </filter-mapping>
+	</web-app>
+	```
+
+3. 配置springmvc-servlet.xml
+
+	```xml
+	<?xml version="1.0" encoding="UTF-8"?>
+	<beans xmlns="http://www.springframework.org/schema/beans"
+	       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	       xmlns:context="http://www.springframework.org/schema/context"
+	       xmlns:mvc="http://www.springframework.org/schema/mvc"
+	       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd
+	       http://www.springframework.org/schema/context
+	       http://www.springframework.org/schema/context/spring-context.xsd
+	       http://www.springframework.org/schema/mvc
+	       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	
+	
+	    <context:component-scan base-package="com.venns.controller" />
+	    <mvc:default-servlet-handler />
+	    <mvc:annotation-driven />
+	
+	    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="internalResourceViewResolver">
+	        <!--前缀-->
+	        <property name="prefix" value="/WEB-INF/jsp/" />
+	        <!--后缀-->
+	        <property name="suffix" value=".jsp" />
+	    </bean>
+	</beans>
+	```
+
+4. 编写User实体类
+
+	```java
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public class User {
+	    private String name;
+	    private int age;
+	    private String sex;
+	
+	}
+	```
+
+5. 编写Controller
+
+	```java
+	@Controller
+	public class UserController {
+	
+	
+	    @RequestMapping("/j1")
+	    @ResponseBody//不会走视图解析器，会直接返回一个字符串
+	    public String json1() throws JsonProcessingException {
+	        //jackson ObjectMapper
+	        ObjectMapper mapper = new ObjectMapper();
+	
+	        //创建一个对象
+	        User user = new User("venns",3,"男");
+	
+	        String str = mapper.writeValueAsString(user);
+	
+	        return str;
+	    }
+	}
+	```
+
+解决乱码问题：
+
+- 更改@RequestMapping参数为`value = "/j1",produces = "application/json;charset=utf-8"`
+
+- 可以直接在springmvc配置文件中统一配置
+
+	```xml
+	<mvc:annotation-driven> 
+	    <mvc:message-converters register-defaults="true">
+	        <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+	            <constructor-arg value="UTF-8" />
+	        </bean>
+	        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	            <property name="objectMapper">
+	                <bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+	                    <property name="failOnEmptyBeans" value="false" />
+	                 </bean>
+	            </property>
+	        </bean>
+	    </mvc:message-converters>
+	</mvc:annotation-driven>
+	```
+
+	

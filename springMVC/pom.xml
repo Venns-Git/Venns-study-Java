@@ -13,6 +13,7 @@
         <module>helloMVC</module>
         <module>annotation</module>
         <module>controller</module>
+        <module>JSON</module>
     </modules>
 
     <dependencies>

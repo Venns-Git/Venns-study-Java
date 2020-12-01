@@ -9,6 +9,7 @@
         <module name="helloMVC" />
         <module name="annotation" />
         <module name="controller" />
+        <module name="JSON" />
         <module name="servlet" />
       </profile>
     </annotationProcessing>
