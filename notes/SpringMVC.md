@@ -666,30 +666,8 @@ public class ModelTest1 {
 	}
 	```
 
-5. 编写Controller
 
-	```java
-	@Controller
-	public class UserController {
-	
-	
-	    @RequestMapping("/j1")
-	    @ResponseBody//不会走视图解析器，会直接返回一个字符串
-	    public String json1() throws JsonProcessingException {
-	        //jackson ObjectMapper
-	        ObjectMapper mapper = new ObjectMapper();
-	
-	        //创建一个对象
-	        User user = new User("venns",3,"男");
-	
-	        String str = mapper.writeValueAsString(user);
-	
-	        return str;
-	    }
-	}
-	```
-
-解决乱码问题：
+5. 解决乱码问题：
 
 - 更改@RequestMapping参数为`value = "/j1",produces = "application/json;charset=utf-8"`
 
@@ -712,4 +690,103 @@ public class ModelTest1 {
 	</mvc:annotation-driven>
 	```
 
+6. 编写工具类
+
+	```java
+	public class JsonUtils {
 	
+	    public static String getJson(Object object){
+	        return getJson(object,"yyyy-MM-dd HH:mm:ss");
+	    }
+	
+	    public static String getJson(Object object,String dataFormat){
+	        ObjectMapper mapper = new ObjectMapper();
+	        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
+	        SimpleDateFormat sdf = new SimpleDateFormat(dataFormat);
+	        mapper.setDateFormat(sdf);
+	        try {
+	            return mapper.writeValueAsString(object);
+	        } catch (JsonProcessingException e) {
+	            e.printStackTrace();
+	        }
+	        return null;
+	    }
+	}
+	```
+
+7. 编写Controller类
+
+	```java
+	@Controller
+	// @RestController 不走视图解析器
+	public class UserController {
+	
+	
+	    @RequestMapping("/j1")
+	    @ResponseBody//不会走视图解析器，会直接返回一个字符串
+	    public String json1() throws JsonProcessingException {
+	        //jackson ObjectMapper
+	        ObjectMapper mapper = new ObjectMapper();
+	
+	        //创建一个对象
+	        User user = new User("venns",3,"男");
+	
+	        String str = mapper.writeValueAsString(user);
+	
+	        return str;
+	    }
+	
+	    //返回日期
+	    @RequestMapping("/j2")
+	    @ResponseBody
+	    public String json2() throws JsonProcessingException {
+	
+	        User user1 = new User("venns1", 3, "男");
+	        User user2 = new User("venns2", 3, "男");
+	        User user3 = new User("venns3", 3, "男");
+	        User user4 = new User("venns4", 3, "男");
+	        List<User> userList = new ArrayList<>();
+	        userList.add(user1);
+	        userList.add(user2);
+	        userList.add(user3);
+	        userList.add(user4);
+	
+	        return JsonUtils.getJson(userList);
+	    }
+	
+	    //返回日期
+	    @RequestMapping("/j3")
+	    @ResponseBody
+	    public String json3() throws JsonProcessingException {
+	        Date date = new Date();
+	        return JsonUtils.getJson(date);
+	    }
+	}
+	```
+
+## FastJson
+
+阿里开发一款专门用于Java开发的包，可以方便的实现json对象与JavaBean对象的转换
+
+1. 导入依赖
+
+	```java
+	<dependency>
+	    <groupId>com.alibaba</groupId>
+	    <artifactId>fastjson</artifactId>
+	    <version>1.2.47</version>
+	</dependency>
+	```
+
+fastjson有三个主要的类：
+
+- JSONObject 代表json对象
+- JSONArray 代表json对象数组
+- JSON代表 JSONObject和JSONArray的转换
+
+主要方法：
+
+- `JSON.toJSONString()` Java对象转JSON字符串
+- `JSON.parseObject()` JSON字符串转Java对象
+- `JSON.toJSON()` Java对象转JSON对象
+- `JSON.toJavaObject` JSON对象转Java对象
