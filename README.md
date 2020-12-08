@@ -1,6 +1,6 @@
 ## 记录我自己学习软件开发的过程 Record my own coding process
 
-> case 包含了jq和bootst的demo，notes存放md文档,Olivia为上学期末生产实习项目。
+> 各技术栈学习为独立文件夹,notes存放学习记录md文档
 
 个人博客同步更新：[venns.cn](http://www.venns.cn)
 
@@ -16,3 +16,4 @@
 - [Mybatis学习笔记](notes/Mybatis.md)
 - [Spring5学习笔记](notes/Spring.md)
 
+- [SpingMVC学习笔记](notes/SpringMVC.md)
