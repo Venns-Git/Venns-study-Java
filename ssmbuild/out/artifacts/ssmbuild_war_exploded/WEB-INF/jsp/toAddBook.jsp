@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>新增书籍</title>
     <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -16,7 +16,7 @@
             </div>
         </div>
 
-        <form action="${pageContext.request.contextPath}/book/addBook" method="">
+        <form action="${pageContext.request.contextPath}/book/addBook" method="post">
             <div class="from-group">
                 <label>书籍编号</label>
                 <input type="text" name="bookId" class="form-control">
@@ -27,7 +27,7 @@
             </div>
             <div class="from-group">
                 <label>书籍数量</label>
-                <input type="number" id="bookCounts" class="form-control">
+                <input type="text" name="bookCounts" class="form-control">
             </div>
             <div class="from-group">
                 <label>书籍描述</label>
