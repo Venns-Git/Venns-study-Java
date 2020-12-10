@@ -17,10 +17,7 @@
     </div>
 
     <form action="${pageContext.request.contextPath}/book/updateBook" method="post">
-        <div class="from-group">
-            <label>书籍编号</label>
-            <input type="text" name="bookId" class="form-control" value="${books.bookID}">
-        </div>
+        <input type="hidden" name="bookID" class="form-control" value="${books.bookID}">
         <div class="from-group">
             <label>书籍名称</label>
             <input type="text" name="bookName" class="form-control" value="${books.bookName}">

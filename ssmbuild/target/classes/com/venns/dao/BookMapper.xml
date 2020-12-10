@@ -7,7 +7,7 @@
         insert into ssmbuild.books (bookID, bookName, bookCounts, detail)
         values (#{bookID},#{bookName},#{bookCounts},#{detail});
     </insert>
-    <delete id="deleteBookById" parameterType="int">
+    <delete id="deleteById" parameterType="int">
         delete from ssmbuild.books where bookID = #{bookId}
     </delete>
     <update id="updateBook" parameterType="books">
@@ -19,5 +19,8 @@
     </select>
     <select id="queryAllBook" resultType="books">
         select * from ssmbuild.books
+    </select>
+    <select id="queryBookByName" resultType="books">
+       select * from ssmbuild.books where bookName = #{bookName}
     </select>
 </mapper>

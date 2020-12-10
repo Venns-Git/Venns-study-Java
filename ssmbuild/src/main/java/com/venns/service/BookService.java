@@ -1,6 +1,8 @@
 package com.venns.service;
 
 import com.venns.pojo.Books;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface BookService {
@@ -18,4 +20,6 @@ public interface BookService {
 
     //查询全部的书
     List<Books> queryAllBook();
+
+    Books queryBookByName(String bookName);
 }
