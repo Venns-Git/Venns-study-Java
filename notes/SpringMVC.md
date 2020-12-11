@@ -792,3 +792,296 @@ fastjson有三个主要的类：
 - `JSON.parseObject()` JSON字符串转Java对象
 - `JSON.toJSON()` Java对象转JSON对象
 - `JSON.toJavaObject` JSON对象转Java对象
+
+# AJAX
+
+异步交互技术，实现网页的局部刷新
+
+## 使用iframe体验网页局部刷新
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>iframe测试体验页面无刷新</title>
+    <script>
+        function go(){
+            document.getElementById("iframe").src = document.getElementById("url").value;
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <p>请输入地址：</p>
+        <input type="text" id="url">
+        <input type="button" value="提交" onclick="go()">
+    </div>
+    <div>
+        <iframe id="iframe" style="width: 100%;height: 800px"></iframe>
+    </div>
+</body>
+</html>
+```
+
+## JQueyr AJAX
+
+1. 导入jquery
+
+2. JQuery.ajax()
+
+	| 名称                         | 值/描述                            |
+	| :--------------------------- | :----------------------------------------------------------- |
+	| async                        | 布尔值，表示请求是否异步处理。默认是 true。                  |
+	| beforeSend(*xhr*)            | 发送请求前运行的函数。                                       |
+	| cache                        | 布尔值，表示浏览器是否缓存被请求页面。默认是 true。          |
+	| complete(*xhr,status*)       | 请求完成时运行的函数（在请求成功或失败之后均调用，即在 success 和 error 函数之后）。 |
+	| contentType                  | 发送数据到服务器时所使用的内容类型。默认是："application/x-www-form-urlencoded"。 |
+	| context                      | 为所有 AJAX 相关的回调函数规定 "this" 值。                   |
+	| data                         | 规定要发送到服务器的数据。                                   |
+	| dataFilter(*data*,*type*)    | 用于处理 XMLHttpRequest 原始响应数据的函数。                 |
+	| dataType                     | 预期的服务器响应的数据类型。                                 |
+	| error(*xhr,status,error*)    | 如果请求失败要运行的函数。                                   |
+	| global                       | 布尔值，规定是否为请求触发全局 AJAX 事件处理程序。默认是 true。 |
+	| ifModified                   | 布尔值，规定是否仅在最后一次请求以来响应发生改变时才请求成功。默认是 false。 |
+	| jsonp                        | 在一个 jsonp 中重写回调函数的字符串。                        |
+	| jsonpCallback                | 在一个 jsonp 中规定回调函数的名称。                          |
+	| password                     | 规定在 HTTP 访问认证请求中使用的密码。                       |
+	| processData                  | 布尔值，规定通过请求发送的数据是否转换为查询字符串。默认是 true。 |
+	| scriptCharset                | 规定请求的字符集。                                           |
+	| success(*result,status,xhr*) | 当请求成功时运行的函数。                                     |
+	| timeout                      | 设置本地的请求超时时间（以毫秒计）。                         |
+	| traditional                  | 布尔值，规定是否使用参数序列化的传统样式。                   |
+	| type                         | 规定请求的类型（GET 或 POST）。                              |
+	| url                          | 规定发送请求的 URL。默认是当前页面。                         |
+	| username                     | 规定在 HTTP 访问认证请求中使用的用户名。                     |
+	| xhr                          | 用于创建 XMLHttpRequest 对象的函数。                         |
+
+3. applicationContext.xml中配置静态资源过滤
+
+	```xml
+	<?xml version="1.0" encoding="UTF-8"?>
+	<beans xmlns="http://www.springframework.org/schema/beans"
+	       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	       xmlns:context="http://www.springframework.org/schema/context"
+	       xmlns:mvc="http://www.springframework.org/schema/mvc"
+	       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd
+	       http://www.springframework.org/schema/context
+	       http://www.springframework.org/schema/context/spring-context.xsd
+	       http://www.springframework.org/schema/mvc
+	       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	
+	    <!--自动扫描包-->
+	    <context:component-scan base-package="com.venns.controller" />
+	    <!--静态资源过滤-->
+	    <mvc:default-servlet-handler/>
+	    <!--注解驱动-->
+	    <mvc:annotation-driven />
+	
+	    <!--视图解析器-->
+	    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="internalResourceViewResolver">
+	        <!--前缀-->
+	        <property name="prefix" value="/WEB-INF/jsp/" />
+	        <!--后缀-->
+	        <property name="suffix" value=".jsp" />
+	    </bean>
+	</beans>
+	```
+
+4. 编写ajax
+
+    ```jsp
+    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+    <html>
+      <head>
+        <title>$Title$</title>
+        <script src="${pageContext.request.contextPath}/statics/js/jquery-3.5.0.js"></script>
+        <script>
+          function a(){
+            $.post({
+              url:"${pageContext.request.contextPath}/a1",
+              data:{"name":$('#username').val()},
+              success:function (data){
+                alert(data)
+              }
+            })
+          }
+        </script>
+      </head>
+      <body>
+        <%--  失去焦点的时候，发起一个请求到后台  --%>
+        <input type="text" id="username" onblur="a()">
+      </body>
+    </html>
+    ```
+
+5. 编写AjaxController
+
+    ```java
+    @RestController
+    public class AjaxController {
+        @RequestMapping("/a1")
+        public void a1(String name, HttpServletResponse response) throws IOException {
+            System.out.println("a1:param=>"+name);
+            if ("venns".equals(name)){
+                response.getWriter().print("true");
+            }else {
+                response.getWriter().print("false");
+            }
+        }
+    }
+    ```
+
+## AJAX异步获取json对象
+
+1. 导入jackson依赖
+
+2. 编写controller
+
+	```java
+	@RequestMapping("/a2")
+	public List<User> a2(){
+	    ArrayList<User> userList = new ArrayList<>();
+	
+	    //添加数据
+	    userList.add(new User("venns1",18,"男"));
+	    userList.add(new User("venns2",19,"男"));
+	    userList.add(new User("venns3",20,"男"));
+	
+	    return userList;
+	}
+	```
+
+3. 编写jsp
+
+	```jsp
+	<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+	<html>
+	<head>
+	    <title>Title</title>
+	    <script src="${pageContext.request.contextPath}/statics/js/jquery-3.5.0.js"></script>
+	    <script>
+	        $(function (){
+	            $('#btn').click(function (){
+	                let html = "";
+	                $.post("${pageContext.request.contextPath}/a2",function (data) {
+	                    for (let i = 0;i < data.length;i++){
+	                        html += "<tr>" +
+	                            "<td>" + data[i].name + "</td>" +
+	                            "<td>" + data[i].age + "</td>" +
+	                            "<td>" + data[i].sex + "</td>" +
+	                            "</tr>"
+	                    }
+	                })
+	                $('#content').html(html);
+	            })
+	        });
+	    </script>
+	</head>
+	<body>
+	    <input type="button" value="加载数据" id="btn">
+	    <table>
+	        <tr>
+	            <td>姓名</td>
+	            <td>年龄</td>
+	            <td>性别</td>
+	        </tr>
+	        <tbody id="content">
+	
+	        </tbody>
+	    </table>
+	
+	</body>
+	</html>
+	```
+
+	## AJAX实现登录验证
+
+	jsp
+
+	```jsp
+	<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+	<html>
+	<head>
+	    <title>Title</title>
+	    <script src="${pageContext.request.contextPath}/statics/js/jquery-3.5.0.js"></script>
+	    <script>
+	        function a1(){
+	            $.post({
+	                url: "${pageContext.request.contextPath}/a3",
+	                data: {"name":$("#name").val()},
+	                success: function (name){
+	                    if (name.toString() === "ok"){
+	                        $("#userInfo").css("color","green");
+	                    }else{
+	                        $("#userInfo").css("color","red");
+	                    }
+	                    $("#userInfo").html(name)
+	                }
+	            })
+	        }
+	        function a2(){
+	            $.post({
+	                url: "${pageContext.request.contextPath}/a3",
+	                data: {"pwd":$("#pwd").val()},
+	                success: function (pwd){
+	                    if (pwd.toString() === "ok"){
+	                        $("#pwdInfo").css("color","green");
+	                    }else{
+	                        $("#pwdInfo").css("color","red");
+	                    }
+	                    $("#pwdInfo").html(name)
+	                }
+	            })
+	        }
+	    </script>
+	</head>
+	<body>
+	    <p>
+	        username:<input type="text" id="name" onblur="a1()">
+	        <span id="userInfo"></span>
+	    </p>
+	    <p>
+	        password:<input type="text" id="pwd" onblur="a2()">
+	        <span id="pwdInfo"></span>
+	    </p>
+	</body>
+	</html>
+	```
+
+	controller
+
+	```java
+	@RequestMapping("/a3")
+	public String a3(String name,String pwd){
+	    String msg = null;
+	    if (name != null){
+	        //从数据库查
+	        if ("admin".equals(name)){
+	            msg = "ok";
+	        }else {
+	            msg = "用户名有误";
+	        }
+	    }
+	    if (pwd != null){
+	        if ("123456".equals(pwd)){
+	            msg = "ok";
+	        }else {
+	            msg = "密码有误";
+	        }
+	    }
+	    return msg;
+	}
+	```
+
+# 拦截器
+
+类似Servlet钟的过滤器Filter，用于处理器进行预处理和后处理，开发者可以定义一些拦截器来实现特定的功能
+
+**过滤器和拦截器的区别**:拦截器是AOP思想的具体应用
+
+**过滤器**
+
+
+
