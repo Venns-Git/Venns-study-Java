@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- view层 模板-->
+    <div id="app">
+        {{message}}
+    </div>
+
+    <!-- 导入Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            //Model: 数据
+            data: {
+                message: "hello,Vue!"
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <li v-for="(item,index) in items">
+            {{item.message}}--{{index}}
+        </li>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                items: [
+                    {message: "venns1"},
+                    {message: "venns2"},
+                    {message: "venns3"}
+                ]
+            }
+        });
+    </script>
+</body>
+</html>

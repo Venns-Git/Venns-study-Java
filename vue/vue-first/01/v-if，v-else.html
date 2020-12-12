@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <h1 v-if="type === 'A'">A</h1>
+        <h1 v-else-if="type === 'B'">B</h1>
+        <h1 v-else>C</h1>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                type: 'A'
+            }
+        });
+    </script>
+</body>
+</html>
