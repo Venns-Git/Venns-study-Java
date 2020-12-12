@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="helloMVC" />
         <module name="annotation" />
         <module name="controller" />
-        <module name="JSON" />
         <module name="servlet" />
+        <module name="helloMVC" />
+        <module name="JSON" />
+        <module name="interceptor" />
         <module name="AJAX" />
       </profile>
     </annotationProcessing>

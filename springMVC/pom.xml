@@ -15,6 +15,7 @@
         <module>controller</module>
         <module>JSON</module>
         <module>AJAX</module>
+        <module>interceptor</module>
     </modules>
 
     <dependencies>

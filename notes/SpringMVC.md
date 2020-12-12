@@ -1083,5 +1083,68 @@ fastjson有三个主要的类：
 
 **过滤器**
 
+- servlet规范中的一部分，任何Java web项目都可以使用
+- 在url-pattern中配置了/*之后，可以对任何要访问的资源进行拦截
+
+**拦截器**
+
+- 拦截器是SpringMVC框架组件的，只有使用了SpringMVC框架的工程才能使用
+- 拦截器只会拦截访问的控制器方法，如果访问的是jsp/jtml/js等是不会进行拦截的
+
+## 自定义拦截器
+
+自定义拦截器，必须实现HandlerInterceptor接口
+
+1. 实现接口
+
+	```java
+	public class MyInterceptor implements HandlerInterceptor {
+	
+	    // return true; 执行下一个拦截器，放行
+	    @Override
+	    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+	        System.out.println("========处理前========");
+	        return true;
+	    }
+	
+	    @Override
+	    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+	        System.out.println("========处理后========");
+	    }
+	
+	    @Override
+	    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+	        System.out.println("========清理========");
+	    }
+	}
+	```
+
+2. 编写controller
+
+	```java
+	@RestController
+	public class TestController {
+	
+	    @GetMapping("/t1")
+	    public String test(){
+	        System.out.println("TestController==> rest()执行了");
+	        return "ok";
+	    }
+	}
+	```
+
+3. applicationContext中配置拦截器
+
+	```xml
+	<!--拦截器配置-->
+	<mvc:interceptors>
+	    <mvc:interceptor>
+	        <!--包括这个请求这个下面的所有请求-->
+	        <mvc:mapping path="/**"/>
+	        <bean class="com.venns.config.MyInterceptor"/>
+	    </mvc:interceptor>
+	</mvc:interceptors>
+	```
+
 
 
