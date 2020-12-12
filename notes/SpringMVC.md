@@ -1146,5 +1146,83 @@ fastjson有三个主要的类：
 	</mvc:interceptors>
 	```
 
+# 文件上传和下载
+
+1. 导入依赖
+
+	```xml
+	<dependencies>
+	    <dependency>
+	        <groupId>commons-fileupload</groupId>
+	        <artifactId>commons-fileupload</artifactId>
+	        <version>1.3.3</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>javax.servlet</groupId>
+	        <artifactId>javax.servlet-api</artifactId>
+	        <version>4.0.1</version>
+	    </dependency>
+	</dependencies>
+	```
+
+2. 编写前端
+
+	```jsp
+	<form action="${pageContext.request.contextPath}/upload" enctype="multipart/form-data" method="post">
+	  <input type="file" name="file">
+	  <input type="submit" value="upload">
+	</form>
+	```
+
+3. applicationContext配置文件上传
+
+	```xml
+	<!--文件上传配置-->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	    <!--请求的编码格式，必须要和jsp的pageEncoding属性一致-->
+	    <property name="defaultEncoding" value="utf-8"/>
+	    <!--上传文件大小上限，单位为字节 (10485760 == 10M)-->
+	    <property name="maxUploadSize" value="10485760" />
+	    <property name="maxInMemorySize" value="40960"/>
+	</bean>
+	```
+
+4. 编写controller
+
+	```java
+	package com.venns.controller;
+	
+	import org.springframework.web.bind.annotation.RequestMapping;
+	import org.springframework.web.bind.annotation.RequestParam;
+	import org.springframework.web.bind.annotation.RestController;
+	import org.springframework.web.multipart.commons.CommonsMultipartFile;
+	
+	import javax.servlet.http.HttpServletRequest;
+	import java.io.File;
+	import java.io.FileOutputStream;
+	import java.io.IOException;
+	import java.io.InputStream;
+	
+	@RestController
+	public class FileController {
+	    @RequestMapping("/upload")
+	    public String fileUpload2(@RequestParam("file") CommonsMultipartFile file,HttpServletRequest request) throws IOException {
+	
+	        //上传路径保存设置
+	        String path = request.getServletContext().getRealPath("/upload");
+	        File realPath = new File(path);
+	        if (!realPath.exists()){
+	            realPath.mkdir();
+	        }
+	        //上传文件地址
+	        System.out.println("上传文件保存地址-->"+realPath);
+	
+	        //通过CommonsMultipartFile的方法直接写文件
+	        file.transferTo(new File(realPath+"/"+file.getOriginalFilename()));
+	        return "redirect:/index.jsp";
+	    }
+	}
+	```
+
 
 

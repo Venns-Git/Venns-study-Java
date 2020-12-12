@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="annotation" />
         <module name="controller" />
+        <module name="file" />
         <module name="servlet" />
         <module name="helloMVC" />
         <module name="JSON" />
