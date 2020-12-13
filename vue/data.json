@@ -1,0 +1,24 @@
+{
+    "name": "venns",
+    "url": "http://www.venns.cn/",
+    "page": "1",
+    "isNonProfit":"true",
+    "address": {
+      "city": "四川成都",
+      "country": "中国"
+    },
+    "links": [
+      {
+        "name": "B站",
+        "url": "https://www.bilibili.com/"
+      },
+      {
+        "name": "venns",
+        "url": "http://www.venns.cn/"
+      },
+      {
+        "name": "百度",
+        "url": "https://www.baidu.com/"
+      }
+    ]
+  }

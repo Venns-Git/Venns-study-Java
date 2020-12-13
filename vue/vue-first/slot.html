@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <todo>
+            <todo-title slot="todo-title" :title="title"></todo-title>
+            <todo-item slot="todo-item" v-for="item in todoItems" :item="item"></todo-item>
+        </todo>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script>
+        Vue.component("todo",{
+            template: 
+            '<div>\
+                <slot name="todo-title"></slot>\
+                <ul>\
+                    <slot name="todo-item"></slot>\
+                </ul>\
+            </div>'
+        })
+        Vue.component("todo-title",{
+            props: ['title'],
+            template: '<div>{{title}}</div>'
+        })
+        Vue.component("todo-item",{
+            props: ['item'],
+            template: '<li>{{item}}</li>'
+        })
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                title: "书籍列表",
+                todoItems: ['java','vue','linux']
+            }
+        });
+    </script>
+</body>
+</html>
