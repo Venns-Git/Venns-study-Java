@@ -9,7 +9,8 @@
     <div id="app">
         <todo>
             <todo-title slot="todo-title" :title="title"></todo-title>
-            <todo-item slot="todo-item" v-for="item in todoItems" :item="item"></todo-item>
+            <todo-item slot="todo-item" v-for="(item,index) in todoItems" 
+                    :item="item" :index="index" @bbb="removeItems(index)"></todo-item>
         </todo>
     </div>
 
@@ -30,15 +31,27 @@
             template: '<div>{{title}}</div>'
         })
         Vue.component("todo-item",{
-            props: ['item'],
-            template: '<li>{{item}}</li>'
+            props: ['item','index'],
+            template: '<li>{{item}}<button @click="aaa">delete</button></li>',
+            methods: {
+                aaa: function(index){
+                    //this.$emit:自定义事件分发
+                    this.$emit('bbb',index);
+                }
+            }
         })
         var vm = new Vue({
             el: "#app",
             data: {
                 title: "书籍列表",
                 todoItems: ['java','vue','linux']
+            },
+            methods: {
+                removeItems: function(index){
+                    this.todoItems.splice(index,1);//一次删除一个元素
+                }
             }
         });
     </script>
+</body>
 </html>
