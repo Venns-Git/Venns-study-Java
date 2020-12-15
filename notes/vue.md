@@ -463,3 +463,135 @@ vue官方提供的脚手架，用于快速生成一个vue的项目模板
 - Node.js
 - Git
 
+# Webpack
+
+- 创建项目
+
+- 创建一个modules文件夹
+
+- modoules创建一个hello.js
+
+	```js
+	//暴露一个方法
+	exports.sayHi = function(){
+	    document.write("<h1>venns,hello world</h1>");
+	};
+	```
+
+- 再创建一个main.js引入hello
+
+	```javascript
+	var hello = require("./hello");
+	hello.sayHi();
+	```
+
+- 在项目目录下创建webpack.config.js
+
+	```javascript
+	module.exports = {
+	    entry: './modules/main.js',
+	    output: {
+	        filename: "./js/bundle.js",
+	    }
+	};
+	```
+
+	- entry:主入口
+	- output -> filename :打包后的文件地址
+
+- 在项目目录路径运行webpack，生成dist/js/bundle.js
+
+- 创建index.html,引入dist/js/bundle.js即可
+
+	```html
+	<head>
+	    <meta charset="UTF-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <title>Document</title>
+	    <script src="dist/js/bundle.js"></script>
+	</head>
+	```
+
+# Vue-router路由
+
+配置路由 ./router/index.vue
+
+```vue
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import content from '../components/content'
+import main from '../components/main'
+
+//安装路由
+Vue.use(VueRouter);
+
+//配置导入路由
+export default new VueRouter({
+    routes: [
+        {
+            //路由路径
+            path: '/content',
+            name: 'content',
+            //跳转的组件
+            component: content
+        },
+        {
+            path: '/main',
+            name: 'main',
+            component: main
+        }
+    ]
+});
+```
+
+在main.js里面配置路由
+
+```vue
+import Vue from 'vue'
+import App from './App'
+import router from './router' //自动扫描里面的路由配置
+
+Vue.config.productionTip = false;
+
+new Vue({
+  el: '#app',
+  //配置路由
+  router,
+  components: { App },
+  template: '<App/>'
+})
+```
+
+在App.vue中安装路由
+
+```html
+<template>
+  <div id="app">
+      <h1>Vue-Router</h1>
+      <router-link to="main">首页</router-link>
+      <router-link to="content">内容页</router-link>
+      <h1>下面为路由跳转页面</h1>
+      <router-view></router-view>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App'
+}
+</script>
+
+<style>
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+```
+
+测试运行
+
