@@ -595,3 +595,129 @@ export default {
 
 测试运行
 
+# Vue+elementUI
+
+1. 创建一个名为hello-vue的工程：```vue init webpack hello-vue```
+2. 进入目录工程：```cd hello-vue```
+3. 安装vue-router：```npm install vue-router --save-dev```
+4. 安装element-ui：```nmp i element-ui -S```
+5. 安装依赖：```npm install```
+6. 安装SASS加载器：```cnpm install sass-loader node-sass --save-dev```
+7. 启动测试：```npm run dev```
+
+## npm命令解释
+
+- ```npm install moduleName```：安装模块到项目目录下
+- ```npm install -g moduleName```：-g 的意思将模块安装到全局，具体安装到磁盘哪个位置，要看npm config prefix 的位置
+- ```npm install -save moduleName```：--save 的意思是将模块安装到项目目录下，并在package 文件 dependencies 节点写入依赖，-S为该命令的缩写
+- ```npm install -save-dev moduleName```：--save-dev 的意思将模块安装到项目目录下，并在package 文件的devDependencies 节点写入依赖，-D为改命令的缩写
+
+## 步骤
+
+创建views视图文件夹，并在里面创建main首页和login登录页
+
+main.vue
+
+```vue
+<template>
+    <h1>首页</h1>
+</template>
+
+<script>
+export default {
+    name: "Main"
+}
+</script>
+
+<style scoped>
+
+</style>
+```
+
+login.vue
+
+```vue
+<template>
+    <div>
+        <el-form ref="loginForm" :model="form" :rules="rules" label-width="80px" class="login-box">
+            <h3 class="login-title">欢迎登录</h3>
+            <el-form-item label="账号" prop="username">
+                <el-input type="text" placeholder="请输入账号" v-model="form.username"/>
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+                <el-input type="password" placeholder="请输入密码" v-model="form.password"/>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" v-on:click="onSubmit('loginForm')">登录</el-button>
+            </el-form-item>
+        </el-form>
+        <el-dialog
+        title="温馨提示"
+        :visible.sync="dialogVisible"
+        width="30%"
+        :before-close="handleClose">
+            <span>请输入账号和密码</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
+    </div>
+</template>
+<script>
+    export  default {
+        name:"Login",
+        data(){
+        return {
+            form:{
+            username: '',
+            password: ''
+            },
+            //表单验证，需要再el-form-item 元素中增加prop属性
+            rules:{
+            username:[
+                {required:true,message:'账号不能为空',trigger:'blur'}
+            ],
+            password:[
+                {required: true,message: '密码不能为空',trigger:'blur'}
+            ]
+            },
+            //对话框显示和隐藏
+            dialogVisible:false
+        }
+        },
+        methods:{
+        onSubmit(formName) {
+            //为表单绑定验证功能
+            this.$refs[formName].validate((valid) =>{
+            if (valid){
+                //使用 vue-router路由到指定页面，该方式称之为编程式导航
+                this.$router.push("/main");
+            } else {
+                this.dialogVisible = true;
+                return false;
+            }
+            });
+        }
+    }
+  }
+</script>
+<style lang="scss" scoped>
+  .login-box{
+    border: 1px solid #DCDFE6;
+    width: 350px;
+    margin:180px auto;
+    padding:35px 35px 15px 35px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    box-shadow:0 0 25px #909399;
+  }
+
+  .login-title{
+    text-align:center;
+    margin:0 auto 40px auto;
+    color:#303133;
+  }
+</style>
+```
+
