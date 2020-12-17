@@ -463,6 +463,10 @@ vue官方提供的脚手架，用于快速生成一个vue的项目模板
 - Node.js
 - Git
 
+基本命令
+
+
+
 # Webpack
 
 - 创建项目
@@ -720,4 +724,327 @@ login.vue
   }
 </style>
 ```
+
+编写路由
+
+```vue
+import Vue from 'vue'
+import Router from 'vue-router'
+import Main from '../views/Main'
+import Login from '../views/Login'
+
+Vue.use(Router);
+
+export default new Router({
+    routes:[
+        {
+            path: '/main',
+            component: Main
+        },
+        {
+            path: '/login',
+            component: Login
+        }
+    ]
+});
+```
+
+添加路由跳转视图
+
+```vue
+<template>
+  <div id="app">
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App',
+}
+</script>
+
+<style>
+
+</style>
+```
+
+# 路由嵌套
+
+使用children属性
+
+```vue
+import Vue from 'vue'
+import Router from 'vue-router'
+import Main from '../views/Main'
+import Login from '../views/Login'
+
+import UserList from '../views/user/List'
+import UserProfile from '../views/user/Profile'
+
+Vue.use(Router);
+
+export default new Router({
+    routes:[
+        {
+            path: '/main',
+            component: Main,
+            children: [
+                {
+                    path: '/user/profile',
+                    components: UserProfile
+                },
+                {
+                    path: '/user/list',
+                    components: UserList
+                }
+            ]
+        },
+        {
+            path: '/login',
+            component: Login
+        }
+    ]
+});
+```
+
+编写profile页和list页
+
+```vue
+<template>
+  <h1>个人信息</h1>
+</template>
+
+<script>
+export default {
+    name: 'UserProfile'
+}
+</script>
+
+<style>
+
+</style>
+```
+
+```vue
+<template>
+  <h1>用户列表</h1>
+</template>
+
+<script>
+export default {
+    name: 'UserList'
+}
+</script>
+
+<style>
+
+</style>
+```
+
+编写主页
+
+```vue
+<template>
+    <div>
+        <el-container>
+            <el-aside width="200px">
+                <el-menu :default-openeds="['1']">
+                <el-submenu index="1">
+                    <template slot="title"><i class="el-icon-caret-right"></i>用户管理</template>
+                    <el-menu-item-group>
+                    <el-menu-item index="1-1">
+                        <router-link to="/user/profile">个人信息</router-link>
+                    </el-menu-item>
+                    <el-menu-item index="1-2">
+                        <router-link to="/user/list">用户列表</router-link>
+                    </el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+                <el-submenu index="2">
+                    <template slot="title"><i class="el-icon-caret-right"></i>内容管理</template>
+                    <e1-menu-item-group>
+                    <el-menu-item index="2-1">分类管理</el-menu-item>
+                    <el-menu-item index="2-2">内容列表</el-menu-item>
+                    </e1-menu-item-group>
+                </el-submenu>
+                </el-menu>
+            </el-aside>
+            <el-container>
+                <el-header style="text-align: right; font-size: 12px">
+                <el-dropdown>
+                    <i class="el-icon-setting" style="margin-right:15px"></i>
+                    <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>个人信息</el-dropdown-item>
+                    <el-dropdown-item>退出登录</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                </el-header>
+                <el-main>
+                    <router-view></router-view>
+                </el-main>
+            </el-container>
+        </el-container>
+  </div>
+</template>
+
+<script>
+  export default {
+    name: "Main"
+  }
+</script>
+
+<style scoped>
+    .el-header {
+      background-color: #048bd1;
+      color: #333;
+      line-height: 60px;
+    }
+
+    .el-aside {
+      color: #333;
+    }
+</style>
+```
+
+# 参数传递以及重定向
+
+## 参数传递
+
+1. 给子路由绑定name属性
+
+	```vue
+	children: [
+		{
+	        path: '/user/profile/:id',
+	        name: UserProfile,
+	        component: UserProfile
+		},
+	]
+	```
+
+2. 对router-link进行双向绑定
+
+	```html
+	<!--name：传组件名字 params：传递参数  -->
+	<router-link :to="{name: 'UserProfile',params:{id:1}}">个人信息</router-link>
+	```
+
+3. 取出id
+
+	```vue
+	<template>
+	    <div>
+	    <h1>个人信息</h1>
+	        {{ $route.params.id }}
+	    </div>
+	        
+	</template>
+	
+	<script>
+	export default {
+	    name: 'UserProfile'
+	}
+	</script>
+	
+	<style>
+	
+	</style>
+	```
+
+**也可以通过props进行解耦**
+
+- 子路由添加props属性，值为true
+- Profile中添加props属性：```props: [`id`]```
+- 直接用{{id}}就可以取到id
+
+## 重定向
+
+将路由中component属性改为redirect
+
+# 路由模式与404
+
+路由模式有两种:model
+
+- hash：路径带#符号，如：http://localhost/#/login
+- history：路径不带#符号，如：http://localhost/login
+
+## 404
+
+创建一个404视图，在路由跳转中添加404，路径为*
+
+# 路由钩子与异步请求
+
+- beforeRouteEnter：在进入路由前执行
+- beforeRouteLeave：在离开路由前执行
+
+给ptofile页面增加路由钩子
+
+```vue
+<script>
+export default {
+    name: 'UserProfile',
+    props: ['id'],
+    //拦截器
+    beforeRouteEnter: (to,from,next) =>{
+        console.log("进入路由之前");
+        next();
+    },
+    beforeRouteLeave: (to,from,next) =>{
+        console.log("进入路由之后");
+        next();
+    }
+}
+```
+
+参数说明：
+
+- to：路由将要跳转的路径信息
+
+- from：路由跳转前的路径信息
+- next：路由的控制参数
+	- next() 进入下一个页面
+	- next('/path') 改变路由的跳转的方向
+	- next(false) 返回原来的界面
+	- next((vm) =>{}) 尽在beforeRouteEnter中可以，vm是组件实例
+
+## 在钩子函数中使用异步请求
+
+1. 安装Axios
+
+2. 导入到main.js
+
+3. 编写路由钩子
+
+	```vue
+	<script>
+	export default {
+	    name: 'UserProfile',
+	    props: ['id'],
+	    //拦截器
+	    beforeRouteEnter: (to,from,next) =>{
+	        console.log("进入路由之前");//加载数据
+	        next(vm => {
+	            vm.getData(); //进入路由之前执行方法getData
+	        });
+	    },
+	    beforeRouteLeave: (to,from,next) =>{
+	        console.log("进入路由之后");
+	        next();
+	    },
+	    methods: {
+	        getData: function(){
+	            this.axios({
+	                method: 'get',
+	                url: 'http://localhost:8080/static/mock/data.json'
+	            }).then(function(response){
+	                console.log(response);
+	            })
+	        }
+	    }
+	}
+	</script>
+	```
+
+
 
