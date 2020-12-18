@@ -1,0 +1,49 @@
+{
+  "groups": [
+    {
+      "name": "person",
+      "type": "com.venns.pojo.Person",
+      "sourceType": "com.venns.pojo.Person"
+    }
+  ],
+  "properties": [
+    {
+      "name": "person.age",
+      "type": "java.lang.Integer",
+      "sourceType": "com.venns.pojo.Person",
+      "defaultValue": 0
+    },
+    {
+      "name": "person.birth",
+      "type": "java.util.Date",
+      "sourceType": "com.venns.pojo.Person"
+    },
+    {
+      "name": "person.dog",
+      "type": "com.venns.pojo.Dog",
+      "sourceType": "com.venns.pojo.Person"
+    },
+    {
+      "name": "person.happy",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.venns.pojo.Person",
+      "defaultValue": false
+    },
+    {
+      "name": "person.lists",
+      "type": "java.util.List<java.lang.Object>",
+      "sourceType": "com.venns.pojo.Person"
+    },
+    {
+      "name": "person.maps",
+      "type": "java.util.Map<java.lang.String,java.lang.Object>",
+      "sourceType": "com.venns.pojo.Person"
+    },
+    {
+      "name": "person.name",
+      "type": "java.lang.String",
+      "sourceType": "com.venns.pojo.Person"
+    }
+  ],
+  "hints": []
+}
