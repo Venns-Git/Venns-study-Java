@@ -150,7 +150,7 @@ pet:
 pets: [cat,dog,pig]
 ```
 
-## 通过yaml给属性赋值
+### 通过yaml给属性赋值
 
 1. 编写yaml
 
@@ -196,3 +196,83 @@ pets: [cat,dog,pig]
 	</dependency>
 	```
 
+### JSR303校验
+
+使用yaml进行注入也可以进行数据校验
+
+1. 导入依赖
+
+	```xml
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-validation</artifactId>
+	</dependency>
+	```
+
+2. 给需要进行数据校验的类添加`@Validated`注解
+
+3. 给对应的字段添加校验格式注解即可 例如：`@Email(message="xxxx")`，xxx为错误提示
+
+## 多环境配置及配置文件位置
+
+官方给出可以写配置的四个位置：
+
+- file：`./config/`  项目目录下config目录
+- file：`./` 项目目录下
+- classpath：`/config/` resources目录下的config项目
+- classpath：`/` resources目录下
+
+**优先级由高到低**
+
+### 多环境切换
+
+springboot的多环境配置：可以选择激活哪一个配置文件
+
+`spring.profiles.active=xxx`  ：xxx代表配置文件后缀,例如：application-test.properties 代表测试环境,application-dev.properties代表开发环境
+
+### 可以用yaml实现多文档模块
+
+```yaml
+server:
+  port: 8081
+spring:
+  profiles:
+    active: dev
+---
+server:
+  port: 8082
+spring:
+  profiles: dev
+---
+server:
+  port: 8083
+spring:
+    profiles: test
+```
+
+# SpringBoot Web开发
+
+## 静态资源导入
+
+###  webjars
+
+- 以jar包的形式导入前端资源，只需导入maven依赖即可
+
+访问：/webjars/**，根据不同资源访问不同目录
+
+### 放在resources目录下
+
+resources目录，static目录，public目录
+
+**优先级由高到低**
+
+### 总结：
+
+1. 在springboot，我们可以使用以下方式处理静态资源
+	- webjars	`localhost:8080/webjars/`
+	- public，static，/**，resources  `localhost:8080`
+2. 优先级：resources > static(默认) > public
+
+## 定制首页
+
+可以将首页index.html放在 resources ， static， public目录下，直接放在资源文件夹下不生效
