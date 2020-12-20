@@ -276,3 +276,103 @@ resources目录，static目录，public目录
 ## 定制首页
 
 可以将首页index.html放在 resources ， static， public目录下，直接放在资源文件夹下不生效
+
+## 模板引擎
+
+### Thymeleaf
+
+1. 导入依赖
+
+	```xml
+	<dependency>
+	    <groupId>org.thymeleaf</groupId>
+	    <artifactId>thymeleaf-spring5</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>org.thymeleaf.extras</groupId>
+	    <artifactId>thymeleaf-extras-java8time</artifactId>
+	</dependency>
+	```
+
+2. 在templates目录下编写html模板
+
+### 语法
+
+IndexController
+
+```java
+//在templates目录下的所有页面，只能通过controller来跳转
+//这个需要模板引擎的支持
+@Controller
+public class IndexController {
+
+    @RequestMapping("/test")
+    public String index(Model model){
+        model.addAttribute("msg","<h1>hello,springboot</h1>");
+        model.addAttribute("users", Arrays.asList("venns1","venns2"));
+        return "test";
+    }
+}
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <!--所有的html元素都可以被thymeleaf替换接管：th：元素名-->
+    <!--不转义-->
+    <div th:text="${msg}"></div>
+    <!--转义-->
+    <div th:utext="${msg}"></div>
+
+    <!--循环-->
+    <hr>
+    <h3 th:each="user:${users}" th:text="${user}"></h3>
+    <h3 th:each="user:${users}">[[${user}]]</h3>
+</body>
+</html>
+```
+
+## 装配扩展MVC
+
+- 新建config包，写自己的配置类MyMvcConfig，添加@Configuration注解，实现WebMvcConfigurer接口
+
+自定义视图解析器
+
+```java
+// 扩展MVC
+@Configuration
+public class MyMvcConfig implements WebMvcConfigurer {
+    
+    // public interface ViewResolver 实现了视图解析器的类，就可以是视图解析器
+    @Bean
+    public ViewResolver myViewResolver(){
+        return new MyViewResolver();
+    }
+
+    //自定义了一个自己的视图解析器
+    public static class MyViewResolver implements ViewResolver{
+        @Override
+        public View resolveViewName(String s, Locale locale) throws Exception {
+            return null;
+        }
+    }
+
+}
+```
+
+自定义视图跳转
+
+```Java
+//视图跳转
+@Override
+public void addViewControllers(ViewControllerRegistry registry) {
+    registry.addViewController("/venns").setViewName("test");
+}
+```
+
+总结：springboot自动配置组件的时候，先看有没有用户自己配置的，如果有就用用户配置的，没有就用自动配置的，如果有些组件存在多个，就将用户配置的和组件默认的结合起来
