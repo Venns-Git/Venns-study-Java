@@ -3,7 +3,7 @@ person:
   age: 3
   happy: false
   birth: 2001/01/1
-  maps: {k1: v1,k2: v2}
+  maps: { k1: v1,k2: v2 }
   lists:
     - code
     - music

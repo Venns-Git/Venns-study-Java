@@ -12,9 +12,9 @@ import java.util.Arrays;
 public class IndexController {
 
     @RequestMapping("/test")
-    public String index(Model model){
-        model.addAttribute("msg","<h1>hello,springboot</h1>");
-        model.addAttribute("users", Arrays.asList("venns1","venns2"));
+    public String index(Model model) {
+        model.addAttribute("msg", "<h1>hello,springboot</h1>");
+        model.addAttribute("users", Arrays.asList("venns1", "venns2"));
         return "test";
     }
 }

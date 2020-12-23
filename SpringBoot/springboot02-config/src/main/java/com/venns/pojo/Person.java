@@ -20,7 +20,7 @@ public class Person {
     private int age;
     private boolean happy;
     private Date birth;
-    private Map<String,Object> maps;
+    private Map<String, Object> maps;
     private List<Object> lists;
     private Dog dog;
 

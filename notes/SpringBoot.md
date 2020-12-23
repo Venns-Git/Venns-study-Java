@@ -341,7 +341,7 @@ public class IndexController {
 
 - 新建config包，写自己的配置类MyMvcConfig，添加@Configuration注解，实现WebMvcConfigurer接口
 
-自定义视图解析器
+**自定义视图解析器**
 
 ```java
 // 扩展MVC
@@ -365,7 +365,7 @@ public class MyMvcConfig implements WebMvcConfigurer {
 }
 ```
 
-自定义视图跳转
+**自定义视图跳转**
 
 ```Java
 //视图跳转
@@ -376,3 +376,54 @@ public void addViewControllers(ViewControllerRegistry registry) {
 ```
 
 总结：springboot自动配置组件的时候，先看有没有用户自己配置的，如果有就用用户配置的，没有就用自动配置的，如果有些组件存在多个，就将用户配置的和组件默认的结合起来
+
+**国际化**
+
+1. 配置i18n文件
+2. 如果需要在项目中进行按钮自动切换，需要自定义组件 LocaleResolver
+3. 将自己写的组件配置到spring容器中，@Bean
+
+**404及500处理**
+
+在模板文件夹下创建error文件夹，文件命名404，500即可
+
+## 整合JDBC
+
+对应数据访问层，无论是sql还是nosql，springboot底层都是采用springData的方式进行统一处理
+
+1. 在application配置数据库
+
+	```yml
+	spring:
+	  datasource:
+	    username: root
+	    password: 123456
+	    url: jdbc:mysql://localhost:3306/mybatis?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+	    driver-class-name: com.mysql.cj.jdbc.Driver
+	```
+
+2. 编写controller测试
+
+	```java
+	@RestController
+	public class JDBCController {
+	
+	    @Autowired
+	    JdbcTemplate jdbcTemplate;
+	
+	    //查询数据库的所以信息
+	    @RequestMapping("/userList")
+	    public List<Map<String,Object>> userList(){
+	        String sql = "select * from user";
+	        List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
+	        return maps;
+	    }
+	
+	    @RequestMapping("/addUser")
+	    public String addUser(){
+	        String sql = "insert into mybatis.user(id,name,pwd) values (5,'aaa','123456')";
+	        jdbcTemplate.update(sql);
+	        return "ok";
+	    }
+	```
+
