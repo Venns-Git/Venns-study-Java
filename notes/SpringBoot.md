@@ -387,6 +387,8 @@ public void addViewControllers(ViewControllerRegistry registry) {
 
 在模板文件夹下创建error文件夹，文件命名404，500即可
 
+# 整合数据源
+
 ## 整合JDBC
 
 对应数据访问层，无论是sql还是nosql，springboot底层都是采用springData的方式进行统一处理
@@ -408,6 +410,7 @@ public void addViewControllers(ViewControllerRegistry registry) {
 	@RestController
 	public class JDBCController {
 	
+	    //JDBC模板
 	    @Autowired
 	    JdbcTemplate jdbcTemplate;
 	
@@ -426,4 +429,90 @@ public void addViewControllers(ViewControllerRegistry registry) {
 	        return "ok";
 	    }
 	```
+
+## 自定义数据源 Druid
+
+阿里巴巴的一个数据库连接池的实现，结合了c3p0,dbcp等DB池的优点，加入了日志监控
+
+### 1.导入依赖
+
+```xml
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid</artifactId>
+    <version>1.1.16</version>
+</dependency>
+```
+
+### 2.在yml配置文件中指定连接池位druid
+
+```yaml
+type: com.alibaba.druid.pool.DruidDataSource
+```
+
+### 3. druid特有配置
+
+```yml
+	#Spring Boot 默认是不注入这些属性值的，需要自己绑定
+    #druid 数据源专有配置
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+
+    #配置监控统计拦截的filters，stat:监控统计、log4j：日志记录、wall：防御sql注入
+    #如果允许时报错  java.lang.ClassNotFoundException: org.apache.log4j.Priority
+    #则导入 log4j 依赖即可，Maven 地址：https://mvnrepository.com/artifact/log4j/log4j
+    filters: stat,wall,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+```
+
+- 如果需要用到log4j，还要导入依赖
+
+### 4.配置后台监控
+
+```java
+@Configuration
+public class DruidConfig {
+
+    @ConfigurationProperties(prefix = "spring.datasource")
+    @Bean
+    public DataSource druidDataSource(){
+        return new DruidDataSource();
+    }
+
+    //后台监控
+    @Bean
+    public ServletRegistrationBean servletRegistrationBean(){
+        ServletRegistrationBean<StatViewServlet> bean = new ServletRegistrationBean<>(new StatViewServlet(), "/druid/*");
+
+        //账号密码配置
+        HashMap<String, String> initParameters = new HashMap<>();
+        //增加配置
+        initParameters.put("loginUsername","admin"); //固定的key loginUsername loginPassword
+        initParameters.put("loginPassword","123456");
+
+        //允许谁能访问
+        initParameters.put("allow","");
+
+        //禁止谁能访问
+        initParameters.put("venns","192.168.1.1");
+
+
+        bean.setInitParameters(initParameters);//设置初始化参数
+        return bean;
+    }
+}
+```
+
+# 整合Mybatis
 
