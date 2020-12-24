@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:gitee" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:github" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5c9146a3-c959-4b3a-b516-448a4e4f1f32" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../../notes/SpringBoot.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../notes/SpringBoot.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/dataSources.local.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/dataSources/3afebb1c-b905-4b2a-a34d-cf42f4b254ee.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/dataSources/3afebb1c-b905-4b2a-a34d-cf42f4b254ee/storage_v2/_src_/schema/sys.zb4BAA.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/dataSources/3afebb1c-b905-4b2a-a34d-cf42f4b254ee/storage_v2/_src_/schema/sys.zb4BAA.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_2_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__ch_qos_logback_logback_core_1_2_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__com_alibaba_druid_1_1_16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_11_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_11_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_11_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_jdk8_2_11_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_jsr310_2_11_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_parameter_names_2_11_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__com_jayway_jsonpath_json_path_2_4_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__com_vaadin_external_google_android_json_0_0_20131108_vaadin1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__com_zaxxer_HikariCP_3_4_5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__jakarta_activation_jakarta_activation_api_1_2_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__jakarta_annotation_jakarta_annotation_api_1_3_5.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__jakarta_xml_bind_jakarta_xml_bind_api_2_3_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__log4j_log4j_1_2_17.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__mysql_mysql_connector_java_8_0_22.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_10_18.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__net_bytebuddy_byte_buddy_agent_1_10_18.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__net_minidev_accessors_smart_1_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__net_minidev_json_smart_2_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_apache_logging_log4j_log4j_api_2_13_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_apache_logging_log4j_log4j_to_slf4j_2_13_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_apache_tomcat_embed_tomcat_embed_core_9_0_41.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_apache_tomcat_embed_tomcat_embed_websocket_9_0_41.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_1_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_assertj_assertj_core_3_18_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_glassfish_jakarta_el_3_0_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_hamcrest_hamcrest_2_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_5_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_engine_5_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_params_5_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_junit_platform_junit_platform_engine_1_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_mockito_mockito_core_3_6_28.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_mockito_mockito_junit_jupiter_3_6_28.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_objenesis_objenesis_3_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_opentest4j_opentest4j_1_2_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_ow2_asm_asm_5_0_4.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_skyscreamer_jsonassert_1_5_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_slf4j_jul_to_slf4j_1_7_30.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_30.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_boot_spring_boot_2_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_boot_spring_boot_autoconfigure_2_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_2_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_jdbc_2_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_json_2_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_logging_2_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_test_2_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_tomcat_2_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_web_2_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_boot_spring_boot_test_2_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_boot_spring_boot_test_autoconfigure_2_4_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_spring_aop_5_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_spring_beans_5_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_spring_context_5_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_spring_core_5_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_spring_expression_5_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_spring_jcl_5_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_spring_jdbc_5_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_spring_test_5_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_spring_tx_5_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_spring_web_5_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_springframework_spring_webmvc_5_3_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_xmlunit_xmlunit_core_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/libraries/Maven__org_yaml_snakeyaml_1_27.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/springboot04-data.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/src/main/java/com/venns/Springboot04DataApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/src/main/java/com/venns/config/DruidConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/src/main/java/com/venns/controller/JDBCController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/src/test/java/com/venns/Springboot04DataApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/target/classes/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/target/classes/com/venns/Springboot04DataApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/target/classes/com/venns/controller/JDBCController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../springboot04-data/target/test-classes/com/venns/Springboot04DataApplicationTests.class" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="D:\Maven\repository" />
+        <option name="mavenHome" value="C:\Users\lwx01\.m2\wrapper\dists\apache-maven-3.6.3-bin\1iopthnavndlasol9gbrbg6bf2\apache-maven-3.6.3" />
+        <option name="userSettingsFile" value="D:\Maven\apache-maven-3.6.3\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1m66g0TyW0h4gaIKPjqvZPn2vKs" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="DatabaseDriversLRU" value="mysql" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="RunManager" selected="Spring Boot.Springboot05MybatisApplication">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Springboot05MybatisApplicationTests.contextLoads" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="springboot05-mybatis" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.venns.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.venns" />
+      <option name="MAIN_CLASS_NAME" value="com.venns.Springboot05MybatisApplicationTests" />
+      <option name="METHOD_NAME" value="contextLoads" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Springboot05MybatisApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="springboot05-mybatis" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.venns.Springboot05MybatisApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.Springboot05MybatisApplicationTests.contextLoads" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5c9146a3-c959-4b3a-b516-448a4e4f1f32" name="Default Changelist" comment="" />
+      <created>1608801803176</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1608801803176</updated>
+      <workItem from="1608801808484" duration="2775000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1174" y="351" key="#Notifications" timestamp="1608802082058">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="1174" y="351" key="#Notifications/0.0.1920.1050@0.0.1920.1050" timestamp="1608802082058" />
+    <state x="1032" y="187" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1608802985381">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="1032" y="187" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1608802985381" />
+    <state width="914" height="285" key="GridCell.Tab.0.bottom" timestamp="1608804593385">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="285" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1608804593385" />
+    <state width="914" height="285" key="GridCell.Tab.0.center" timestamp="1608804593385">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="285" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1608804593385" />
+    <state width="914" height="285" key="GridCell.Tab.0.left" timestamp="1608804593385">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="285" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1608804593385" />
+    <state width="914" height="285" key="GridCell.Tab.0.right" timestamp="1608804593385">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="285" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1608804593385" />
+    <state width="914" height="285" key="GridCell.Tab.1.bottom" timestamp="1608804593387">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="285" key="GridCell.Tab.1.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1608804593387" />
+    <state width="914" height="285" key="GridCell.Tab.1.center" timestamp="1608804593386">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="285" key="GridCell.Tab.1.center/0.0.1920.1050@0.0.1920.1050" timestamp="1608804593386" />
+    <state width="914" height="285" key="GridCell.Tab.1.left" timestamp="1608804593386">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="285" key="GridCell.Tab.1.left/0.0.1920.1050@0.0.1920.1050" timestamp="1608804593386" />
+    <state width="914" height="285" key="GridCell.Tab.1.right" timestamp="1608804593386">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="285" key="GridCell.Tab.1.right/0.0.1920.1050@0.0.1920.1050" timestamp="1608804593386" />
+    <state width="287" height="477" key="HiddenNamespacesPopup" timestamp="1608803037939">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="287" height="477" key="HiddenNamespacesPopup/0.0.1920.1050@0.0.1920.1050" timestamp="1608803037939" />
+    <state x="484" y="192" key="SettingsEditor" timestamp="1608801901261">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="484" y="192" key="SettingsEditor/0.0.1920.1050@0.0.1920.1050" timestamp="1608801901261" />
+  </component>
+</project>

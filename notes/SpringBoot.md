@@ -516,3 +516,27 @@ public class DruidConfig {
 
 # 整合Mybatis
 
+1. 导入依赖
+
+	```xml
+	<dependency>
+	    <groupId>org.mybatis.spring.boot</groupId>
+	    <artifactId>mybatis-spring-boot-starter</artifactId>
+	    <version>2.1.4</version>
+	</dependency>
+	```
+
+2. yml中编写数据库配置
+
+3. yml整合mybatis
+
+	```xml
+	mybatis:
+	  type-aliases-package: com.venns.pojo //别名
+	  mapper-locations: classpath:mybatis/mapper/*.xml
+	```
+
+4. 编写对应的pojo和mapper
+5. mapper.xml放在mapper-locations路径下
+
+6. 测试
