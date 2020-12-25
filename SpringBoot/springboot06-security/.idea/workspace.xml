@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:gitee" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:github" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="20466695-640a-4bce-8521-decf751154c3" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../../notes/SpringBoot.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../notes/SpringBoot.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="D:\Maven\repository" />
+        <option name="mavenHome" value="C:\Users\lwx01\.m2\wrapper\dists\apache-maven-3.6.3-bin\1iopthnavndlasol9gbrbg6bf2\apache-maven-3.6.3" />
+        <option name="userSettingsFile" value="D:\Maven\apache-maven-3.6.3\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1m88XSmsgUqikg4tchYyoxUvzyv" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/templates" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\学习\Venns_study\Venns-study\SpringBoot\springboot06-security\src\main\resources\templates" />
+      <recent name="D:\学习\Venns_study\Venns-study\SpringBoot\springboot06-security\src\main\resources\static\venns\js" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Springboot06SecurityApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="springboot06-security" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.venns.Springboot06SecurityApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="20466695-640a-4bce-8521-decf751154c3" name="Default Changelist" comment="" />
+      <created>1608863899175</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1608863899175</updated>
+      <workItem from="1608863906925" duration="7914000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1245" y="234" key="#com.intellij.ide.util.MemberChooser" timestamp="1608884678255">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="1245" y="234" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1050@0.0.1920.1050" timestamp="1608884678255" />
+    <state width="914" height="157" key="GridCell.Tab.0.bottom" timestamp="1608885545440">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="157" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1608885545440" />
+    <state width="914" height="157" key="GridCell.Tab.0.center" timestamp="1608885545440">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="157" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1608885545440" />
+    <state width="914" height="157" key="GridCell.Tab.0.left" timestamp="1608885545440">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="157" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1608885545440" />
+    <state width="914" height="157" key="GridCell.Tab.0.right" timestamp="1608885545440">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="157" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1608885545440" />
+    <state width="914" height="157" key="GridCell.Tab.1.bottom" timestamp="1608885545441">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="157" key="GridCell.Tab.1.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1608885545441" />
+    <state width="914" height="157" key="GridCell.Tab.1.center" timestamp="1608885545441">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="157" key="GridCell.Tab.1.center/0.0.1920.1050@0.0.1920.1050" timestamp="1608885545441" />
+    <state width="914" height="157" key="GridCell.Tab.1.left" timestamp="1608885545441">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="157" key="GridCell.Tab.1.left/0.0.1920.1050@0.0.1920.1050" timestamp="1608885545441" />
+    <state width="914" height="157" key="GridCell.Tab.1.right" timestamp="1608885545441">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="914" height="157" key="GridCell.Tab.1.right/0.0.1920.1050@0.0.1920.1050" timestamp="1608885545441" />
+    <state x="1103" y="233" width="672" height="678" key="search.everywhere.popup" timestamp="1608884896388">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="1103" y="233" width="672" height="678" key="search.everywhere.popup/0.0.1920.1050@0.0.1920.1050" timestamp="1608884896388" />
+  </component>
+</project>

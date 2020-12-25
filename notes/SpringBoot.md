@@ -540,3 +540,60 @@ public class DruidConfig {
 5. mapper.xml放在mapper-locations路径下
 
 6. 测试
+
+# SpringSecurity
+
+侧重于身份验证和权限控制的安全框架
+
+## 环境搭建:
+
+初始化springboot项目，勾选web支持，security和themlef
+
+初始化项目，具体代码看Git，最开始所有人都可以访问所有页面
+
+## 用户认证和授权
+
+编写自定义config类，继承WebSecurityConfigurerAdapter
+
+```java
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        
+    }
+}
+```
+
+```java
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    //授权
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        //首页所有人可以访问，功能页只有对应有权限的人才能访问
+        http.authorizeRequests()
+        .antMatchers("/").permitAll()
+        .antMatchers("/level1/**").hasRole("vip1")
+        .antMatchers("/level2/**").hasRole("vip2")
+        .antMatchers("/level3/**").hasRole("vip3");
+
+        //没有权限会默认到登录界面,需要开启登录的页面
+        http.formLogin();
+    }
+
+    //认证
+    //密码需要加密
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+        // 这些数据正常应该从数据库中读
+        auth.inMemoryAuthentication().passwordEncoder(new BCryptPasswordEncoder())
+                .withUser("venns").password(new BCryptPasswordEncoder().encode("123456")).roles("vip2","vip3")
+                .and()
+                .withUser("root").password(new BCryptPasswordEncoder().encode("123456")).roles("vip1","vip2","vip3");
+    }
+}
+```
+
