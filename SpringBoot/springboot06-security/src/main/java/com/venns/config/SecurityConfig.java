@@ -21,6 +21,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         //没有权限会默认到登录界面,需要开启登录的页面
         http.formLogin();
+
+        //开启注销功能,跳到首页
+        http.logout().logoutSuccessUrl("/");
     }
 
     //认证

@@ -597,3 +597,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 }
 ```
 
+## 注销
+
+只需在configure方法中添加
+
+```java
+//开启注销功能,跳到首页
+http.logout().logoutSuccessUrl("/");
+```
+
+在前端配置logout请求即可
+
+## 权限控制
