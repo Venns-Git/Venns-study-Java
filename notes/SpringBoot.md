@@ -609,3 +609,8 @@ http.logout().logoutSuccessUrl("/");
 在前端配置logout请求即可
 
 ## 权限控制
+
+不同权限的用户登录过后显示不同的界面
+
+1. 导入thymeleaf和security的整合包
+2. 

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>首页</title>
     <!--semantic-ui-->
     <link href="https://cdn.bootcss.com/semantic-ui/2.4.1/semantic.min.css" rel="stylesheet">
-    <link th:href="@{/qinjiang/css/qinstyle.css}" rel="stylesheet">
+    <link th:href="@{/venns/css/style.css}" rel="stylesheet">
 </head>
 <body>
 
@@ -19,14 +21,25 @@
 
             <!--登录注销-->
             <div class="right menu">
-                <!--未登录-->
-                <a class="item" th:href="@{/toLogin}">
-                    <i class="address card icon"></i> 登录
-                </a>
-                <!--注销-->
-                <a class="item" th:href="@{/logout}">
-                    <i class="sign-out icon"></i> 注销
-                </a>
+                <!--如果未登录-->
+                <div sec:authorize="isFullyAuthenticated()">
+                    <a class="item" th:href="@{/toLogin}">
+                        <i class="address card icon"></i> 登录
+                    </a>
+                </div>
+
+                <!--如果已登录-->
+                <div sec:authorize="isFullyAuthenticated()">
+                    <a class="item">
+                        用户名：<span sec:authentication="name"></span>
+                        密码：<span sec:authentication="principal.getAuthorities()"></span>
+                    </a>
+                    <!--注销-->
+                    <a class="item" th:href="@{/logout}">
+                        <i class="sign-out icon"></i> 注销
+                    </a>
+                </div>
+
                 <!--已登录
                 <a th:href="@{/usr/toUserCenter}">
                     <i class="address card icon"></i> admin

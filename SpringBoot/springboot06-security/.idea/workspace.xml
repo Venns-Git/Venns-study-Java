@@ -29,7 +29,8 @@
   <component name="ChangeListManager">
     <list default="true" id="20466695-640a-4bce-8521-decf751154c3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/venns/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/venns/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/springboot06-security.iml" beforeDir="false" afterPath="$PROJECT_DIR$/springboot06-security.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/venns/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/venns/config/SecurityConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../notes/SpringBoot.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../notes/SpringBoot.md" afterDir="false" />
@@ -97,19 +98,6 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Springboot06SecurityApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="springboot06-security" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.venns.Springboot06SecurityApplication" />
@@ -128,6 +116,7 @@
       <updated>1608863899175</updated>
       <workItem from="1608863906925" duration="7914000" />
       <workItem from="1609241318465" duration="1679000" />
+      <workItem from="1609670933765" duration="3479000" />
     </task>
     <servers />
   </component>
@@ -151,38 +140,42 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="1245" y="234" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1050@0.0.1920.1050" timestamp="1608884678255" />
-    <state width="914" height="157" key="GridCell.Tab.0.bottom" timestamp="1609244908099">
+    <state width="914" height="155" key="GridCell.Tab.0.bottom" timestamp="1609677245152">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="914" height="157" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1609244908099" />
-    <state width="914" height="157" key="GridCell.Tab.0.center" timestamp="1609244908098">
+    <state width="914" height="155" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1609677245152" />
+    <state width="914" height="155" key="GridCell.Tab.0.center" timestamp="1609677245151">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="914" height="157" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1609244908098" />
-    <state width="914" height="157" key="GridCell.Tab.0.left" timestamp="1609244908098">
+    <state width="914" height="155" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1609677245151" />
+    <state width="914" height="155" key="GridCell.Tab.0.left" timestamp="1609677245151">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="914" height="157" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1609244908098" />
-    <state width="914" height="157" key="GridCell.Tab.0.right" timestamp="1609244908098">
+    <state width="914" height="155" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1609677245151" />
+    <state width="914" height="155" key="GridCell.Tab.0.right" timestamp="1609677245151">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="914" height="157" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1609244908098" />
-    <state width="914" height="157" key="GridCell.Tab.1.bottom" timestamp="1609244908100">
+    <state width="914" height="155" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1609677245151" />
+    <state width="914" height="155" key="GridCell.Tab.1.bottom" timestamp="1609677245152">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="914" height="157" key="GridCell.Tab.1.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1609244908100" />
-    <state width="914" height="157" key="GridCell.Tab.1.center" timestamp="1609244908099">
+    <state width="914" height="155" key="GridCell.Tab.1.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1609677245152" />
+    <state width="914" height="155" key="GridCell.Tab.1.center" timestamp="1609677245152">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="914" height="157" key="GridCell.Tab.1.center/0.0.1920.1050@0.0.1920.1050" timestamp="1609244908099" />
-    <state width="914" height="157" key="GridCell.Tab.1.left" timestamp="1609244908099">
+    <state width="914" height="155" key="GridCell.Tab.1.center/0.0.1920.1050@0.0.1920.1050" timestamp="1609677245152" />
+    <state width="914" height="155" key="GridCell.Tab.1.left" timestamp="1609677245152">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="914" height="157" key="GridCell.Tab.1.left/0.0.1920.1050@0.0.1920.1050" timestamp="1609244908099" />
-    <state width="914" height="157" key="GridCell.Tab.1.right" timestamp="1609244908099">
+    <state width="914" height="155" key="GridCell.Tab.1.left/0.0.1920.1050@0.0.1920.1050" timestamp="1609677245152" />
+    <state width="914" height="155" key="GridCell.Tab.1.right" timestamp="1609677245152">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="914" height="157" key="GridCell.Tab.1.right/0.0.1920.1050@0.0.1920.1050" timestamp="1609244908099" />
+    <state width="914" height="155" key="GridCell.Tab.1.right/0.0.1920.1050@0.0.1920.1050" timestamp="1609677245152" />
+    <state x="952" y="247" key="run.anything.popup" timestamp="1609671476315">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="952" y="247" key="run.anything.popup/0.0.1920.1050@0.0.1920.1050" timestamp="1609671476315" />
     <state x="1103" y="233" width="672" height="678" key="search.everywhere.popup" timestamp="1608884896388">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
