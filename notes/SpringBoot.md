@@ -612,5 +612,109 @@ http.logout().logoutSuccessUrl("/");
 
 不同权限的用户登录过后显示不同的界面
 
-1. 导入thymeleaf和security的整合包
-2. 
+1. pom.xml导入thymeleaf和security的整合包
+
+	```xml
+	<!--thymeleaf和security整合包  -->
+	<dependency>
+	    <groupId>org.thymeleaf.extras</groupId>
+	    <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+	</dependency>
+	```
+
+2. 前端导入，要与pom.xml中保持版本一致
+
+	```xml
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	```
+
+3. 编写前端
+
+	- 登录状态
+
+		```html
+		<!--登录注销-->
+		<div class="right menu">
+		    <!--如果未登录-->
+		    <div sec:authorize="!isAuthenticated()">
+		        <a class="item" th:href="@{/toLogin}">
+		            <i class="address card icon"></i> 登录
+		        </a>
+		    </div>
+		
+		    <!--如果已登录-->
+		    <div sec:authorize="isAuthenticated()">
+		        <a class="item">
+		            用户名：<span sec:authentication="name"></span>
+		            角色：<span sec:authentication="principal.authorities"></span>
+		        </a>
+		    </div>
+		    <div sec:authorize="isAuthenticated()">
+		        <a class="item" th:href="@{/logout}">
+		            <i class="sign-out icon"></i>注销
+		        </a>
+		    </div>
+		</div>
+		```
+
+	- 菜单根据不同权限动态展示
+
+		```html
+		<div class="column" sec:authorize="hasRole('vip1')">
+		    <div class="ui raised segment">
+		        <div class="ui">
+		            <div class="content">
+		                <h5 class="content">Level 1</h5>
+		                <hr>
+		                <div><a th:href="@{/level1/1}"><i class="bullhorn icon"></i> Level-1-1</a></div>
+		                <div><a th:href="@{/level1/2}"><i class="bullhorn icon"></i> Level-1-2</a></div>
+		                <div><a th:href="@{/level1/3}"><i class="bullhorn icon"></i> Level-1-3</a></div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+		<div class="column" sec:authorize="hasRole('vip2')">
+			//省略菜单具体内容
+		</div>
+		<div class="column" sec:authorize="hasRole('vip3')">
+			//省略菜单具体内容
+		</div>
+		```
+
+## 记住我以及首页定制
+
+- 记住我
+
+	```java
+	//开启记住我功能,cookie 默认保存两周
+	http.rememberMe();
+	```
+
+- 自定义登录页面
+
+	```java
+	http.formLogin().loginPage("/toLogin");
+	```
+
+	也可以再添加很多方法：
+
+	- usernameParameter() : 用户名的参数名
+	- passwordParameter()：密码的参数名
+	- loginProcessingUrl()：登录请求的地址,也就是表单提交的地址
+
+- 同样也可以在自定义的登录界面加上记住我
+
+	- 前端
+
+		```html
+		<input type="checkbox" name="remember"> 记住我
+		```
+
+	- 后端
+
+		```java
+		http.rememberMe().rememberMeParameter("remember");
+		```
+
+
+
