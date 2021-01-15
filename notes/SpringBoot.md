@@ -716,5 +716,11 @@ http.logout().logoutSuccessUrl("/");
 		http.rememberMe().rememberMeParameter("remember");
 		```
 
+# Shiro
+
+1. 导入依赖
+2. 配置文件
+3. HelloWorld
+
 
 
