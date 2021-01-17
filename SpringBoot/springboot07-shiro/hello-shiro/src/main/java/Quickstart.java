@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class Quickstart {
 
-    //
+
     private static final transient Logger log = LoggerFactory.getLogger(Quickstart.class);
 
 
@@ -53,7 +53,9 @@ public class Quickstart {
 
             }
         }
+
         log.info("User [" + currentUser.getPrincipal() + "] logged in successfully.");
+
 
         if (currentUser.hasRole("schwartz")) {
             log.info("May the Schwartz be with you!");
@@ -61,12 +63,14 @@ public class Quickstart {
             log.info("Hello, mere mortal.");
         }
 
+        //粗粒度
         if (currentUser.isPermitted("lightsaber:wield")) {
             log.info("You may use a lightsaber ring.  Use it wisely.");
         } else {
             log.info("Sorry, lightsaber rings are for schwartz masters only.");
         }
 
+        //细粒度
         if (currentUser.isPermitted("winnebago:drive:eagle5")) {
             log.info("You are permitted to 'drive' the winnebago with license plate (id) 'eagle5'.  " +
                     "Here are the keys - have fun!");
@@ -74,8 +78,10 @@ public class Quickstart {
             log.info("Sorry, you aren't allowed to drive the 'eagle5' winnebago!");
         }
 
+        //注销
         currentUser.logout();
 
+        //结束系统
         System.exit(0);
     }
 }

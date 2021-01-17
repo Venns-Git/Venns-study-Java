@@ -718,9 +718,160 @@ http.logout().logoutSuccessUrl("/");
 
 # Shiro
 
+三大对象:
+
+- subject：用户
+- SecurityManager：管理所有用户
+- Realm：连接数据
+
+## 快速上手
+
 1. 导入依赖
-2. 配置文件
+
+	```java
+	<dependencies>
+	    <dependency>
+	        <groupId>org.apache.shiro</groupId>
+	        <artifactId>shiro-core</artifactId>
+	        <version>1.4.0</version>
+	    </dependency>
+	    <!-- configure logging -->
+	    <dependency>
+	        <groupId>org.slf4j</groupId>
+	        <artifactId>jcl-over-slf4j</artifactId>
+	        <version>1.7.30</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.slf4j</groupId>
+	        <artifactId>slf4j-log4j12</artifactId>
+	        <version>1.7.7</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>log4j</groupId>
+	        <artifactId>log4j</artifactId>
+	        <version>1.2.17</version>
+	    </dependency>
+	</dependencies>
+	```
+
+2. 配置文件 ------  log4j.properties (log4j配置文件)   ,   shiro.ini (shiro用户及角色权限)
+
 3. HelloWorld
 
+```java
+//获取当前的用户对象 subject
+Subject currentUser = SecurityUtils.getSubject();
+//通过当前用户拿到session
+Session session = currentUser.getSession();
+//判断当前用户是否被认证
+currentUser.isAuthenticated()
+//获取当前用户的认证
+currentUser.getPrincipal()
+//判断当前用户是否具有某种角色
+currentUser.hasRole()
+//判断当前用户是否具有某种权限
+currentUser.isPermitted()
+//注销    
+currentUser.logout();   
+```
 
+## SpringBoot集成
 
+1. 搭建一个基本的springboot的web框架，测试环境是否正常
+
+2. 导入依赖
+
+	```xml
+	<dependency>
+	   <groupId>org.apache.shiro</groupId>
+	   <artifactId>shiro-spring</artifactId>
+	   <version>1.4.1</version>
+	</dependency>
+	```
+
+3. 自定义Realm对象
+
+	```java
+	//自定义的 UserRealm
+	public class UserRealm extends AuthorizingRealm {
+	
+	    //授权
+	    @Override
+	    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+	        System.out.println("执行了 => 授权doGetAuthorizationInfo");
+	        return null;
+	    }
+	
+	    //认证
+	    @Override
+	    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+	        System.out.println("执行了 => 授权doGetAuthenticationInfo");
+	        return null;
+	    }
+	}
+	```
+
+4. 编写ShiroConfig
+
+	```java
+	@Configuration
+	public class ShiroConfig {
+	
+	    //第三步：ShiroFilterFactoryBean
+	    @Bean
+	    public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("getDefaultWebSecurityManager") DefaultWebSecurityManager defaultWebSecurityManager){
+	        ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
+	        //设置安全管理器
+	        factoryBean.setSecurityManager(defaultWebSecurityManager);
+	        return factoryBean;
+	    }
+	
+	
+	    //第二步：DefaultWebSecurityManager
+	    @Bean
+	    public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("userRealm") UserRealm userRealm){
+	        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+	        //关联UserRealm
+	        securityManager.setRealm(userRealm);
+	
+	        return securityManager;
+	    }
+	
+	    //第一步：创建 Realm 对象，需要自定义
+	    @Bean
+	    public UserRealm userRealm(){
+	        return new UserRealm();
+	    }
+	
+	}
+	```
+
+## 登录拦截
+
+1. 在ShiroFilterFactoryBean添加Shiro的内置过滤器
+
+	```java
+	HashMap<String, String> filterMap = new LinkedHashMap<>();
+	
+	filterMap.put("/user/*","authc");
+	
+	factoryBean.setFilterChainDefinitionMap(filterMap);
+	/*
+		anon：无需认证就可访问
+	    authc：必须认证了才能访问
+	    user：必须拥有 记住我 才能用
+	    perms： 拥有对某个资源的权限才能访问
+	    role：拥有某个角色权限才能访问
+	*/
+	```
+
+	- 表示user下所有请求都必须认证才能访问
+
+2. 自定义登录界面，并在controller配置跳转
+
+	```java
+	//设置登录请求
+	factoryBean.setLoginUrl("/toLogin");
+	```
+
+	- 如果未认证，则跳转到自定义的登录界面
