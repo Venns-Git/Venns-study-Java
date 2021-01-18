@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+    <p th:text="${msg}"></p>
     <h1>登录</h1>
     <hr>
-    <form action="">
+    <form th:action="@{/login}">
         <p>
             username：
             <input type="text" name="username">
