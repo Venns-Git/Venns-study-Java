@@ -923,3 +923,37 @@ protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authent
     return new SimpleAuthenticationInfo("",password,"");
 }
 ```
+
+## 整合Mybatis
+
+1. 先编写数据库对应的 pojo,mapper,service
+
+2. 在UserRealm中调用Service层
+
+	```java
+	@Autowired
+	UserService userService;
+	```
+
+3. 认证中采用真实数据库
+
+	```java
+	//认证
+	@Override
+	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+	    System.out.println("执行了 => 授权doGetAuthenticationInfo");
+	
+	    UsernamePasswordToken token = (UsernamePasswordToken)authenticationToken;
+	
+	    //连接真实数据库
+	    User user = userService.queryUserByName(token.getUsername());
+	
+	    if (user == null){
+	        return null; //抛出UnknownAccountException 异常
+	    }
+	
+	    //密码认证:shiro做
+	    return new SimpleAuthenticationInfo("",user.getPwd(),"");
+	}
+	```
+

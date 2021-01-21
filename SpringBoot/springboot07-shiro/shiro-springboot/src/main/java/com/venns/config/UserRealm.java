@@ -26,16 +26,16 @@ public class UserRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         System.out.println("执行了 => 授权doGetAuthenticationInfo");
 
-        //用户名 密码
-        String name = "root";
-        String password = "123456";
-
         UsernamePasswordToken token = (UsernamePasswordToken)authenticationToken;
-        if (!token.getUsername().equals(name)){
-            return null; //抛出异常：UnknownAccountException
+
+        //连接真实数据库
+        User user = userService.queryUserByName(token.getUsername());
+
+        if (user == null){
+            return null; //抛出UnknownAccountException 异常
         }
 
         //密码认证:shiro做
-        return new SimpleAuthenticationInfo("",password,"");
+        return new SimpleAuthenticationInfo("",user.getPwd(),"");
     }
 }
