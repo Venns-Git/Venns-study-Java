@@ -957,3 +957,40 @@ protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authent
 	}
 	```
 
+## 用户授权
+
+1. 自定义授权规则
+
+	```java
+	filterMap.put("/user/add","perms[user:add]");
+	filterMap.put("user/update","perms[user:update]");
+	filterMap.put("/user/*","authc");
+	//设置未授权页面
+	 factoryBean.setUnauthorizedUrl("/noauth");
+	```
+
+2. ```java
+	@Override
+	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+	    System.out.println("执行了 => 授权doGetAuthorizationInfo");
+	
+	    SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+	
+	    //拿到当前登录的对象
+	    Subject subject = SecurityUtils.getSubject();
+	    User currentUser = (User) subject.getPrincipal(); //拿到user对象
+	
+	    //设置当前用户的权限,通过真实数据库获得
+	    info.addStringPermission(currentUser.getPerms());
+	
+	    return info;
+	}
+	```
+
+3. 在认证时密码认证改为
+
+	```java
+	//密码认证:shiro做
+	return new SimpleAuthenticationInfo(user,user.getPwd(),"");
+	```
+

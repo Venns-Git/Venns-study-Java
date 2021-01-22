@@ -29,12 +29,20 @@ public class ShiroConfig {
          */
         HashMap<String, String> filterMap = new LinkedHashMap<>();
 
+        /*
+            授权
+            表示有user这个角色，并且有add权限才能访问
+            正常情况下，没有授权会跳转到未授权页面
+         */
+        filterMap.put("/user/add","perms[user:add]");
+        filterMap.put("user/update","perms[user:update]");
         filterMap.put("/user/*","authc");
-
         factoryBean.setFilterChainDefinitionMap(filterMap);
 
         //设置登录请求
         factoryBean.setLoginUrl("/toLogin");
+        //设置未授权页面
+        factoryBean.setUnauthorizedUrl("/noauth");
 
         return factoryBean;
     }
@@ -55,5 +63,7 @@ public class ShiroConfig {
     public UserRealm userRealm(){
         return new UserRealm();
     }
+
+
 
 }

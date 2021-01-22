@@ -2,10 +2,13 @@ package com.venns.config;
 
 import com.venns.pojo.User;
 import com.venns.service.UserService;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 //自定义的 UserRealm
@@ -18,7 +21,17 @@ public class UserRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.out.println("执行了 => 授权doGetAuthorizationInfo");
-        return null;
+
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+
+        //拿到当前登录的对象
+        Subject subject = SecurityUtils.getSubject();
+        User currentUser = (User) subject.getPrincipal(); //拿到user对象
+
+        //设置当前用户二点权限
+        info.addStringPermission(currentUser.getPerms());
+
+        return info;
     }
 
     //认证
@@ -36,6 +49,6 @@ public class UserRealm extends AuthorizingRealm {
         }
 
         //密码认证:shiro做
-        return new SimpleAuthenticationInfo("",user.getPwd(),"");
+        return new SimpleAuthenticationInfo(user,user.getPwd(),"");
     }
 }

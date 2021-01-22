@@ -4578,7 +4578,11 @@ SELECT|sys.sys_config:null
       <Position>3</Position>
       <DataType>varchar(30)|0s</DataType>
     </column>
-    <key id="1118" parent="370" name="PRIMARY">
+    <column id="1118" parent="370" name="perms">
+      <Position>4</Position>
+      <DataType>varchar(100)|0s</DataType>
+    </column>
+    <key id="1119" parent="370" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
