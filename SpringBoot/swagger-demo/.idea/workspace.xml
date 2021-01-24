@@ -27,7 +27,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3e0c4b40-c67f-4971-88cf-48523f9c88d8" name="Default Changelist" comment="" />
+    <list default="true" id="3e0c4b40-c67f-4971-88cf-48523f9c88d8" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/venns/config/SwaggerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/venns/config/SwaggerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/venns/config/SwaggerConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/venns/config/SwaggerConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notes/Swagger.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../notes/Swagger.md" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -83,15 +88,13 @@
     <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -114,6 +117,7 @@
       <updated>1611393357431</updated>
       <workItem from="1611393361321" duration="1257000" />
       <workItem from="1611394717269" duration="1674000" />
+      <workItem from="1611470337420" duration="4717000" />
     </task>
     <servers />
   </component>

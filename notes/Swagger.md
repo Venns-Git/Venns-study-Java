@@ -51,3 +51,97 @@
 	```
 
 5. 测试运行: http://xxxx/swagger-ui/index.html
+
+## 配置Swagger信息
+
+Swagger的bean实例：Docket
+
+```java
+//配置了Swagger的Docket的bean实例
+@Bean
+public Docket docket(){
+    return new Docket(DocumentationType.SWAGGER_2);
+}
+```
+
+### 配置基本信息
+
+```java
+//配置Swagger信息 == apiInfo
+private ApiInfo apiInfo(){
+    Contact contact = new Contact("venns","http://venns.cn/","2396177829@qq.com");
+    return new ApiInfo("Venns\'Swagger",
+            "Hello Swagger",
+            "v1.0",
+            "http://venns.cn/",
+            contact,
+            "Apache 2.0",
+            "http://www.apache.org/licenses/LICENSE-2.0",
+            new ArrayList());
+}
+```
+
+再在Docket里面用自己配置的apiInfo
+
+```java
+@Bean
+public Docket docket(){
+    return new Docket(DocumentationType.SWAGGER_2)
+            .apiInfo(apiInfo())
+        	.enable(true); //默认开启swagger，为false则不开启swagger
+}
+```
+
+## 配置Swagger扫描接口
+
+Docket中的select方法
+
+```java
+//配置了Swagger的Docket的bean实例
+@Bean
+public Docket docket(){
+    return new Docket(DocumentationType.SWAGGER_2)
+            .apiInfo(apiInfo())
+            .select()
+            //RequestHandlerSelectors 配置要扫描接口的方式
+            /*
+                basePackage 扫描指定包
+                any 扫描全部
+                none 都不扫描
+                withClassAnnotation 扫描类上的注解
+                withMethodAnnotation 扫描方法上的注解
+             */
+            .apis(RequestHandlerSelectors.basePackage("com.venns.controller"))
+            //paths 指定路径
+            .paths(PathSelectors.ant("/venns/**"))
+            .build();
+}
+```
+
+## 配置Swagger的API文档分组
+
+```java
+.groupName("venns")
+```
+
+- 配置多个分组：配置多个Docket实例即可
+
+## 扫描实体类
+
+只要我们的接口的返回值存在实体类，就会被扫描到Swagger中，再添加对应注解即可
+
+```java
+@ApiModel("用户实体类")
+public class User {
+
+    @ApiModelProperty("用户名")
+    public String username;
+    @ApiModelProperty("密码")
+    public String password;
+}
+```
+
+### 其他注解
+
+- `@ApiOperation("")`：放在controller类的方法上
+- `@ApiParam("")`：放在方法的参数前
