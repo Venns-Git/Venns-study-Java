@@ -728,7 +728,7 @@ http.logout().logoutSuccessUrl("/");
 
 1. 导入依赖
 
-	```java
+	```xml
 	<dependencies>
 	    <dependency>
 	        <groupId>org.apache.shiro</groupId>
@@ -994,3 +994,121 @@ protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authent
 	return new SimpleAuthenticationInfo(user,user.getPwd(),"");
 	```
 
+# 任务
+
+## 异步任务
+
+编写一个异步service，睡眠3s
+
+AsyncService
+
+```java
+@Service
+public class AsyncService {
+
+    public void hello(){
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("数据正在处理....");
+    }
+}
+```
+
+AsyncController
+
+```java
+@RestController
+public class AsyncController {
+
+    @Autowired
+    AsyncService asyncService;
+
+    @RequestMapping("/hello")
+    public String hello(){
+        asyncService.hello();
+        return "OK";
+    }
+}
+```
+
+这样，当用户访问/hello请求时，网页会加载3s，但是springboot可以解决这一问题
+
+1. 在异步任务的方法上（AsyncService.hello()）添加`@Async`注解
+
+2. 在主应用类上添加`@EnableAsync`注解
+
+## 邮件任务
+
+1. 导入依赖
+
+	```xml
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-mail</artifactId>
+	</dependency>
+	```
+
+2. 配置相关信息
+
+	```properties
+	# 邮箱账号
+	spring.mail.username=2396177829@qq.com
+	# 密码,smtp授权码
+	spring.mail.password=umvxqfxeoqnaeahb
+	# 邮箱类型
+	spring.mail.host=smtp.qq.com
+	# 开启加密验证,qq邮箱需要
+	spring.mail.properties.mail.smtl.ssl.enable=true
+	```
+
+3. 测试
+
+	```java
+	@Autowired
+	JavaMailSenderImpl javaMailSender;
+	
+	@Test
+	void contextLoads() {
+	    //一个简单的邮件
+	    SimpleMailMessage message = new SimpleMailMessage();
+	    message.setSubject("邮件标题");
+	    message.setText("邮件内容");
+	    message.setTo("");//接收者邮箱
+	    message.setFrom("");//发送者邮箱
+	    javaMailSender.send(message);
+	}
+	
+	@Test
+	void contextLoads2() throws MessagingException {
+	    //一个复杂的邮件
+	    MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+	
+	    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true,"utf-8");
+	    helper.setSubject("邮件标题");
+	    helper.setText("邮件内容",true);//true表示会转义为html
+	    helper.addAttachment("1.jpg",new File("")); //附件
+	    helper.setTo(""); //接收者邮箱
+	    helper.setFrom(""); //发送者邮箱
+	    javaMailSender.send(mimeMessage);
+	}
+	```
+
+## 定时任务
+
+1. 主应用类加上`@EnableScheduling`注解开启定时任务
+
+2. 在需要执行定时任务的方法上加上`@Scheduled(cron = "")`注解，值为cron表达式
+
+	```java
+	//cron表达式
+	//秒 分 时 日 月 周几
+	@Scheduled(cron = "30 0/5 10,18 * *  1-6") //表示周一到周六的10点和18点，每隔5分钟执行一次
+	public void hello(){
+	    System.out.println("hello world");
+	}
+	```
+
+	
