@@ -7,15 +7,17 @@
     <groupId>com.venns</groupId>
     <artifactId>SpringCloud</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>springcloud-api</module>
+        <module>springcloud-provider-dept-8001</module>
+    </modules>
 
     <!-- 打包方式：pom   -->
     <packaging>pom</packaging>
     <properties>
         <porject.build.sourceEncoding>UTF-8</porject.build.sourceEncoding>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.targer>14</maven.compiler.targer>
         <junit.version>4.12</junit.version>
-        <lombok.version>1.16.10</lombok.version>
+        <lombok.version>1.18.18</lombok.version>
         <log4j.version>1.2.17</log4j.version>
     </properties>
 
