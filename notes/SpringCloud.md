@@ -12,3 +12,16 @@
 - SpringCloud是关注全局的微服务协调治理框架，它将SpringBoot开发的一个个单体微服务整合并管理起来，为各个微服务之间提供 配置管理，服务发现，断路器，路由，微代理，路由等等集成服务
 - SpringBoot可以离开SpringCloud独立使用，开发项目，但是SpringCloud离不开SpringBoot，属于依赖关系
 - **SpringBoot专注于快速，方便的开发单个个体微服务，SpringCloud关注全局的服务治理框架**
+
+## SpringCloud能干嘛
+
+- Distributed/versioned configuration （分布式/版本控制）
+- Service registration and discovery （服务注册与发现）
+- Routing （路由）
+- Service-to-service calls （服务到服务之间的调用）
+- Load balancing （负载均衡）
+- Circuit Breakers （断路器）
+- Global locks （全局锁）
+- Distributed messaging （分布式消息管理）
+- .....
+
