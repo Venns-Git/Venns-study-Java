@@ -25,3 +25,7 @@
 - Distributed messaging （分布式消息管理）
 - .....
 
+# Eureka服务注册与发现
+
+Eureka是Netfix的一个子模块，也是核心模块之一，Eureka是一个基于REST的服务，用于定位服务，以实现云端中间层服务发现和故障转移，功能类似于Dubbo的注册中心
+
