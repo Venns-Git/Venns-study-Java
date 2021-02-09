@@ -29,3 +29,58 @@
 
 Eureka是Netfix的一个子模块，也是核心模块之一，Eureka是一个基于REST的服务，用于定位服务，以实现云端中间层服务发现和故障转移，功能类似于Dubbo的注册中心
 
+## 原理简述
+
+- 采用C-S架构设计，EurekaServer作为服务注册功能的服务器
+
+- 系统中的其他微服务，使用Eureka的客户端连接到EurekaServer并维持心跳连接，这样系统的维护人员就可以通过EurekaServer来监控系统中各个微服务是否正常运行，SpringCloud的一些其他模块（比如Zuul）就可以通过EurekaServer来发现系统中的其他微服务，并执行相关的逻辑
+- Eureka包含两个组件：**Eureka Server** 和 **Eureka Client**
+- Eureka Server：提高服务注册服务，各个节点启动后，会在Eureka中进行注册，这样Eureka Server中的服务注册表中会将会话中所有可用节点的信息，服务节点的信息在界面中直观的看到
+- Eureka Client：是一个Java客户端，用于简化EurekaServer的交互，客户端同时也具备一个内置的，使用轮询负载算法的负载均衡器，在应用启动后，会向EurekaServer发送心跳（默认周期为30s），如果Eureka Server在多个心跳周期内没有接收到某个节点的心跳，EurekaServer会从服务注册表中把这个服务节点删除掉（默认周期为90s）
+- 三大角色
+	- Eureka Server:提高服务的注册与发现
+	- Service Provider：将自身服务注册到Eureka中，从而使消费方能够找到
+	- Service Consumer：服务消费方从Eureka中获取注册服务列表，从而找到消费服务
+
+## 简单应用
+
+### 服务端
+
+1. 新建一个model，导入eureka依赖
+
+	```xml
+	<dependency>
+	    <groupId>org.springframework.cloud</groupId>
+	    <artifactId>spring-cloud-starter-eureka-server</artifactId>
+	    <version>1.4.6.RELEASE</version>
+	</dependency>
+	```
+
+2. 编写配置文件：application.yml
+
+	```yaml
+	server:
+	  port: 7001
+	
+	# Eureka配置
+	eureka:
+	  instance:
+	    hostname: localhost # Eureka服务端的实例名称
+	  client:
+	    register-with-eureka: false # 表示是否向Eureka注册中心注册自己
+	    fetch-registry: false # 如果为false，则表示自己为注册中心
+	    service-url: # 监控页面
+	      defaultZone: http://${eureka.instance.hostname}:${server.port}/erueka/
+	```
+
+3. 新建主启动类，加上`@EnableEurekaServer`注解
+
+	```java
+	@SpringBootApplication
+	@EnableEurekaServer
+	public class EurekaServer_7001 {
+	    public static void main(String[] args) {
+	        SpringApplication.run(EurekaServer_7001.class,args);
+	    }
+	}
+	```

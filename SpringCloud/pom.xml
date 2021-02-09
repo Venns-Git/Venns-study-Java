@@ -11,6 +11,7 @@
         <module>springcloud-api</module>
         <module>springcloud-provider-dept-8001</module>
         <module>springcloud-consumer-dept-80</module>
+        <module>springcloud-Eureka-7001</module>
     </modules>
 
     <!-- 打包方式：pom   -->
@@ -37,7 +38,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.1.4.RELEASE</version>
+                <version>2.2.5.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
