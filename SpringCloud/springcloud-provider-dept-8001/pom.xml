@@ -11,6 +11,16 @@
 
     <artifactId>springcloud-provider-dept-8001</artifactId>
     <dependencies>
+        <!--加入Eureka依赖-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+            <version>1.4.7.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
         <!--我们需要拿到实体类 需要配置api module-->
         <dependency>
             <groupId>com.venns</groupId>

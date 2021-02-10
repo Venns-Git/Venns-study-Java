@@ -19,3 +19,10 @@ spring:
     username: root
     password: 123456
     url: jdbc:mysql://localhost:3306/db01?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+
+# Eureka的配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+

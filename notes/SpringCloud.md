@@ -41,6 +41,7 @@ Eureka是Netfix的一个子模块，也是核心模块之一，Eureka是一个�
 	- Eureka Server:提高服务的注册与发现
 	- Service Provider：将自身服务注册到Eureka中，从而使消费方能够找到
 	- Service Consumer：服务消费方从Eureka中获取注册服务列表，从而找到消费服务
+- Eureka也具有自我保护机制，简单来说就是某个时刻某个服务不可以用了，Eureka不会立刻清理，而是会保存该服务信息
 
 ## 简单应用
 
@@ -84,3 +85,37 @@ Eureka是Netfix的一个子模块，也是核心模块之一，Eureka是一个�
 	    }
 	}
 	```
+
+- 启动之后直接访问配置的端口即可
+
+### 服务注册
+
+1.  在服务提供者中添加依赖
+
+	```xml
+	<dependency>
+	    <groupId>org.springframework.cloud</groupId>
+	    <artifactId>spring-cloud-starter-eureka</artifactId>
+	    <version>1.4.7.RELEASE</version>
+	</dependency>
+	<!--监控信息-->
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-actuator</artifactId>
+	</dependency>
+	```
+
+2. 编写配置
+
+	```yaml
+	# Eureka的配置
+	eureka:
+	  client:
+	    service-url:
+	      service-url:
+	        defaultZone: http://localhost:7001/erueka/
+	```
+
+	即配置Eureka服务端的地址
+
+3. 为服务提供者的主启动类添加注解`@EnbaleEurekaClient`,表示这是一个Eureka的客户端，服务启动后，自动注册到Eureka中
