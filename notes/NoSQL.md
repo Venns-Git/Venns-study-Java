@@ -55,5 +55,5 @@ NoSQL == Not only SQL (不仅仅是SQL)
 - Neo4j
 - InfoGrid
 
-![image-20210218200033144](D:%5C%E5%AD%A6%E4%B9%A0%5CVenns_study%5CVenns-study%5Cnotes%5Cimage-20210218200033144.png)
+![image-20210218200033144](image-20210218200033144.png)
 
