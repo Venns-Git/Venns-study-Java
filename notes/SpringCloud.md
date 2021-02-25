@@ -168,4 +168,4 @@ Ribbon：基于Netfix Ribbon实现的一套客户端负载均衡的工具
 
 ## 能干嘛？
 
-- LB，即负载均衡（Load Balance），在微服务或分布式
+- LB，即负载均衡（Load Balance），在微服务或分布式，
