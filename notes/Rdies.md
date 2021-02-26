@@ -24,3 +24,18 @@ Redis(Remote Dictionary Server),即远程字典服务
 3. 集群
 4. 事务
 5. ......
+
+## 基本命令
+
+```bash
+redis-cli -p 6379 # 使用Redis客户端进行连接
+ping # 测试连接，连接成功返回pong
+set xxx xxx # 创建键值对
+get xxx # 获取ky对应的value
+keys * # 查看所有的key
+```
+
+## 测试性能
+
+**redis-benchmark**  压力测试工具
+
