@@ -178,19 +178,19 @@ redis-benchmark -h loaclhost -p 6379 -c 100 -n 100000
 
 ### List
 
-在reids里，可以把list做成栈，队列，redis里所有list的操作命令，都以L开头
+在reids里，可以把list当成双端队列，redis里所有list的操作命令，都以L开头
 
-> LPUST [key] [value]...
+> LPUST/RPUSH  [key] [value]...
 
-往key里从头部添加value,value可以多个
-
-> RPUSH [key] [value]...
-
-往key里从尾部添加value,value可以多个
+将一个或多个值从列表头部/尾部插入
 
 > LRANGE [key] [start] [end]
 
-从头部查看列表中start到end位置的值，
+从头部查看列表中start到end位置的值
+
+> LPOP/RPOP [key] 
+
+将左边/右边的值移出list
 
 ## 三种特殊数据类型
 
