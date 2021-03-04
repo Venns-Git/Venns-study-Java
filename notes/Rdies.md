@@ -176,7 +176,7 @@ redis-benchmark -h loaclhost -p 6379 -c 100 -n 100000
 
 获取key原来的value并设置新的value
 
-### List
+### List（列表）
 
 在reids里，可以把list当成双端队列，redis里所有list的操作命令，都以L开头
 
@@ -191,6 +191,34 @@ redis-benchmark -h loaclhost -p 6379 -c 100 -n 100000
 > LPOP/RPOP [key] 
 
 将左边/右边的值移出list
+
+> lindex [key] [index]
+
+通过下标获取list的值
+
+> Llen [key]
+
+返回列表的长度
+
+> lrem [key] [count] [value]
+
+移除指定个数的值
+
+> ltrim [key] [start] [end]
+
+截取list指定位置的值，list只剩下截取的元素
+
+> rpoplpush [source] [destination]
+
+移除源列表的最后一个元素到目标列表
+
+> lset [key] [index] [value]
+
+替换列表中指定下标的值
+
+> LINSERT [key]  [before]|[after] [pivot] [value]
+
+在列表中将指定的值(value)插入到原来的值(pivot)的前面或后面
 
 ## 三种特殊数据类型
 
