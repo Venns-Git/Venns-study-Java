@@ -180,6 +180,8 @@ redis-benchmark -h loaclhost -p 6379 -c 100 -n 100000
 
 在reids里，可以把list当成双端队列，redis里所有list的操作命令，都以L开头
 
+#### 基本命令
+
 > LPUST/RPUSH  [key] [value]...
 
 将一个或多个值从列表头部/尾部插入
@@ -200,6 +202,8 @@ redis-benchmark -h loaclhost -p 6379 -c 100 -n 100000
 
 返回列表的长度
 
+#### 复杂命令
+
 > lrem [key] [count] [value]
 
 移除指定个数的值
@@ -219,6 +223,72 @@ redis-benchmark -h loaclhost -p 6379 -c 100 -n 100000
 > LINSERT [key]  [before]|[after] [pivot] [value]
 
 在列表中将指定的值(value)插入到原来的值(pivot)的前面或后面
+
+### Set（集合）
+
+**无序不重复集合**
+
+#### 基本命令
+
+> sadd [key] [value]...
+
+往集合中添加元素
+
+> smembers [key]
+
+查看集合中的元素
+
+> sismember [key] [value]
+
+判断集合中是否存在指定值
+
+> scard [key]
+
+查看集合中元素个数
+
+> srem [key] [value]...
+
+移除集合中的值
+
+#### 复杂命令
+
+> srandmember [key] [count]
+
+随机获取集合中指定个数的元素
+
+> spop [key] [count]
+
+随机移除集合中指定个数的元素
+
+> smove [source] [destination] [member]
+
+将源集合中指定值移动到目标集合
+
+> sdiff [key] [key]...
+
+查看指定集合的查集（集合1存在，集合2不存在的元素）
+
+> sinter [key] [key]...
+
+查看指定集合的交集 （集合1和集合2共同存在的元素）
+
+> sunion [key]  [key]..
+
+查看指定集合的并集 （集合1和集合2存在的所有元素）
+
+### Hash（哈希）
+
+> hset [key] [field] [value]
+
+向指定集合添加K-V键值对
+
+> hget [key] [field]
+
+获取指定集合中指定键的值
+
+> hmset [key] [field] [value] [field value...]
+
+
 
 ## 三种特殊数据类型
 
