@@ -278,6 +278,10 @@ redis-benchmark -h loaclhost -p 6379 -c 100 -n 100000
 
 ### Hash（哈希）
 
+Map集合，本质和String 类型没有太大区别，还是一个简单key-value
+
+#### 基本操作
+
 > hset [key] [field] [value]
 
 向指定集合添加K-V键值对
@@ -286,9 +290,65 @@ redis-benchmark -h loaclhost -p 6379 -c 100 -n 100000
 
 获取指定集合中指定键的值
 
+> hdel [key] [filed..]
+
+删除hash指定key，对应的valu也会被删除
+
+> hlen [key]
+
+查看hash中K-V键值对的个数
+
+> hexists [key] [field]
+
+判断hash中的指定字段是否存在
+
+#### 批量操作
+
 > hmset [key] [field] [value] [field value...]
 
+批量设置键值对
 
+> hget [key] [field...]
+
+批量获取键对应的值
+
+> hgetall [key]
+
+获取hash中所有的键值对
+
+> hkeys [key]
+
+获取全部的key
+
+> hvals [key]
+
+获取全部的value
+
+#### 其他命令
+
+> hincrby [key] [key] [step]
+
+将hash中的指定key自增指定step
+
+> hsetnx [key] [filed] [value]
+
+如果不存在则设置键值对
+
+### Zset（有序集合）
+
+#### 基本命令
+
+> zadd [key] [NX|XX] [CH] [INCR] score member [score member ...] 
+
+ 往集合里添加数据
+
+> zrange [key] [start] [value]
+
+查看指定位置上的值
+
+> zrangebyscore [score] [min] [max] [withscores]
+
+按照符合指定区间的score排序，如果min为-inf（负无穷），max为+inf（正无穷）则排序所有,如果加 上withscores则显示score的值
 
 ## 三种特殊数据类型
 
