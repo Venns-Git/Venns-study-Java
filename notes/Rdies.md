@@ -350,7 +350,71 @@ Map集合，本质和String 类型没有太大区别，还是一个简单key-val
 
 按照符合指定区间的score排序，如果min为-inf（负无穷），max为+inf（正无穷）则排序所有,如果加 上withscores则显示score的值
 
+> zrem [key]  [member...]
+
+移除集合中指定的元素
+
+> zcard [key]
+
+获取集合中的元素个数
+
+> zcount [key] [min] [max]
+
+获取集合指定区间的元素个数
+
 ## 三种特殊数据类型
+
+### Geospatial 地理位置
+
+> geoadd [key] [longitude] [latitude] [member]
+
+添加地理位置，格式为：集合名，纬度，经度，名字
+
+> geopos [key] [member]
+
+从集合中获取指定位置的经纬度
+
+> geodist [key] [member1] [member2] [unit]
+
+获取集合中指定两个位置的距离，unit为单位
+
+> georadius [key] [longitude] [latitude] [radius] [unit] [withcoord] [withdist] count [number]
+
+获取指定位置的指定半径内的所有元素
+
+参数说明：
+
+- withcoord：显示符合条件的经纬度
+- withdist：显示距离
+- count number：显示指定个数，如：count 1
+
+> georadiusbymember [key] [member] [radius] [unit] [withcoord] [withdist] count [number]
+
+获取集合中指定地点的的指定半径内的元素
+
+> geohash [key] [member...]
+
+获取指定地点的的11位字符的geohash字符串
+
+### Hyperloglog
+
+是一种数据结构， 用于做基数统计。
+
+> pfadd [key] [element...]
+
+往key里添加数据
+
+> pfcount [key...]
+
+统计key里数据个数
+
+> pfmerge [destkey] [sourcekey...]
+
+将sourcekey合并生成到destkey
+
+
+
+
 
 
 
