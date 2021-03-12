@@ -599,5 +599,196 @@ QUEUED
 	OK
 	```
 
+## Jedis
 
+> Redis官方推荐的Java连接开发工具，使用Java操作Redis的中间件，如果要使用Java操作Redis，一定要对Jedis熟悉
+
+### 简单测试
+
+1. 新建maven项目，导入对应依赖
+
+	```xml
+	<dependencies>
+	        <dependency>
+	            <groupId>redis.clients</groupId>
+	            <artifactId>jedis</artifactId>
+	            <version>3.3.0</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>com.alibaba</groupId>
+	            <artifactId>fastjson</artifactId>
+	            <version>1.2.74</version>
+	        </dependency>
+	</dependencies>
+	```
+
+2. 编码测试
+
+	- 连接数据库
+	- 操作命令，即Jedis对象.方法名()，方法名即为redis命令名。
+	- 断开连接
+
+	```java
+	public class TestPing {
+	    public static void main(String[] args) {
+	
+	        // 1.创建Jedis对象,连接服务器,需要先打开Redis服务,开放端口等等
+	        Jedis jedis = new Jedis("127.0.0.1",6379);
+	
+	        // 2.测试连接
+	        System.out.println(jedis.ping());
+	
+	        // 3. 关闭连接
+	        jedis.close();
+	    }
+	}
+	```
+
+### 常用API
+
+和Redis的命令同名，即Jedis对象.命令名()
+
+### 事务操作
+
+```java
+public class TestTX {
+    public static void main(String[] args) {
+
+        // 1.连接Redis
+        Jedis jedis = new Jedis("127.0.0.1",6379);
+
+        // 2.创建命令
+        jedis.flushDB();
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("hello","world");
+        jsonObject.put("name","venns");
+
+        // 3.开启事务
+        Transaction multi = jedis.multi();
+
+        // 4.执行命令
+        String result = jsonObject.toJSONString();
+        //jedis.watch(result); //添加监控
+        try {
+            multi.set("user1",result);
+            multi.set("user2",result);
+            // int i = 1 / 0; //代码抛出异常，执行失败
+            //如果成功则执行事务
+            multi.exec();
+        } catch (Exception e) {
+            // 如果失败，则放弃事务
+            multi.discard();
+            e.printStackTrace();
+        } finally {
+            System.out.println(jedis.get("user1"));
+            System.out.println(jedis.get("user2"));
+            // 5.关闭连接
+            jedis.close();
+        }
+    }
+}
+```
+
+## SpringBoot整合Redis
+
+在springboot2.x之后，原来使用的Jedis被替换成了lettuce
+
+jedis：采用的是直连方式，多个线程操作的话，是不安全的，如果想要避免不安全，可以使用 jedis pool 连接池，更像BIO模式
+
+lettuce：采用nettty，实例可以在多个线程中进行共享，不存在线程不安全的情况，可以减少线程数量，更像NIO模式
+
+#### 源码分析
+
+```java
+@ConditionalOnClass({RedisOperations.class})
+@EnableConfigurationProperties({RedisProperties.class})
+@Import({LettuceConnectionConfiguration.class, JedisConnectionConfiguration.class})
+public class RedisAutoConfiguration {
+    public RedisAutoConfiguration() {
+    }
+
+    //我们可以自己定义一个RedisTemplate来替换这个默认的
+    @Bean
+    @ConditionalOnMissingBean(
+        name = {"redisTemplate"}
+    )
+    @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
+    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        // 默认的RedisTemplate 没有过多的设置，redis 的对象都需要序列化
+        // 两个泛型都是Object类型，我们后面使用需要强制转换<String,Object>
+        RedisTemplate<Object, Object> template = new RedisTemplate();
+        template.setConnectionFactory(redisConnectionFactory);
+        return template;
+    }
+
+    // 由于String类型是Redis中最常用的类型，所以单独写了一个bean
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnSingleCandidate(RedisConnectionFactory.class)
+    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        StringRedisTemplate template = new StringRedisTemplate();
+        template.setConnectionFactory(redisConnectionFactory);
+        return template;
+    }
+}
+```
+
+#### 整合测试
+
+1. 导入依赖
+
+	```xml
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-data-redis</artifactId>
+	</dependency>
+	```
+
+2. 配置连接
+
+	```properties
+	# 配置redis
+	# 服务器默认就是localhost
+	spring.redis.host=127.0.0.1 
+	spring.redis.port=6379
+	```
+
+	如果需要配置连接池之类，推荐使用lettuce下的配置，因为jedis中有许多类未能注入成功。
+
+3. 测试连接
+
+	```java
+	@SpringBootTest
+	class RedisSpringbootApplicationTests {
+	
+	    @Autowired
+	    private RedisTemplate redisTemplate;
+	
+	    @Test
+	    void contextLoads() {
+	
+	        // RedisTemplate
+	        /*
+	            opsForValue 操作字符串，类似String
+	            opsForList 操作list 类似List
+	            opsForSet
+	            opsFor...
+	         */
+	        // 除了基本的操作，我们常用的方法都可以直接通过redisTemplate操作，比如事务和基本的CRUD
+	
+	
+	        // 获取Redis连接对象
+	        RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
+	        connection.flushDb();
+	        connection.flushDb();
+	
+	        redisTemplate.opsForValue().set("name","venns");
+	        System.out.println(redisTemplate.opsForValue().get("name"));
+	    }
+	
+	}
+	```
+
+	
 
