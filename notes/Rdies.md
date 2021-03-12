@@ -412,6 +412,22 @@ Map集合，本质和String 类型没有太大区别，还是一个简单key-val
 
 将sourcekey合并生成到destkey
 
+### Bitmaps
+
+位图，通过操作二进制来进行记录，就只有0和1两个状态
+
+> setbit [key] [offset] [value]
+
+设置指定键的指定位的值
+
+> getbit [key] [offset]
+
+获取指定键的指定位的值
+
+> bitcount [key] [start] [end]
+
+获取指定键的有效位个数，也可以指定区间
+
 
 
 
