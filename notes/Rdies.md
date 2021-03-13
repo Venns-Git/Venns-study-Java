@@ -698,7 +698,7 @@ jedis：采用的是直连方式，多个线程操作的话，是不安全的，
 
 lettuce：采用nettty，实例可以在多个线程中进行共享，不存在线程不安全的情况，可以减少线程数量，更像NIO模式
 
-#### 源码分析
+### 源码分析
 
 ```java
 @ConditionalOnClass({RedisOperations.class})
@@ -734,7 +734,7 @@ public class RedisAutoConfiguration {
 }
 ```
 
-#### 整合测试
+### 整合测试
 
 1. 导入依赖
 
@@ -790,5 +790,73 @@ public class RedisAutoConfiguration {
 	}
 	```
 
-	
+### 对象的序列化
+
+RedisTemplate中的序列化设置:
+
+```java
+@Nullable
+private RedisSerializer<?> defaultSerializer;
+@Nullable
+private ClassLoader classLoader;
+@Nullable
+private RedisSerializer keySerializer = null;
+@Nullable
+private RedisSerializer valueSerializer = null;
+@Nullable
+private RedisSerializer hashKeySerializer = null;
+@Nullable
+private RedisSerializer hashValueSerializer = null;
+private RedisSerializer<String> stringSerializer = RedisSerializer.string();
+```
+
+```java
+if (this.defaultSerializer == null) {
+            this.defaultSerializer = new JdkSerializationRedisSerializer(this.classLoader != null ? this.classLoader : this.getClass().getClassLoader());
+        }
+```
+
+可以看出：RedisTemplate默认序列化采用JDK序列化，我们可能需要JSON序列化，就需要自己写一个Redis的配置类-RedisConfig
+
+```java
+@Configurable
+public class RedisConfig {
+
+    // 编写我们自己的redisTemplate
+    @Bean
+    public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) throws UnknownHostException {
+        // 为了开发方便，采用<String,Object>
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+
+        // 配置具体的序列化方式
+        // Json序列化配置
+        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance);
+        jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
+
+        // String 的序列化
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+
+        // key采用String的序列化
+        template.setKeySerializer(stringRedisSerializer);
+
+        // hash的key也采用String的序列化
+        template.setHashKeySerializer(stringRedisSerializer);
+
+        // value的序列化采用Jackson
+        template.setValueSerializer(jackson2JsonRedisSerializer);
+
+        // hash的value也采用Jackson
+        template.setHashValueSerializer(jackson2JsonRedisSerializer);
+
+        //使自定义序列化配置生效
+        template.afterPropertiesSet();
+
+        return template;
+    }
+}
+```
 
