@@ -860,3 +860,153 @@ public class RedisConfig {
 }
 ```
 
+## Redis.conf 详解
+
+Redis启动的时候，就通过配置文件来启动
+
+> 单位
+
+```bash
+# Note on units: when memory size is needed, it is possible to specify
+# it in the usual form of 1k 5GB 4M and so forth:
+#
+# 1k => 1000 bytes
+# 1kb => 1024 bytes
+# 1m => 1000000 bytes
+# 1mb => 1024*1024 bytes
+# 1g => 1000000000 bytes
+# 1gb => 1024*1024*1024 bytes
+#
+# units are case insensitive so 1GB 1Gb 1gB are all the same.
+
+################################## INCLUDES ###################################
+```
+
+1. 配置文件对大小写不敏感
+
+> 包含
+
+```bash
+# include .\path\to\local.conf
+# include c:\path\to\other.conf
+```
+
+2. 可以包含其他的配置文件
+
+> 网络
+
+```bash
+bind 127.0.0.1 # 绑定的ip
+protected-mode yes # 开启保护模式
+port 6379 # 端口配置
+```
+
+> 通用GENERAL
+
+```bash
+daemonize yes # 以守护进程的方式运行 默认是no 需要我们自己开启为yes
+pidfile /var/run/redis.pid # 如果以后台的方式运行 我们需要指定一个pid进程文件
+
+# 日志
+# Specify the server verbosity level.
+# This can be one of:
+# debug (a lot of information, useful for development/testing)
+# verbose (many rarely useful info, but not a mess like the debug level)
+# notice (moderately verbose, what you want in production probably) # 生产环境使用
+# warning (only very important / critical messages are logged)
+loglevel notice
+logfile "server_log.txt" # 日志文件的位置 如果为空就默认输出
+databases 16 # 数据库的数量 默认16个数量
+syslog-enabled yes # 是否显示启动logo
+```
+
+> 快照
+
+主要用于持久化操作，Redis是内存数据库，如果没有持久化，那么数据断电即失
+
+```bash
+save 900 1 # 如果900秒内 至少有1个key进行了修改 就进行持久化操作
+save 300 10 # 如果300秒内 至少有10个key进行了修改 就进行持久化操作
+save 60 10000 # 如果60秒内 至少有一个key进行了修改 就进行持久化操作
+
+stop-writes-on-bgsave-error yes # 持久化出错后 是否继续工作
+rdbcompression yes # 是否压缩rdb文件 需要消耗一些cpu文件
+rdbchecksum yes # 保存rdb文件的时候 进行错误的校验检查
+dir ./ # rdb文件保存的目录
+```
+
+> REPLICATION 主从复制 后面详细讲解
+
+> SECURITY 安全操作
+
+可以在这里设置Redis密码，默认没有密码
+
+```bash
+127.0.0.1:6379> ping # 测试连接
+PONG
+127.0.0.1:6379> config get requirepass # 获取登录密码
+1) "requirepass"
+2) ""
+127.0.0.1:6379> config set requirepass "123456" # 设置登录密码
+OK
+127.0.0.1:6379> config get requirepass # 获取密码
+(error) NOAUTH Authentication required. # 提示权限不管
+127.0.0.1:6379> auth 123456 # 使用密码登录
+OK
+127.0.0.1:6379> config get requirepass
+1) "requirepass"
+2) "123456"
+```
+
+> CLIENTS 限制
+
+```bash
+maxclients 10000 # 设置客户端最大连接数量
+maxmemory <bytes> # redis配置的最大内存容量
+maxmemory-policy noeviction # 内存上限处理策略
+# 六大策略
+# noeviction: 不删除策略, 达到最大内存限制时, 如果需要更多内存, 直接返回错误信息。（默认值）
+# allkeys-lru: 所有key通用; 优先删除最近最少使用(less recently used ,LRU) 的 key。
+# volatile-lru: 只限于设置了 expire 的部分; 优先删除最近最少使用(less recently used ,LRU) 的 key。
+# allkeys-random: 所有key通用; 随机删除一部分 key。
+# volatile-random: 只限于设置了 expire 的部分; 随机删除一部分 key。
+# volatile-ttl: 只限于设置了 expire 的部分; 优先删除剩余时间(time to live,TTL) 短的key。
+```
+
+> APPEND NOLY 模式 aof配置
+
+```bash
+appendonly no # 默认不开启aof模式 默认采用rdb方式进行持久化
+appendfilename "appendonly.aof" # 持久化的文件名
+
+# appendfsync always # 每次修改都会 sync，消耗性能
+appendfsync everysec # 每秒执行一次 sync（同步）可能会丢失这1秒的数据
+# appendfsync no # 不执行 sync，操作系统自己同步数据，速度最快
+```
+
+## Redis持久化
+
+Redis是内存数据库，如果不将内存中的数据库状态保存到磁盘，那么一旦服务器进程退出，服务器中的数据库状态也会消失，所以Redis提供了持久化功能
+
+### RDB（Redis Database）
+
+> 什么是RDB
+
+在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是Snapshot快照，它恢复时将快照文件直接读到内存里
+
+Redis会单独创建一个子进程来进行持久化，会先将数据写入到一个临时文件中，待持久化过程都结束了，再用这个临时文件替换上次持久化好的文件，整个过程中，主进程是不进行任何IO操作的，这就确保了极高的性能，如果需要进行大规模数据的恢复，且对于数据恢复的完整性不是非常敏感，那RDB方式要比任何AOP方式更加的高效，RDB的缺点是最后一次持久化的数据可能丢失。
+
+**Redis默认的持久化就是RDB，一般情况下不需要修改这个配置**
+
+**RDB保存的文件就是dump.rdb**
+
+### AOF
+
+> 什么是AOF
+
+以日志的形式来记录每个写操作，将Redis执行过的所有指令记录下来（除了读的操作），只许追加文件但不可以改写文件，Redis启动之初会读取该文件重新构建数据，换言之，Redis重启的化就工具日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作。
+
+**AOF保存的是appendonly.aof文件**
+
+
+
