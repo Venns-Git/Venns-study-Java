@@ -136,7 +136,7 @@ eureka:
     register-with-eureka: false 
     fetch-registry: false 
     service-url: 
-      defaultZone: http://localhost:7002/erueka/,http://localhost:7003/erueka/
+      defaultZone: http://localhost:7001/erueka/,http://localhost:7002/erueka/,http://localhost:7003/erueka/
 ```
 
 相对应的更改7002和7003的配置文件,再将服务提供者的发布地址增加7002，7003:
@@ -164,8 +164,59 @@ eureka:
 
 # Ribbon及负载均衡
 
-Ribbon：基于Netfix Ribbon实现的一套客户端负载均衡的工具
+## 是什么
 
-## 能干嘛？
+- Ribbon：基于Netfix Ribbon实现的一套**客户端负载均衡的工具**
 
-- LB，即负载均衡（Load Balance），在微服务或分布式，
+- 简单的说，Ribbon的主要功能式提供客户端的软件负载均衡算法，将NetFix的中间层服务连接再一起，Ribbon的客户端组件提供一系列的原则的配置项如：连接超时，重试等等。简单的说就是在配置文件中列出LoadBalancer（简称LB：负载均衡）后面所有的机器，Ribbon会自动帮你基于某种算法规则（如简单轮询，随机连接等等）去连接这些机器，我们也很容易使用Ribbon实现自定义的负载均衡算法
+
+## 能干嘛
+
+- LB，即负载均衡（Load Balance），在微服务或分布式集群中经常用的一种应用。
+- 负载均衡简单的说就是将客户的请求平摊的分配到多个服务上，从而达到系统的HA（高可用）。
+- 常见的负载均衡软件有Nginx，Lvs等等。
+- dubbo，SpringCloud都给我们提供了负载均衡，**SpringCloud的负载均衡算法可用自定义**
+
+- 负载均衡简单分类:
+	- 集中式LB
+		- 即在服务的消费方和提供方之间使用独立的LB设备，如Nginx，由改设施负责把访问请求通过某种策略转发至服务的提供方
+	- 进程式LB
+		- 将LB逻辑集成到消费方，消费方从服务注册中心获知有哪些地址可用，然后自己再从这些地址中选出一个合适的服务器
+		- **Ribbon就属于进程内LB**，它只是一个类库，集成于消费方进程，消费方通过它来获取到服务提供方的地址
+
+## 简单应用
+
+1. 服务消费者为80端口，进行Eureka配置
+
+	```yaml
+	# Eureka 配置
+	eureka:
+	  client:
+	    register-with-eureka: false # 不向Eureka中注册自己
+	    service-url:
+	      defaultZone: http://localhost:7001/eureka/,http://localhost:7002/eureka/,http://localhost:7003/eureka/
+	```
+
+2. 为原来的RestTemplate配置负载均衡
+
+	```java
+	@Configuration //--spring applicationContext.xml
+	public class ConfigBean {
+	
+	
+	    //配置负载均衡实现RestTemplate
+	    @Bean
+	    @LoadBalanced //Ribbon
+	    public RestTemplate getRestTemplate(){
+	        return new RestTemplate();
+	    }
+	}
+	```
+
+3. 将REST_URL改为服务名称，不再是一个固定的服务提供者的地址
+
+	```java
+	//private static final String REST_URL_PREFIX = "http://localhost:8081";
+	// 通过Ribbon实现的时候，地址应该是一个变量，通过服务名来进行访问
+	private static final String REST_URL_PREFIX = "http://SPRINGCLOUD-PROVIDER-DEPT";
+	```

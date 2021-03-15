@@ -12,6 +12,8 @@
         <module>springcloud-provider-dept-8001</module>
         <module>springcloud-consumer-dept-80</module>
         <module>springcloud-Eureka-7001</module>
+        <module>springcloud-Eureka-7002</module>
+        <module>springcloud-Eureka-7003</module>
     </modules>
 
     <!-- 打包方式：pom   -->
