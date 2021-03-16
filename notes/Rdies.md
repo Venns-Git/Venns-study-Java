@@ -1101,3 +1101,409 @@ auto-aof-rewrite-min-size 64mb # 重写限制
 	- 如果Enable AOF，好处是在最恶劣情况下也只会丢失不超过两秒数据，启动脚本较简单只load自己的AOF文件就可以了，代价一是带来了持续的IO，二是AOF rewrite的最后将rewrite过程中产生的新数据写到新文件造成的阻塞几乎是不可避免的。只要硬盘许可，应该尽量减少AOF rewrite的频率，AOF重写的基础大小默认值64M太小了，可以设到5G以上，默认超过原大小100%大小重写可以改到适当的数值。
 	- 如果不Enable AOF，仅靠Master-Slave Repllcation实现高可用性也可以，能省掉一大笔IO，也减少了rewrite时带来的系统波动。代价是如果Master/Slave 同时挂掉，会丢失 十几分钟的数据，启动脚本也要比较两个Master/Slave中的RDB文件，载入较新的那个，微博就是这种架构。
 
+## Redis发布订阅
+
+Redis发布订阅（pub/sub）是一种消息通信模式：发送者（pub）发送消息，订阅者（sub）接收消息
+
+Redis客户端可以订阅任意数量的频道
+
+订阅/发布消息步骤：
+
+1. 消息发布者（redis cli）发布消息到队列（Redis server）
+2. 多个消息订阅者（redis cli）接收队列的消息
+
+角色划分：
+
+1. 消息发送者
+2. 频道
+3. 消息订阅者
+
+### 命令
+
+> psubscribe [pattern...]
+
+订阅一个或多个符合给定模式的频道
+
+> pubsub subcommand [argument...]
+
+查看订阅与发布系统的状态
+
+> publish channel message
+
+将消息发送到指定的频道
+
+> punsubscribe [pattern...]
+
+推定所有给定模式的频道
+
+> subscribe [channel...]
+
+订阅给定的一个或多个项目的频道消息
+
+> unsubscribe [channel...]
+
+推定给定的频道
+
+### 原理
+
+- Redis 是使用 C 实现的，通过分析 Redis 源码里的 pubsub.c 文件，可以了解发布和订阅机制的底层实现，以此加深对 Redis的理解。 Redis通过 PUBLISH、SUBSCRIBE 和 PSUBSCRIBE 等命令实现发布和订阅功能。
+
+- 通过SUBSCRIBE 命令订阅某频道后，redis-server 里会维护一个字典，字典的键就是一个个 频道！而字典的值则是一个链表，链表中保存了所有订阅这个 channel 频道的客户端。SUBSCRIBE 命令的关键，就是将客户端添加到给定 channel 频道的订阅链表中。
+
+- 通过 PUBLISH 命令向订阅者发送消息，redis-server 会使用给定的频道作为键，在他锁维护的 channel 字典中查找记录了订阅这个频道的所有客户端的链表，遍历这个链表，将消息发布给所有订阅者。
+-  Pub/Sub 从字面上理解就是发布（Publish）与订阅（Subscribe） 在Redis中，你可以设定对某一个key值进行消息发布及消息订阅，当一个key值上进行了消息发布后，所有订阅它的客户端都会收到相应的消息。
+
+## Redis主从复制
+
+### 概念
+
+主从复制，是指将一台Redis服务器的数据，复制到其他的Redis服务器。前者称为主节点(master)，后者称为从节点(slave)；数据的复制是单向的，只能由主节点到从节点。
+
+**默认情况下，每台Redis服务器都是主节点；**且一个主节点可以有多个从节点(或没有从节点)，但一个从节点只能有一个主节点。
+
+**主从复制的作用主要包括：**
+
+1. 数据冗余：主从复制实现了数据的热备份，是持久化之外的一种数据冗余方式。
+2. 故障恢复：当主节点出现问题时，可以由从节点提供服务，实现快速的故障恢复；实际上是一种服务的冗余。
+3. 负载均衡：在主从复制的基础上，配合读写分离，可以由主节点提供写服务，由从节点提供读服务（即写Redis数据时应用连接主节点，读Redis数据时应用连接从节点），分担服务器负载；尤其是在写少读多的场景下，通过多个从节点分担读负载，可以大大提高Redis服务器的并发量。
+4. 高可用基石：除了上述作用以外，主从复制还是哨兵和集群能够实施的基础，因此说主从复制是Redis高可用的基础。
+
+一般来说，要将Redis运用于工程项目中，只使用一台Redis是万万不能的（宕机），原因如下：
+
+1. 从结构上，单个Redis服务器会发生单点故障，并且一台服务器需要处理所有的请求负载，压力较 大；
+
+2. 从容量上，单个Redis服务器内存容量有限，就算一台Redis服务器内存容量为256G，也不能将所有 内存用作Redis存储内存，一般来说，单台Redis大使用内存不应该超过20G。
+
+### 环境配置
+
+查看当前库的信息：
+
+```bash
+127.0.0.1:6379> info replication # 查看当前库的信息
+# Replication
+role:master # 角色
+connected_slaves:0 # 从机数量
+master_repl_offset:0 
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+```
+
+复制3个配置文件修改对应的信息，伪集群搭建：
+
+1. 端口
+2. pid 名字
+3. log文件名字
+4. dump.rdb文件名
+
+### 一主二从
+
+**默认情况下，每台Redis服务器都是主节点**，我们一般情况下只用配置从机即可
+
+```bash
+slaveof host prot
+```
+
+将自己作为指定主机的从机（认大哥）
+
+真实的主从配置应该在配置文件中配置，使用命令是暂时的。
+
+> 细节
+
+1. 主机可以写，从机只能读，主机中所有的信息和数据，都会被从机保存
+
+2. 如果使用命令行进行主从配置，从机如果重启就又变回主机了，只要又变为从机，立马就会从主机中获取值
+
+> 复制原理
+
+Slave 启动成功连接到 master 后会发送一个sync同步命令
+
+Master 接到命令，启动后台的存盘进程，同时收集所有接收到的用于修改数据集命令，在后台进程执行 完毕之后，**master将传送整个数据文件到slave，并完成一次完全同步。**
+
+全量复制：而slave服务在接收到数据库文件数据后，将其存盘并加载到内存中。
+
+增量复制：Master 继续将新的所有收集到的修改命令依次传给slave，完成同步 。
+
+但是只要是重新连接master，一次完全同步（全量复制）将被自动执行， 我们的数据一定可以在从机中看到。
+
+> 层层链路
+
+举例：79端口的服务作为主节点，80端口的服务为79端口的从节点，81端口是80端口的从节点，这时候，80端口依旧是从节点。
+
+> 主节点宕机后怎么办？
+
+主节点宕机后，从节点没有主节点怎么办? 通过命令让自己当主节点
+
+```bash
+slaveof no one
+```
+
+这时候，自己就是主节点，其他的节点就可以手动连接到最新的这个主节点，如果这个时候老大修复了，那就重新连接
+
+### 哨兵模式
+
+自动选举老大的模式
+
+> 概述
+
+当主服务器宕机后，需要手动把一台从服务器切换为主服务器，这就需要人工干预，费事费力，还会造成一段时间内服务不可用。这不是一种推荐的方式，更多时候，我们优先考虑哨兵模式。Redis2.8开始正式提供了Sentinel（哨兵）架构来解决这个问题
+
+谋朝篡位的自动版，能够后台监控主机是否故障，如果故障了根据投票数自动将库转换为主库（采取投票的模式）。
+
+哨兵模式是一种特殊的模式，首先Redis提供了哨兵的命令，哨兵是一个独立的进程，作为进程，它会独立运行（也就是说我们要开启一个新的进程）。其原理是**哨兵通过发送命令，等待Redis服务器响应，从而监控运行的多个Redis实例（就是我给你不断地发送命令，你不回我了，你就是死了）**
+
+![image-20210316125940193](image-20210316125940193.png)
+
+这里的哨兵有两个作用：
+
+- 通过发送命令，让Redis服务器返回监控其运行状态，包括主服务器和从服务器
+- 当哨兵监控到mater宕机，会自动将slave切换成master，然后通过**发布订阅模式**通知其他从服务器，修改配置文件，让他们切换主机
+
+然而一个哨兵进程对Redis服务器进行监控，可能会出现问题，为此，我们可以使用多个哨兵进行监控，各个哨兵之间还会进行监控，这样就形成了多哨兵模式
+
+![image-20210316131931736](image-20210316131931736.png)
+
+假设主服务器宕机，哨兵1先检测到这个结果，系统并不会马上进行failover过程，仅仅是哨兵1主观的认为主服务器不可用，这个现象成为**主观下线**。当后面的哨兵也检测到主服务器不可用，并且数量达到一定值时，那么哨兵之间就会进行一次投票，投票的结果由一个哨兵发起，进行failover[故障转移]操作。切换成功后，就会通过发布订阅模式，让各个哨兵把自己监控的从服务器实现切换主机，这个过程称为**客观下线**。
+
+> 测试
+
+目前的状态是1主2从
+
+1. 配置哨兵的配置文件 sentinel.conf
+
+	```bash
+	sentinel monitor myredis 127.0.0.1 6379 1
+	#sentinel monitor 被监控的名称 host port 1
+	```
+
+	数字1 为判断客观下线票数的临界点 代表主机宕机后，slave 投票选举主机，票数最多的，就会成为主机
+
+2. 启动哨兵
+
+	```bash
+	redis-sentinel kconfig/sentinel.conf
+	```
+
+3. 如果Master节点断开了，这个时候就会从从机中随机选择一个服务器（这里有一个投票算法），可以从哨兵日志查看最新的主节点，如果原来的主机重新连接，只能归并到最新的主机下，当作从机
+
+> 哨兵模式优缺点
+
+优点：
+
+1. 哨兵集群，基于主从复制，所有的主从配置，它全有
+2. 主从可以切换，故障可以转移，系统的可用性就会更好
+3. 哨兵模式就是主从模式的升级，手动到自动，更加健壮。
+
+缺点：
+
+1. Redis 不好在线扩容，集群容量一旦到达上限，在线扩容就十分麻烦
+2. 实现哨兵模式的配置其实是很麻烦的，里面有很多选择
+
+> 哨兵模式的全部配置
+
+```bash
+# Example sentinel.conf
+  
+# 哨兵sentinel实例运行的端口 默认26379，多个哨兵要配置多个哨兵端口，就是开启多个conf
+port 26379
+  
+# 哨兵sentinel的工作目录
+dir /tmp
+  
+# 哨兵sentinel监控的redis主节点的 ip port
+# master-name  可以自己命名的主节点名字 只能由字母A-z、数字0-9 、这三个字符".-_"组成。
+# quorum 当这些quorum个数sentinel哨兵认为master主节点失联 那么这时 客观上认为主节点失联了
+# sentinel monitor <master-name> <ip> <redis-port> <quorum>
+sentinel monitor mymaster 127.0.0.1 6379 1
+  
+# 当在Redis实例中开启了requirepass foobared 授权密码 这样所有连接Redis实例的客户端都要提供密码
+# 设置哨兵sentinel 连接主从的密码 注意必须为主从设置一样的验证密码
+# sentinel auth-pass <master-name> <password>
+sentinel auth-pass mymaster MySUPER--secret-0123passw0rd
+  
+  
+# 指定多少毫秒之后 主节点没有应答哨兵sentinel 此时 哨兵主观上认为主节点下线 默认30秒
+# sentinel down-after-milliseconds <master-name> <milliseconds>
+sentinel down-after-milliseconds mymaster 30000
+  
+# 这个配置项指定了在发生failover主备切换时最多可以有多少个slave同时对新的master进行 同步，
+这个数字越小，完成failover所需的时间就越长，
+但是如果这个数字越大，就意味着越 多的slave因为replication而不可用。
+可以通过将这个值设为 1 来保证每次只有一个slave 处于不能处理命令请求的状态。
+# sentinel parallel-syncs <master-name> <numslaves>
+sentinel parallel-syncs mymaster 1
+  
+  
+  
+# 故障转移的超时时间 failover-timeout 可以用在以下这些方面：
+#1. 同一个sentinel对同一个master两次failover之间的间隔时间。
+#2. 当一个slave从一个错误的master那里同步数据开始计算时间。直到slave被纠正为向正确的master那里同步数据时。
+#3.当想要取消一个正在进行的failover所需要的时间。 
+#4.当进行failover时，配置所有slaves指向新的master所需的最大时间。不过，即使过了这个超时，slaves依然会被正确配置为指向master，但是就不按parallel-syncs所配置的规则来了
+# 默认三分钟
+# sentinel failover-timeout <master-name> <milliseconds>
+sentinel failover-timeout mymaster 180000
+  
+# SCRIPTS EXECUTION
+  
+#配置当某一事件发生时所需要执行的脚本，可以通过脚本来通知管理员，例如当系统运行不正常时发邮件通知相关人员。
+#对于脚本的运行结果有以下规则：
+#若脚本执行后返回1，那么该脚本稍后将会被再次执行，重复次数目前默认为10
+#若脚本执行后返回2，或者比2更高的一个返回值，脚本将不会重复执行。
+#如果脚本在执行过程中由于收到系统中断信号被终止了，则同返回值为1时的行为相同。
+#一个脚本的最大执行时间为60s，如果超过这个时间，脚本将会被一个SIGKILL信号终止，之后重新执行。
+  
+#通知型脚本:当sentinel有任何警告级别的事件发生时（比如说redis实例的主观失效和客观失效等等），将会去调用这个脚本，
+#这时这个脚本应该通过邮件，SMS等方式去通知系统管理员关于系统不正常运行的信息。调用该脚本时，将传给脚本两个参数，
+#一个是事件的类型，
+#一个是事件的描述。
+#如果sentinel.conf配置文件中配置了这个脚本路径，那么必须保证这个脚本存在于这个路径，并且是可执行的，否则sentinel无法正常启动成功。
+#通知脚本
+# sentinel notification-script <master-name> <script-path>
+  sentinel notification-script mymaster /var/redis/notify.sh
+  
+# 客户端重新配置主节点参数脚本
+# 当一个master由于failover而发生改变时，这个脚本将会被调用，通知相关的客户端关于master地址已经发生改变的信息。
+# 以下参数将会在调用脚本时传给脚本:
+# <master-name> <role> <state> <from-ip> <from-port> <to-ip> <to-port>
+# 目前<state>总是“failover”,
+# <role>是“leader”或者“observer”中的一个。
+# 参数 from-ip, from-port, to-ip, to-port是用来和旧的master和新的master(即旧的slave)通信的
+# 这个脚本应该是通用的，能被多次调用，不是针对性的。
+# sentinel client-reconfig-script <master-name> <script-path>
+sentinel client-reconfig-script mymaster /var/redis/reconfig.sh # Example sentinel.conf
+  
+# 哨兵sentinel实例运行的端口 默认26379，多个哨兵要配置多个哨兵端口，就是开启多个conf
+port 26379
+  
+# 哨兵sentinel的工作目录
+dir /tmp
+  
+# 哨兵sentinel监控的redis主节点的 ip port
+# master-name  可以自己命名的主节点名字 只能由字母A-z、数字0-9 、这三个字符".-_"组成。
+# quorum 当这些quorum个数sentinel哨兵认为master主节点失联 那么这时 客观上认为主节点失联了
+# sentinel monitor <master-name> <ip> <redis-port> <quorum>
+sentinel monitor mymaster 127.0.0.1 6379 1
+  
+# 当在Redis实例中开启了requirepass foobared 授权密码 这样所有连接Redis实例的客户端都要提供密码
+# 设置哨兵sentinel 连接主从的密码 注意必须为主从设置一样的验证密码
+# sentinel auth-pass <master-name> <password>
+sentinel auth-pass mymaster MySUPER--secret-0123passw0rd
+
+# 指定多少毫秒之后 主节点没有应答哨兵sentinel 此时 哨兵主观上认为主节点下线 默认30秒
+# sentinel down-after-milliseconds <master-name> <milliseconds>
+sentinel down-after-milliseconds mymaster 30000
+  
+# 这个配置项指定了在发生failover主备切换时最多可以有多少个slave同时对新的master进行 同步，
+# 这个数字越小，完成failover所需的时间就越长，
+# 但是如果这个数字越大，就意味着越 多的slave因为replication而不可用。
+# 可以通过将这个值设为 1 来保证每次只有一个slave 处于不能处理命令请求的状态。
+# sentinel parallel-syncs <master-name> <numslaves>
+sentinel parallel-syncs mymaster 1
+
+# 故障转移的超时时间 failover-timeout 可以用在以下这些方面：
+#1. 同一个sentinel对同一个master两次failover之间的间隔时间。
+#2. 当一个slave从一个错误的master那里同步数据开始计算时间。直到slave被纠正为向正确的master那里同步数据时。
+#3.当想要取消一个正在进行的failover所需要的时间。 
+#4.当进行failover时，配置所有slaves指向新的master所需的最大时间。不过，即使过了这个超时，slaves依然会被正确配置为指向master，但是就不按parallel-syncs所配置的规则来了
+# 默认三分钟
+# sentinel failover-timeout <master-name> <milliseconds>
+sentinel failover-timeout mymaster 180000
+  
+# SCRIPTS EXECUTION
+  
+#配置当某一事件发生时所需要执行的脚本，可以通过脚本来通知管理员，例如当系统运行不正常时发邮件通知相关人员。
+#对于脚本的运行结果有以下规则：
+#若脚本执行后返回1，那么该脚本稍后将会被再次执行，重复次数目前默认为10
+#若脚本执行后返回2，或者比2更高的一个返回值，脚本将不会重复执行。
+#如果脚本在执行过程中由于收到系统中断信号被终止了，则同返回值为1时的行为相同。
+#一个脚本的最大执行时间为60s，如果超过这个时间，脚本将会被一个SIGKILL信号终止，之后重新执行。
+  
+#通知型脚本:当sentinel有任何警告级别的事件发生时（比如说redis实例的主观失效和客观失效等等），将会去调用这个脚本，
+#这时这个脚本应该通过邮件，SMS等方式去通知系统管理员关于系统不正常运行的信息。调用该脚本时，将传给脚本两个参数，
+#一个是事件的类型，
+#一个是事件的描述。
+#如果sentinel.conf配置文件中配置了这个脚本路径，那么必须保证这个脚本存在于这个路径，并且是可执行的，否则sentinel无法正常启动成功。
+#通知脚本
+# sentinel notification-script <master-name> <script-path>
+  sentinel notification-script mymaster /var/redis/notify.sh
+  
+# 客户端重新配置主节点参数脚本
+# 当一个master由于failover而发生改变时，这个脚本将会被调用，通知相关的客户端关于master地址已经发生改变的信息。
+# 以下参数将会在调用脚本时传给脚本:
+# <master-name> <role> <state> <from-ip> <from-port> <to-ip> <to-port>
+# 目前<state>总是“failover”,
+# <role>是“leader”或者“observer”中的一个。
+# 参数 from-ip, from-port, to-ip, to-port是用来和旧的master和新的master(即旧的slave)通信的
+# 这个脚本应该是通用的，能被多次调用，不是针对性的。
+# sentinel client-reconfig-script <master-name> <script-path>
+sentinel client-reconfig-script mymaster /var/redis/reconfig.sh
+```
+
+## Redis缓存穿透和雪崩
+
+Redis缓存的使用，极大的提升了应用程序的性能和效率，特别是数据查询方面。但同时，它也带来了一些问题，其中，最要害的问题，就是数据一致性的问题，从严格意义上讲，这个问题无解，如果对数据的一致性要求很高，那么就不能使用缓存。
+
+另外一些经典问题就是，缓存穿透，缓存雪崩和缓存击穿，目前，业界也都有比较流行的解决方案。
+
+### 缓存穿透（查不到）
+
+> 概念
+
+当用户想要查询一个数据，发现redis内存数据库没有，也就是缓存没有命中，于是向持久层数据库查询。发现也没有，于是本次查询失败。当用户很多的时候，缓存都没有命中（秒杀)，于是都去请求了持久层数据库。这会给持久层数据库造成很大的压力，这时候就相当于出现了缓存穿透。
+
+> 解决方案
+
+**布隆过滤器**
+
+布隆过滤器是一种数据结构，对所有可能查询的参数以hash形式存储，在控制层先进行校验，不符合则丢弃，从而避免了对底层存储系统的查询压力。
+
+![image-20210316150107812](image-20210316150107812.png)
+
+**存储空对象**
+
+![image-20210316150950121](image-20210316150950121.png)
+
+但是这种方法会存在两个问题：
+
+1. 如果空值能被缓存起来，这就意味着缓存需要更多的空间存储更多的键，因为这当中可能会有很多空值的键
+2. 及时对空值设置了过期时间，还是会存在缓冲层和存储层的数据会有一段时间窗口的不一致，这对于需要保持一致性的业务会有影响
+
+### 缓存击穿（量太大，缓存过期）
+
+> 概述
+
+这里需要注意和缓存击穿的区别，缓存击穿，是指一个key非常热点，在不停的扛着大并发，大并发集中对这一个点进行访问，当这个key在失效的瞬间，持续的大并发就穿破缓存，直接请求数据库，就像在一个屏障上凿开了一个洞。 
+
+当某个key在过期的瞬间，有大量的请求并发访问，这类数据一般是热点数据，由于缓存过期，会同时访问数据库来查询最新数据，并且回写缓存，会导使数据库瞬间压力过大。
+
+> 解决方案
+
+**设置热点数据永不过期**
+
+从缓冲层层面来看，没有设置过期时间，所以不会出现热点key过期后产生的问题
+
+**加互斥锁**
+
+分布式锁：使用分布式锁，保证对于每个key同时只有一个线程去查询后端服务，其他线程没有获得分布式锁的权限，因此只需要等待即可，这种方式将高并发的压力转移到了分布式锁，因此对分布式锁的考验很大。
+
+### 缓存雪崩
+
+> 概念
+
+缓存雪崩，是指在某一个时间段，缓存集中过期失效。Redis宕机 产生雪崩的原因之一，比如在写本文的时候，马上就要到双十二零点，很快就会迎来一波抢购，这波商品时间比较集中的放入了缓存，假设缓存一个小时。那么到了凌晨一点钟的时候，这批商品的缓存就都过期了。而对这批商品的访问查询，都落到了数据库上，对于数据库而言，就会产生周期性的压力波峰。于是所有的请求都会达到存储层，存储层的调用量会暴增，造成存储层也会挂掉的情况。
+
+> 解决方案 
+
+**Redis高可用**
+
+这个思想的含义是，既然redis有可能挂掉，那我多增设几台redis，这样一台挂掉之后其他的还可以继续工作，其实就是搭建的集群。(异地多活）
+
+**限流降级**
+
+这个解决方案的思想是，在缓存失效后，通过加锁或者队列来控制读数据库写缓存的线程数量。比如对某个key只允许一个线程查询数据和写缓存，其他线程等待。
+
+**数据预热**
+
+数据加热的含义就是在正式部署之前，我先把可能的数据先预先访问一遍，这样部分可能大量访问的数据就会加载到缓存中。在即将发生大并发访问前手动触发加载缓存不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀
