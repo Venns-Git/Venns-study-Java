@@ -220,3 +220,159 @@ eureka:
 	// 通过Ribbon实现的时候，地址应该是一个变量，通过服务名来进行访问
 	private static final String REST_URL_PREFIX = "http://SPRINGCLOUD-PROVIDER-DEPT";
 	```
+
+4. 将原来的一个服务提供者8001扩展为3个，分别为8001，8002，8003，修改端口号和数据库，服务名称保持一致，这时候，再通过服务消费者去访问，就能查看实现效果（每次请求都获得不同数据库里的内容）
+
+## 自定义负载均衡算法
+
+核心接口：IRule
+
+```java
+package com.netflix.loadbalancer;
+
+public interface IRule {
+    Server choose(Object var1);
+
+    void setLoadBalancer(ILoadBalancer var1);
+
+    ILoadBalancer getLoadBalancer();
+}
+```
+
+此接口下有许多实现类：
+
+`AbstractLoadBalancerRule`: 抽象的负载均衡规则，一般不用
+
+`AvailabilityFilteringRule`: 会先过滤掉崩溃，访问故障的服务，在剩下的服务中进行轮询
+
+`RoundRobinRule`: 轮询，默认的负载均衡算法
+
+`RandomRule`: 随机
+
+`ReTry`:会先按照轮询获取服务，如果轮询失败，则会在指定的时间内重试
+
+### 更改默认算法
+
+只需在ConfigBean中配置即可。
+
+```java
+@Configuration //--spring applicationContext.xml
+public class ConfigBean {
+
+
+    //配置负载均衡实现RestTemplate
+    @Bean
+    @LoadBalanced //Ribbon
+    public RestTemplate getRestTemplate(){
+        return new RestTemplate();
+    }
+
+    @Bean
+    public IRule myRule(){
+        //将默认轮询算法改为随机算法
+        return new RandomRule();
+    }
+}
+```
+
+### 自定义算法规则
+
+规则：每个服务访问5次，然后访问下一个服务
+
+1. 模仿随机算法写自己的规则
+
+	```java
+	public class MyRule extends AbstractLoadBalancerRule {
+	    private int total = 0; //共访问服务次数
+	    private int currentIndex = 0; //当前服务的下标
+	    public MyRule() {
+	    }
+	
+	    public Server choose(ILoadBalancer lb, Object key) {
+	        if (lb == null) {
+	            return null;
+	        } else {
+	            Server server = null;
+	
+	            while(server == null) {
+	                if (Thread.interrupted()) {
+	                    return null;
+	                }
+	
+	                List<Server> upList = lb.getReachableServers(); //获得所有可用的服务
+	                List<Server> allList = lb.getAllServers(); //获得所有的服务
+	                int serverCount = allList.size();
+	                if (serverCount == 0) {
+	                    return null;
+	                }
+	
+	                if (total < 5){
+	                    server =  upList.get(currentIndex);
+	                    total++;
+	                }else {
+	                    total = 0;
+	                    currentIndex++;
+	                    if (currentIndex >= upList.size()){
+	                        currentIndex = 0;
+	                    }
+	                    server = upList.get(currentIndex);
+	                }
+	
+	                if (server == null) {
+	                    Thread.yield();
+	                } else {
+	                    if (server.isAlive()) {
+	                        return server;
+	                    }
+	
+	                    server = null;
+	                    Thread.yield();
+	                }
+	            }
+	
+	            return server;
+	        }
+	    }
+	
+	    protected int chooseRandomInt(int serverCount) {
+	        return ThreadLocalRandom.current().nextInt(serverCount);
+	    }
+	
+	    public Server choose(Object key) {
+	        return this.choose(this.getLoadBalancer(), key);
+	    }
+	
+	    public void initWithNiwsConfig(IClientConfig clientConfig) {
+	    }
+	}
+	```
+
+2. 配置自己的config，注入自己写的规则
+
+	```java
+	@Configurable
+	public class MyRuleConfig {
+	    @Bean
+	    public IRule myRule(){
+	        return new MyRule();
+	    }
+	}
+	```
+
+3. 在主启动类上加上`@RibbonClient`注解
+
+	```java
+	@SpringBootApplication
+	@EnableEurekaClient
+	@RibbonClient(name = "SPRINGCLOUD-PROVIDER-DEPT",configuration = MyRuleConfig.class)
+	public class DeptConsumer_80 {
+	    public static void main(String[] args) {
+	        SpringApplication.run(DeptConsumer_80.class,args);
+	    }
+	}
+	```
+
+	- name为服务名
+	- configuration为自定义Ribbon的配置类
+	- 注意：自定义的Ribbon配置类和规则类不能放在主启动类的统计或者下级目录
+

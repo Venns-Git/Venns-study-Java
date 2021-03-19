@@ -1,5 +1,5 @@
 server:
-  port: 8001
+  port: 8002
 
 
 # mybatis配置
@@ -18,7 +18,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
-    url: jdbc:mysql://localhost:3306/db01?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/db02?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
 
 # Eureka的配置
 eureka:
@@ -26,4 +26,5 @@ eureka:
     service-url:
       defaultZone: http://localhost:7001/eureka/,http://localhost:7002/eureka/,http://localhost:7003/eureka/
   instance:
-    instance-id: sprincloud-provider-dept-8001
+    instance-id: sprincloud-provider-dept-8002
+
