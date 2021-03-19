@@ -18,3 +18,4 @@
 - [SpingMVC学习笔记](notes/SpringMVC.md)
 - [Vue学习笔记](notes/vue.md)
 - [Springboot学习笔记](notes/SpringBoot.md)
+- [Redis学习笔记](note/Redis.md)
