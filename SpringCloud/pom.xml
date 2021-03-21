@@ -16,6 +16,7 @@
         <module>springcloud-Eureka-7003</module>
         <module>springcloud-provider-dept-8002</module>
         <module>springcloud-provider-dept-8003</module>
+        <module>springcloud-consumer-dept-feign</module>
     </modules>
 
     <!-- 打包方式：pom   -->
