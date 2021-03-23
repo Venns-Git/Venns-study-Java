@@ -658,3 +658,279 @@ Feign，主要是社区版，大家都习惯面向接口编程。这个是很多
 服务熔断：服务端 某个服务超时或者异常，引起熔断
 
 服务降级：客户端 从整体的网站请求负载考虑，当某个服务熔断或者关闭之后，服务将不再被调用，此时在客户端可以准备一个自己的FallbackFactory，返回一个默认值，整体的服务水平下降了，但是好歹能用，比直接挂掉强
+
+# Zuul路由网关
+
+## 概述
+
+**什么是Zuul**
+
+zuul包含了对请求的路由和过滤两个最主要的功能：
+
+其中路由功能负责将外部请求转发到剧透的微服务实例上，是实现外部访问统一入口的基础而过滤器功能则负责对请求的处理过程进行干预，是实现请求校验、服务聚合等功能的基础，Zuul和Eureka进行整合，将Zuul自身注册为Eureka服务治理下的应用，同时从Eureka中获得其他微服务的消息，也即以后的访问微服务都是通过Zuul转发后获得。
+
+注意：Zuul服务最终还是会注册进Eureka
+
+**Zuul能干嘛**
+
+- 路由
+- 过滤
+
+## 简单应用
+
+1. 新建模块，添加依赖
+
+	```xml
+	<dependencies>
+	    <!-- zuul -->
+	    <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+	        <artifactId>spring-cloud-starter-zuul</artifactId>
+	        <version>1.4.6.RELEASE</version>
+	    </dependency>
+	
+	    <!-- hystrix -->
+	    <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+	        <artifactId>spring-cloud-starter-hystrix</artifactId>
+	        <version>1.4.6.RELEASE</version>
+	    </dependency>
+	
+	    <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+	        <artifactId>spring-cloud-starter-hystrix-dashboard</artifactId>
+	        <version>1.4.6.RELEASE</version>
+	    </dependency>
+	
+	    <!-- Ribbon -->
+	    <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+	        <artifactId>spring-cloud-starter-ribbon</artifactId>
+	        <version>1.4.6.RELEASE</version>
+	    </dependency>
+	    <!-- eureka -->
+	    <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+	        <artifactId>spring-cloud-starter-eureka</artifactId>
+	        <version>1.4.6.RELEASE</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.venns</groupId>
+	        <artifactId>springcloud-api</artifactId>
+	        <version>1.0-SNAPSHOT</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-web</artifactId>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-devtools</artifactId>
+	    </dependency>
+	</dependencies>
+	```
+
+2. 在apolication.xml 进行配置
+
+	```yaml
+	server:
+	  port: 9527
+	spring:
+	  application:
+	    name: springcloud-zuul
+	eureka:
+	  client:
+	    service-url:
+	      defaultZone: http://localhost:7001/eureka/,http://localhost:7002/eureka/,http://localhost:7003/eureka/
+	  instance:
+	    instance-id: zuul9627.com
+	    prefer-ip-address: true # 显示ip地址
+	```
+
+3. 为主启动类添加注解支持
+
+	```java
+	@SpringBootApplication
+	@EnableZuulProxy
+	public class ZuulApplication_9527 {
+	    public static void main(String[] args) {
+	        SpringApplication.run(ZuulApplication_9527.class,args);
+	    }
+	}
+	```
+
+4. 启动服务提供者，消费者，以及Eureka注册中心，访问Eureka可以看到已经注册了两个服务，一个是服务提供者提供的服务，一个我们自己的Zuul服务，也就是SPRINGCLOUD-ZUUL
+5. 同时，我们访问zuul服务的端口加上服务名也能访问其他服务，例如: localhost:9237/springcloud-dept/get/1，这样就不用再具体的去访问每一个服务
+
+同时也可以改变微服务的名字：
+
+```yaml
+zuul:
+  routes:
+    mydept.serviceId: springcloud-provider-dept # 服务ID
+    mydept.path: /mydept/** # 访问路径
+```
+
+- 这样，当访问指定服务时，路径也会变成自己指定的路径,但是同样也可以使用服务id进行访问，如果需要只能用指定路径进行访问，不能使用服务id进行访问，也可以在配置文件中进行修改:
+
+```yaml
+zuul:
+  routes:
+    mydept.serviceId: springcloud-provider-dept
+    mydept.path: /mydept/**
+  ignored-services: springcloud-provider-dept # 不能使用服务id进行访问 也可以使用通配符 "*" 禁止所有的服务通过服务id进行访问
+```
+
+# config 分布式配置
+
+## 概述
+
+#### 分布式系统系统面临的配置文件的问题
+
+微服务意味着要将单体应用中的业务拆分成一个个子服务，每个服务的粒度相对较小，因此系统中会出现大量的服务，由于每个服务都需要配置必要的配置信息才能运行，所以一套集中的，动态的配置管理设施必不可少。
+
+SpringCloud提供了ConfigServer来解决这个问题，我们每一个微服务自己带有一个application.yaml，那上百个配置文件修改起来，那工作量是相当的大
+
+#### 什么是SpringCloud config 分布式配置中心
+
+![image-20210324045232963](image-20210324045232963.png)
+
+ Spring Cloud Config为微服务架构中的微服务提供集中化的外部配置支持，配置服务器为每个不同微服务应用的所有环节提供了一个**中心化的外部配置。**
+
+ Spring Cloud Config 分为**服务端**和**客户端**两部分：
+
+服务端：服务端也成为分布式配置中心，他是一个独立的微服务应用，用来连接配置服务器并为客户端提供获取配置信息，加密，解密信息等访问接口
+客户端：客户顿则是通过指定的配置中心来管理应用该资源，以及与业务相关的配置内容，并在启动的时候从配置中心获取和加载配置信息，配置服务器默认采用git来存储配置信息，这样就有助于对配置环境进行版本管理，并且还可以通过git客户端工具来方便管理和访问配置内容
+
+#### SpringCloud config分布式配置中心能干嘛
+
+- 集中管理配置文件
+- 不同环境，不同配置，动态化的配置更新，分环境部署，比如 /dev ，/test，/beta，/release
+- 运行期间动态调整配置，不需要在每个服务部署的机器上编写配置文件，服务会向配置中心统一拉取配置自己的信息
+- 当配置发生变动时，服务不需要重启，即可感知到配置的变化，并应用新的配置
+- 将配置信息以REST接口的形式暴露
+
+#### SpringCloud config分布式配置中心与github整合
+
+由于SpringCloud config默认使用Git来存储配置文件（也有其他方式，比如支持SVN和本地文件），但是最推荐的还是Git，而且是使用http / htpps 访问的形式
+
+## 简单应用
+
+#### 服务端搭建
+
+1. 添加config依赖
+
+	```xml
+	<dependencies>
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-web</artifactId>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+	        <artifactId>spring-cloud-config-server</artifactId>
+	        <version>2.1.1.RELEASE</version>
+	    </dependency>
+	</dependencies>
+	```
+
+2. 编写配置文件
+
+	```yaml
+	server:
+	  port: 3344
+	spring:
+	  application:
+	    name: springcloud-config-server
+	  # 连接远程仓库
+	  cloud:
+	    config:
+	      server:
+	        git:
+	          uri: https://github.com/Venns-Git/Venns-study.git # 远程git仓库地址 只能是https的。
+	```
+
+3. 主启动类添加注解支持
+
+	```java
+	@SpringBootApplication
+	@EnableConfigServer
+	public class Config_Server_3344 {
+	    public static void main(String[] args) {
+	        SpringApplication.run(Config_Server_3344.class,args);
+	    }
+	}
+	```
+
+4. 启动测试，可以访问git上的资源以及配置,格式如下 ：
+
+	```
+	/{application}/{profile}[/{label}] 
+	/{application}-{profile}.yml
+	/{label}/{application}-{profile}.yml
+	/{application}-{profile}.properties
+	/{label}/{application}-{profile}.properties
+	```
+
+#### 客户端搭建
+
+1. 导入客户端依赖
+
+	```xml
+	<dependencies>
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-web</artifactId>
+	    </dependency>
+	
+	    <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+	        <artifactId>spring-cloud-starter-config</artifactId>
+	        <version>2.1.1.RELEASE</version>
+	    </dependency>
+	</dependencies>
+	```
+
+2. 编写配置文件 -- bootstrap.yml bootstrap.yml 为系统级别的配置文件，application.yml为用户级别的配置文件
+
+	```yaml
+	spring:
+	  cloud:
+	    config:
+	      uri: http://localhost:3344 # config 服务端地址
+	      name: config-client # 需要从git上读取的资源 不需要后缀
+	      profile: dev # 需要读取哪个环境的资源
+	      label: master # 需要到哪个分支去拿
+	  application:
+	    name: springcloud-config-client-3355
+	```
+
+3. 编写一个controller，通过访问服务端读取远程git上的配置信息
+
+	```java
+	@RestController
+	public class ConfigClientController {
+	
+	    // 读取远程git上的配置文件中的值
+	
+	    @Value("$(spring.application.name)")
+	    private String applicationName;
+	
+	    @Value("$(eureka.client.service-url)")
+	    private String eurekaServer;
+	
+	    @Value("$(server.port)")
+	    private String port;
+	
+	
+	    @RequestMapping("/config")
+	    public String getConfig(){
+	        return "spring.application.name: " + applicationName +
+	                "eureka.client.service-url: " + eurekaServer +
+	                "server.port: " + port;
+	
+	    }
+	}
+	```
+
+4. 启动测试，端口号即为配置文件中绑定的配置文件中的端口号，访问`/config`请求，即可获得当前正在使用的配置信息

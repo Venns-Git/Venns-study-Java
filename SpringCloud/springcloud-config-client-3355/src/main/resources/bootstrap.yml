@@ -1,0 +1,10 @@
+# 系统级别的服务
+spring:
+  cloud:
+    config:
+      uri: http://localhost:3344 # config 服务端地址
+      name: config-client # 需要从git上读取的资源 不需要后缀
+      profile: dev # 需要读取哪个环境的资源
+      label: master # 需要到哪个分支去拿
+  application:
+    name: springcloud-config-client-3355
