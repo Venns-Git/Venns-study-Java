@@ -506,11 +506,155 @@ Feign，主要是社区版，大家都习惯面向接口编程。这个是很多
 **服务雪崩**
 
 - 多个微服务之间调用的时候，假设微服务A调用微服务B和微服务C，微服务B和微服务C又调用其它的微服务，这就是所谓的“扇出”。如果扇出的链路上某个微服务的调用响应时间过长或者不可用，对微服务A的调用就会占用越来越多的系统资源，进而引起系统崩溃，所谓的“雪崩效应”.
-
-- 对于高流量的应用来说，单一的后端依赖可能会导致所有服务器上的所有资源都在几秒钟内饱和。比失败更糟糕的是，这些应用程序还可能导致服务之间的延迟增加，备份队列，线程和其他系统资源紧张，导致整个系统发生更多的级联故障。这些都表示需要对故障和延迟进行隔离和管理，以便单个依赖关系的失败，不能取消整个应用程序或系统。
+- 对于高流量的应用来说，单一的后端依赖可能会导致所有服务器上的所有资源都在几秒钟内饱和。比失败更糟糕的是，这些应用程序还可能导致服务之间的延迟增加，备份队列，线程和其他系统资源紧张，导致整个系统发生更多的级联故障。这些都表示需要对故障和延迟进行隔离和管理，以便单个依赖关系的失败，不能取消整个应用程序或系统
+- 我们需要弃车保帅
 
 **什么是Hystrix**
 
 - Hystrix是一个用于处理分布式系统的延迟和容错的开源库，在分布式系统里，许多依赖不可避免的会调用失败，比如超时、异常等，Hystrix能够保证在一个依赖出问题的情况下，不会导致整体服务失败，避免级联故障，以提高分布式系统的弹性。
-
 - “断路器”本身是一种开关装置，当某个服务单元发生故障之后，通过断路器的故障监控（类似熔断保险丝），向调用方返回一个符合预期的、可处理的备选响应（FallBack），而不是长时间的等待或者抛出调用方无法处理的异常，这样就保证了服务调用方的线程不会被长时间、不必要地占用，从而避免了故障在分布式系统中的蔓延，乃至雪崩。
+
+**Hystrix能干嘛**
+
+- 服务熔断
+- 服务降级
+- 服务降流
+- 接近实时的监控
+
+## 服务熔断（主要用户服务端）
+
+**是什么**
+
+- 熔断机制是应对雪崩效应的一种微服务链路保护机制
+- 扇出链路的某个微服务不可用或者响应时间太长，会进行服务的降级，进而熔断该节点微服务的调用，快速返回"错误"的响应信息。当检测到该节点微服务调用响应正常回复后恢复调用链路。在springCloud框架里熔断机制通过Hystrix实现。Hystrix会监控微服务服务间调用的状况，当失败的调用到达一定的阈值，缺省是5秒内20次调用失败就会启动熔断机制，熔断机制的注解是 `@HystrixCommand`
+
+**简单应用**
+
+1. 为一个服务提供者添加hystrix依赖
+
+	```xml
+	<!-- hystrix -->
+	<dependency>
+	    <groupId>org.springframework.cloud</groupId>
+	    <artifactId>spring-cloud-starter-hystrix</artifactId>
+	    <version>1.4.6.RELEASE</version>
+	</dependency>
+	```
+
+2. 为方法指定熔断的解决方案
+
+	```java
+	@ResponseBody
+	@Controller
+	public class DeptController {
+	
+	    @Autowired
+	    private DeptService deptService;
+	
+	    @GetMapping("/dept/get/{id}")
+	    @HystrixCommand(fallbackMethod = "hystrixQueryById")
+	    public Dept queryById(@PathVariable("id") long id){
+	        Dept dept = deptService.queryById(id);
+	
+	        if (dept == null) throw new RuntimeException("id => " + id + ",不存在该用户");
+	        return dept;
+	    }
+	
+	    // 备选方法
+	    public Dept hystrixQueryById(@PathVariable("id") long id){
+	        return new Dept()
+	                .setDeptno(id)
+	                .setDname("id => " + id + ",不存在该用户 -- @Hystrix")
+	                .setDb_source("no this database in mysql");
+	    }
+	}
+	```
+
+3. 为主启动类添加`@EnableCircuitBreaker`注解，添加对断路器的支持
+
+	```java
+	@SpringBootApplication
+	@EnableEurekaClient
+	@EnableCircuitBreaker // 添加对熔断的支持
+	public class DeptProvider_Hystrix_8001 {
+	    public static void main(String[] args) {
+	        SpringApplication.run(DeptProvider_Hystrix_8001.class,args);
+	    }
+	}
+	```
+
+4. 启动测试，当get一个不存在的id时，前端会返回一个新的dept，提示不存在
+
+## 服务降级（主要用于客户端）
+
+**是什么**
+
+银行办理业务，A业务过于繁忙，请求帮助。暂时关闭C窗口，节约资源，去帮助A处理业务。当有人来C窗口办理业务时，C窗口显示暂停业务。帮助A处理完业务，再回来开启C窗口。
+
+所谓降级，一般是从整体符合考虑。就是当某个服务熔断之后，服务器将不再被调用，此时客户端可以自己准备一个本地的fallback回调，返回一个缺省值。这样做，虽然服务水平下降，但好歹能用，比直接挂断强。
+
+服务降级处理是在客户端实现完成的，与服务端没有关系
+
+**简单应用**
+
+1. 为springcloud-api的DeptClientService新建实现类DeptClientServiceFallbcakFactory
+
+	```java
+	@Component
+	public class DeptClientServiceFallbcakFactory implements FallbackFactory {
+	    @Override
+	    public DeptClientService create(Throwable throwable) {
+	        return new DeptClientService() {
+	            @Override
+	            public Dept queryById(long id) {
+	                return new Dept().setDeptno(id).setDname("id == > "+id + "，没有对应的信息，客户端提供了降级的服务，这个服务已经被关闭").setDb_source("没有数据");
+	            }
+	
+	            @Override
+	            public List<Dept> queryAll() {
+	                return null;
+	            }
+	
+	            @Override
+	            public boolean addDept(Dept dept) {
+	                return false;
+	            }
+	        };
+	    }
+	}
+	```
+
+2. 给DeptClientService的Feign注解添加参数
+
+	```java
+	@Component
+	@FeignClient(value = "SPRINGCLOUD-PROVIDER-DEPT", fallbackFactory = DeptClientServiceFallbcakFactory.class)
+	public interface DeptClientService {
+	
+	    @RequestMapping("/dept/get/{id}")
+	    public Dept queryById(@PathVariable("id") long id);
+	
+	    @RequestMapping("/dept/list")
+	    public List<Dept> queryAll();
+	
+	    @RequestMapping("/dept/list")
+	    public boolean addDept(Dept dept);
+	}
+	```
+
+3. 给配置了feign的服务消费者配置hystrix降级
+
+	```yaml
+	# 开启降级Feign.hystrix
+	feign:
+	  hystrix:
+	    enabled: true
+	```
+
+4. 启动测试，正常开启服务时，正常访问，当关闭服务时，网页依旧可以访问，只是会向服务消费者提示消息
+
+## 小结
+
+服务熔断：服务端 某个服务超时或者异常，引起熔断
+
+服务降级：客户端 从整体的网站请求负载考虑，当某个服务熔断或者关闭之后，服务将不再被调用，此时在客户端可以准备一个自己的FallbackFactory，返回一个默认值，整体的服务水平下降了，但是好歹能用，比直接挂掉强

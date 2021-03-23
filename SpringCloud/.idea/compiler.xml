@@ -16,6 +16,7 @@
         <module name="springcloud-Eureka-7002" />
         <module name="springcloud-provider-dept-8003" />
         <module name="springcloud-Eureka-7003" />
+        <module name="springcloud-provider-dept-hystrix-8001" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="11">
