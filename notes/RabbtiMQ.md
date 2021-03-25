@@ -97,3 +97,81 @@ Kafka协议是基于TCP/IP的二进制协议。消息内部是通过长度来分
 ### 小结
 
 协议：是在tcp/ip协议的基础之上构建的一种规定成俗的规范和机制，它的主要目的可以让客户端（应用程序，Java，python...）进行沟通和通讯，并且在这种协议下规范必须具有持久性，高可用，高可靠的性能。
+
+## 角色分类
+
+### none
+
+- 不能访问management plugin
+
+### management：查看自己相关节点的信息
+
+- 列出自己可以通过AMQP登入的虚拟机
+- 查看自己的虚拟机节点 virtual hosts的queues,exchanges和bindings信息
+- 查看和关闭自己的channels和connections
+- 查看有关自己的虚拟机节点virtual hosts的统计信息。包括其他用户在这个节点virtual hosts中的活动信息。
+
+### Policymaker
+
+- 包含management所有权限
+- 查看和创建和删除自己的virtual hosts所属的policies和parameters信息
+
+### Monitoring
+
+- 包含management所有权限
+- 罗列出所有的virtual hosts，包括不能登录的virtual hosts。
+- 查看其他用户的connections和channels信息
+- 查看节点级别的数据如clustering和memory使用情况
+- 查看所有的virtual hosts的全局统计信息。
+
+### Administrator
+
+- 最高权限
+- 可以创建和删除virtual hosts
+- 可以查看，创建和删除users
+- 查看创建permisssions
+- 关闭所有用户的connections
+
+## AMQP
+
+### 什么是AMQP
+
+AMQP全称：Advanced Message Queuing Protocol(高级消息队列协议)。是应用层协议的一个开发标准，为面向消息的中间件设计
+
+### AMQP生产者流转过程
+
+![image-20210325051210571](image-20210325051210571.png)
+
+**为什么RabbitMQ采用channel处理消息而不是connection**
+
+如果一个应用有多个线程需要从rabbitmq中消费消息或者生产消息，那么一定会建立多个connection，也就是多个tcp连接，对于操作系统而言，建立和销毁tcp连接是很昂贵的开销，因为其中会多次面临3次握手4次挥手，性能会下降，rabbitmq采用类似nio的做法，连接tcp连接复用（长连接），性能会得到提高。
+
+### AMQP消费者流转过程
+
+![image-20210325052343354](image-20210325052343354.png)
+
+## RabbitMQ核心组成部分
+
+### 核心组成部分
+
+![image-20210325052538898](image-20210325052538898.png)
+
+核心概念：
+**Server：**又称Broker ,接受客户端的连接，实现AMQP实体服务。 安装rabbitmq-server
+**Connection：**连接，应用程序与Broker的网络连接 TCP/IP/ 三次握手和四次挥手
+**Channel：**网络信道，几乎所有的操作都在Channel中进行，Channel是进行消息读写的通道，客户端可以建立对各Channel，每个Channel代表一个会话任务。
+**Message：** 消息：服务与应用程序之间传送的数据，由Properties和body组成，Properties可是对消息进行修饰，比如消息的优先级，延迟等高级特性，Body则就是消息体的内容。
+**Virtual Host：** 虚拟地址，用于进行逻辑隔离，最上层的消息路由，一个虚拟主机理由可以有若干个Exhange和Queueu，同一个虚拟主机里面不能有相同名字的Exchange
+**Exchange：**交换机，接受消息，根据路由键发送消息到绑定的队列。(不具备消息存储的能力)
+**Bindings：**Exchange和Queue之间的虚拟连接，binding中可以保护多个routing key.
+**Routing key：**是一个路由规则，虚拟机可以用它来确定如何路由一个特定消息。
+**Queue：**队列，也称为Message Queue,消息队列，保存消息并将它们转发给消费者
+
+### 整体架构
+
+![image-20210325054147752](image-20210325054147752.png)
+
+### 运行流程
+
+   ![image-20210325054254259](image-20210325054254259.png)
+
