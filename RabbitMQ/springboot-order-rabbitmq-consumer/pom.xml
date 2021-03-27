@@ -5,8 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.venns</groupId>
-    <artifactId>rabbitmq</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>springboot-order-rabbitmq-consumer</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -14,11 +13,4 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>5.10.0</version>
-        </dependency>
-    </dependencies>
 </project>

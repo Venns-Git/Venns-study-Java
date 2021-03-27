@@ -175,7 +175,7 @@ AMQP全称：Advanced Message Queuing Protocol(高级消息队列协议)。是�
 
    ![image-20210325054254259](image-20210325054254259.png)
 
-## 消息模式
+## 队列模式
 
 ### 简单模式（simple）
 
@@ -470,6 +470,17 @@ public class Consumer {
 
 - 使用多线程模拟，这样生产者发布一次消息，三个消费者都会接收到
 
+- 也可以使用程序自己声明交换机和队列
+
+	```java
+	channel.exchangeDeclare(exchangeName,exchangeType,true);
+	// 交换机名字 交换机类型 是否持久化
+	channel.queueDeclare(queueName,true,false,false,null);
+	// 队列名字 是否持久化 是否具有排他性 是否自动删除 参数
+	channel.queueBind(queueName,exchangeName,routingKey);
+	// 绑定队列和交换机的关系 队列名 交换机名 routingkey
+	```
+
 ### 路由模式（direct）
 
 >  一个生产者，一个交换机，多个队列，多个消费者；与订阅模式类似，不同之处在于消息带有类型，不同的消费者可以订阅不同类型的消息；（消息可以自定义类型，例如“update”、“create”、“delete”、“audit.irs.corporate”等）
@@ -539,3 +550,227 @@ public class Producer {
 
 ### 主题模式（topic）
 
+> 一个生产者，一个交换机，多个队列，多个消费者；与路由模式类似，不同之处在于，其可以通过简单通配符的方式进行消息路由，比如“#”表示所有消息类型，" * "表示单一词匹配；
+>     例如：“audit.irs.corporate”消息，“audit.#”可以匹配到，但“audit.*”只能匹配“audit.irs”消息。
+
+生产者：
+
+```java
+public class Producer {
+    public static void main(String[] args) {
+        // 1: 创建连接工厂
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        // 2: 设置连接属性
+        connectionFactory.setHost("localhost");
+        connectionFactory.setPort(5672);
+        connectionFactory.setVirtualHost("/");
+        connectionFactory.setUsername("admin");
+        connectionFactory.setPassword("admin");
+        Connection connection = null;
+        Channel channel = null;
+        try {
+            // 3: 从连接工厂中获取连接
+            connection = connectionFactory.newConnection("生产者");
+            // 4: 从连接中获取通道channel
+            channel = connection.createChannel();
+            // 6： 准备发送消息的内容
+            String message = "hello world";
+            // 指定交换机
+            String  exchangeName = "topic-exchange";
+            // 定义路由key
+            String routingKey = "com.order.test.xxx";
+            // 指定交换机的类型
+            String type = "topic";
+            // 7: 发送消息给中间件rabbitmq-server
+            // @params1: 交换机exchange
+            // @params2: 队列名称/routingkey
+            // @params3: 属性配置
+            // @params4: 发送消息的内容
+            channel.basicPublish(exchangeName, routingKey, null, message.getBytes());
+            System.out.println("消息发送成功!");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("发送消息出现异常...");
+        } finally {
+            // 7: 释放连接关闭通道
+            if (channel != null && channel.isOpen()) {
+                try {
+                    channel.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+}
+```
+
+例如，现在有四个队列，他们的routing key分别为：`com.#`,`*.course`,`#.order.#`,`#.user.*`，现在就只有队列1和队列3可以收到消息
+
+### 工作模式（work）
+
+工作模式主要有两种模式：
+
+- 轮询分发：一个消费者一条，按均分配
+
+- 公平分发：处理快的处理的多，处理慢的处理的少，按劳分配
+
+#### 轮询模式
+
+生产者：
+
+```java
+public class Producer {
+    public static void main(String[] args) {
+        // 1: 创建连接工厂
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        // 2: 设置连接属性
+        connectionFactory.setHost("localhost");
+        connectionFactory.setPort(5672);
+        connectionFactory.setVirtualHost("/");
+        connectionFactory.setUsername("admin");
+        connectionFactory.setPassword("admin");
+        Connection connection = null;
+        Channel channel = null;
+        try {
+            // 3: 从连接工厂中获取连接
+            connection = connectionFactory.newConnection("生产者");
+            // 4: 从连接中获取通道channel
+            channel = connection.createChannel();
+            for (int i = 0; i <= 20; i++) {
+                String msg = "hello world " + i;
+                channel.basicPublish("","queue1",null,msg.getBytes());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("发送消息出现异常...");
+        } finally {
+            // 7: 释放连接关闭通道
+            if (channel != null && channel.isOpen()) {
+                try {
+                    channel.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+}
+
+```
+
+消费者：
+
+```java
+public class Consumer1 {
+    public static void main(String[] args) {
+        // 1. 创建连接工厂
+        ConnectionFactory connectionFactory = new ConnectionFactory();
+        connectionFactory.setHost("localhost"); // 主机号
+        connectionFactory.setPort(5672); // 端口号
+        connectionFactory.setUsername("admin"); // 账号名
+        connectionFactory.setPassword("admin"); // 密码
+        connectionFactory.setVirtualHost("/"); // 访问节点
+        // 2. 创建连接
+        Connection connection = null;
+        Channel channel = null;
+        try {
+            connection = connectionFactory.newConnection("生产者");
+            // 3. 通过连接获取通道
+            channel = connection.createChannel();
+            // 4. 通过通道创建交换机 声明队列 绑定关系 路由key 发送消息 接收消息
+            String queueName = "queue1";
+            /**
+             * @Params1 队列名
+             * @Params2 是否持久化
+             * @Params3 排他性，是否是一个独占队列
+             * @Params4 是否自动删除，最后一个消费者消费完毕消息 是否把队列自动删除
+             * @Params5 携带附属参数
+             */
+            channel.queueDeclare(queueName,false,false,false,null);
+            Channel finalChannel = channel;
+            finalChannel.basicQos(1); // 指该消费者在接收到队列里的消息但没有返回确认结果之前,队列不会将新的消息分发给该消费者
+            finalChannel.basicConsume("queue1", true, new DeliverCallback() {
+                @Override
+                public void handle(String s, Delivery delivery) throws IOException {
+                    System.out.println("consumer1 收到的消息是-> " + new String(delivery.getBody(), "UTF-8"));
+                }
+            }, new CancelCallback() {
+                @Override
+                public void handle(String s) throws IOException {
+                }
+            });
+            System.out.println("consumer1-开始接收消息");
+            System.in.read();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("消息发送出现异常");
+        }finally {
+            // 6. 关闭连接
+            if (channel != null && channel.isOpen()){
+                try {
+                    channel.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+            // 7. 关闭通道
+            if (connection != null && connection.isOpen()){
+                try {
+                    connection.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+}
+
+```
+
+#### 公平分发
+
+将普通消费者的应答方式改为手动应答
+
+```java
+// 将自动应答设为false 改为手动应答
+finalChannel.basicConsume("queue1", false, new DeliverCallback() {
+    @Override
+    public void handle(String s, Delivery delivery) throws IOException {
+        System.out.println("consumer1 收到的消息是-> " + new String(delivery.getBody(), "UTF-8"));
+        try {
+            // 收到一次消息睡眠1s
+            Thread.sleep(1000);
+            // 手动应答
+            finalChannel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}, new CancelCallback() {
+    @Override
+    public void handle(String s) throws IOException {
+    }
+});
+```
+
+再将另外的消费者收到一次消息的睡眠时长改为2s，体验不同处理能力的消费者处理不同数量的消息
+
+ 
