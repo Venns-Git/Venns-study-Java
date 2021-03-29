@@ -4,9 +4,15 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/rabbitmq/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/springboot-order-rabbitmq-producer/pom.xml" />
         <option value="$PROJECT_DIR$/springboot-order-rabbitmq-consumer/pom.xml" />
       </list>
     </option>
+  </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/springboot-order-rabbitmq-producer/.gitignore" />
+    <file url="file://$PROJECT_DIR$/springboot-order-rabbitmq-producer/HELP.md" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

@@ -773,4 +773,371 @@ finalChannel.basicConsume("queue1", false, new DeliverCallback() {
 
 再将另外的消费者收到一次消息的睡眠时长改为2s，体验不同处理能力的消费者处理不同数量的消息
 
- 
+ ## Springboot整合Rabbit
+
+1. 新建springboot项目，导入rabbitmq依赖
+
+	```xml
+	<!-- rabbitmq 依赖-->
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-amqp</artifactId>
+	</dependency>
+	```
+
+2. 编写配置文件
+
+	```yaml
+	# rabbitmq配置
+	spring:
+	  rabbitmq:
+	    username: admin # 默认guest
+	    password: admin # guest
+	    virtual-host: / # 默认 /
+	    host: localhost # 默认localhost
+	    port: 5672 # 默认5672
+	```
+
+### fonout发布订阅模式
+
+用户下单，提供sms服务，短信服务和邮件服务。
+
+**生产者：**
+
+1. 
+
+2. 编写交换机和队列的配置类
+
+	```java
+	@Configuration
+	public class RabbitMqConfig {
+	
+	    // 1. 声明注册fanout模式的交换机
+	    @Bean
+	    public FanoutExchange fanoutExchange(){
+	        return new FanoutExchange("fanout_order_exchange",true,false);// 交换机名称 是否持久化 是否自动删除
+	    }
+	    // 2. 声明队列 sms.fanout.queue email.fanout.queue message.fanout.queue
+	    @Bean
+	    public Queue smsQueue(){
+	        return new Queue("sms.fanout.queue",true); // 队列名称 是否持久化
+	    }
+	    @Bean
+	    public Queue emailQueue(){
+	        return new Queue("email.fanout.queue",true); // 队列名称 是否持久化
+	    }
+	    @Bean
+	    public Queue messageQueue(){
+	        return new Queue("message.fanout.queue",true); // 队列名称 是否持久化
+	    }
+	    // 3. 完成绑定关系(队列和交换机)
+	    @Bean
+	    public Binding smsBinding(){
+	        return BindingBuilder.bind(smsQueue()).to(fanoutExchange());
+	    }
+	    @Bean
+	    public Binding emailBinding(){
+	        return BindingBuilder.bind(emailQueue()).to(fanoutExchange());
+	    }
+	    @Bean
+	    public Binding messageBinding(){
+	        return BindingBuilder.bind(messageQueue()).to(fanoutExchange());
+	    }
+	
+	}
+	```
+
+2. 编写订单业务
+
+	```java
+	@Service
+	public class OrderService {
+	
+	    @Autowired
+	    private RabbitTemplate rabbitTemplate;
+	
+	    /**
+	     * @Description 模拟用户下单
+	     * @param userId 用户id
+	     * @param produceId 产品id
+	     * @param num 数量
+	     */
+	    public void makeOrder(String userId,String produceId,int num){
+	
+	        // 1. 根据商品id查询库存是否充足
+	        // 2. 保存订单
+	        String orderId = UUID.randomUUID().toString();
+	        System.out.println("订单生成成功:" + orderId);
+	        // 3. 通过MQ来完成消息的分发
+	        /**
+	         * @param1 交换机
+	         * @param2 路由key / 队列名称
+	         * @param3 消息内容
+	         */
+	        String exchangeName = "fanout_order_exchange";
+	        String routingKey = "";
+	        rabbitTemplate.convertAndSend(exchangeName,routingKey,orderId);
+	    }
+	}
+	```
+
+3. 测试代码
+
+	```java
+	@SpringBootTest
+	class SpringbootOrderRabbitmqProducerApplicationTests {
+	
+	    @Autowired
+	    private OrderService orderService;
+	
+	    @Test
+	    void contextLoads() {
+	        orderService.makeOrder("1","1",10);
+	    }
+	
+	}
+	```
+
+**消费者：**
+
+1. 新建module，编写配置文件
+
+	```yaml
+	server:
+	  port: 8081
+	# rabbitmq配置
+	spring:
+	  rabbitmq:
+	    username: admin # 默认guest
+	    password: admin # guest
+	    virtual-host: / # 默认 /
+	    host: localhost # 默认localhost
+	    port: 5672 # 默认5672
+	```
+
+2. 编写对应的服务
+
+	```java
+	@RabbitListener(queues = "email.fanout.queue")
+	@Service
+	public class EmailConsumer {
+	    @RabbitHandler
+	    public void reviceMessage(String message){
+	        System.out.println("email fanout -- 接收到了订单信息是：" + message);
+	    }
+	}
+	```
+
+	```java
+	@RabbitListener(queues = "message.fanout.queue")
+	@Service
+	public class MessageConsumer {
+	
+	    @RabbitHandler
+	    public void reviceMessage(String message){
+	        System.out.println("message fanout -- 接收到了订单信息是：" + message);
+	    }
+	}
+	```
+
+	```java
+	@RabbitListener(queues = "sms.fanout.queue")
+	@Service
+	public class SMSConsumer {
+	    @RabbitHandler
+	    public void reviceMessage(String message){
+	        System.out.println("sms fanout -- 接收到了订单信息是：" + message);
+	    }
+	}
+	```
+
+3. 启动生产者，再启动服务者，进行测试。
+
+### direct路由模式
+
+**生产者：**
+
+1. 新建DirectRabbitMqConfig
+
+	```java
+	@Configuration
+	public class DirectRabbitMqConfig {
+	    // 1. 声明注册direct模式的交换机
+	    @Bean
+	    public DirectExchange directExchange(){
+	        return new DirectExchange("direct_order_exchange",true,false);// 交换机名称 是否持久化 是否自动删除
+	    }
+	    // 2. 声明队列 sms.fanout.queue email.fanout.queue message.fanout.queue
+	    @Bean
+	    public Queue smsQueue(){
+	        return new Queue("sms.direct.queue",true); // 队列名称 是否持久化
+	    }
+	    @Bean
+	    public Queue emailQueue(){
+	        return new Queue("email.direct.queue",true); // 队列名称 是否持久化
+	    }
+	    @Bean
+	    public Queue messageQueue(){
+	        return new Queue("message.direct.queue",true); // 队列名称 是否持久化
+	    }
+	    // 3. 完成绑定关系(队列和交换机)
+	    @Bean
+	    public Binding smsBinding(){
+	        return BindingBuilder.bind(smsQueue()).to(directExchange()).with("sms");
+	    }
+	    @Bean
+	    public Binding emailBinding(){
+	        return BindingBuilder.bind(emailQueue()).to(directExchange()).with("email");
+	    }
+	    @Bean
+	    public Binding messageBinding(){
+	        return BindingBuilder.bind(messageQueue()).to(directExchange()).with("message");
+	    }
+	}
+	```
+
+2. 修改OrderService种的方法
+
+	```java
+	public void makeOrderDirect(String userId,String produceId,int num){
+	
+	    // 1. 根据商品id查询库存是否充足
+	    // 2. 保存订单
+	    String orderId = UUID.randomUUID().toString();
+	    System.out.println("订单生成成功:" + orderId);
+	    // 3. 通过MQ来完成消息的分发
+	    /**
+	     * @param1 交换机
+	     * @param2 路由key / 队列名称
+	     * @param3 消息内容
+	     */
+	    String exchangeName = "direct_order_exchange";
+	    rabbitTemplate.convertAndSend(exchangeName,"message",orderId);
+	    rabbitTemplate.convertAndSend(exchangeName,"email",orderId);
+	}
+	```
+
+**消费者：**
+
+
+1. 修改消费者中对应的服务
+
+  ```java
+  @RabbitListener(queues = "email.direct.queue")
+  @Service
+  public class EmailConsumer {
+      @RabbitHandler
+      public void reviceMessage(String message){
+          System.out.println("email direct -- 接收到了订单信息是：" + message);
+      }
+  }
+  ```
+
+  ```java
+  @RabbitListener(queues = "message.direct.queue")
+  @Service
+  public class MessageConsumer {
+  
+      @RabbitHandler
+      public void reviceMessage(String message){
+          System.out.println("message direct -- 接收到了订单信息是：" + message);
+      }
+  }
+  ```
+
+  ```java
+  @RabbitListener(queues = "sms.direct.queue")
+  @Service
+  public class SMSConsumer {
+      @RabbitHandler
+      public void reviceMessage(String message){
+          System.out.println("sms direct -- 接收到了订单信息是：" + message);
+      }
+  }
+  ```
+
+2. 启动生产者和消费者测试，就只有message服务和email服务会接收到订单信息
+
+### topic主题模式
+
+- 这里我们采用注解的方式
+
+**生产者：**
+
+OrderService新建使用topic模式的方法
+
+```java
+public void makeOrderTopic(String userId,String produceId,int num){
+
+    // 1. 根据商品id查询库存是否充足
+    // 2. 保存订单
+    String orderId = UUID.randomUUID().toString();
+    System.out.println("订单生成成功:" + orderId);
+    // 3. 通过MQ来完成消息的分发
+    /**
+     * @param1 交换机
+     * @param2 路由key / 队列名称
+     * @param3 消息内容
+     */
+    String exchangeName = "topic_order_exchange";
+    rabbitTemplate.convertAndSend(exchangeName,"cn.message",orderId);
+    rabbitTemplate.convertAndSend(exchangeName,"email.com",orderId);
+}
+```
+
+**消费者：**
+
+```java
+@RabbitListener(bindings = @QueueBinding(
+        value = @Queue(value = "email.topic.queue",declare = "true",autoDelete = "false"),
+        exchange = @Exchange(value = "topic_order_exchange",type = ExchangeTypes.TOPIC),
+        key = "*.email.#"
+))
+@Service
+public class EmailConsumer {
+    @RabbitHandler
+    public void reviceMessage(String message){
+        System.out.println("email topic -- 接收到了订单信息是：" + message);
+    }
+}
+```
+
+```java
+@RabbitListener(bindings = @QueueBinding(
+        value = @Queue(value = "message.topic.queue",declare = "true",autoDelete = "false"),
+        exchange = @Exchange(value = "topic_order_exchange",type = ExchangeTypes.TOPIC),
+        key = "*.message.#"
+))
+@Service
+public class MessageConsumer {
+
+    @RabbitHandler
+    public void reviceMessage(String message){
+        System.out.println("message topic -- 接收到了订单信息是：" + message);
+    }
+}
+```
+
+```java
+@RabbitListener(bindings = @QueueBinding(
+        value = @Queue(value = "sms.topic.queue",declare = "true",autoDelete = "false"),
+        exchange = @Exchange(value = "topic_order_exchange",type = ExchangeTypes.TOPIC),
+        key = "sms.#"
+))
+@Service
+public class SMSConsumer {
+    @RabbitHandler
+    public void reviceMessage(String message){
+        System.out.println("sms topic -- 接收到了订单信息是：" + message);
+    }
+}
+```
+
+## TTL过期时间
+
+过期时间TTL表示可以对消息设置预期的过期时间，在这个时间内都可以被消费者获取，过了之后消息将会被自动删除，RabbitMQ可以对**消息**和**队列**设置TTL，目前有两种办法可以设置。
+
+- 第一种方法是通过队列属性设置，队列中所有消息都有相同的过期时间。
+- 第二种方法是对消息进行单独设置，每条消息TTL可以不同。
+
+如果上述两种方法同时使用，则消息的过期时间以两者之间TTL较小的那个数值为准。消息在队列的生存时间一旦超过设置的TTL值，就称为dead message被投递到死信队列， 消费者将无法再收到该消息。 

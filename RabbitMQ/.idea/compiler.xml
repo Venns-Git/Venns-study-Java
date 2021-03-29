@@ -6,12 +6,21 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="springboot-order-rabbitmq-producer" />
         <module name="springboot-order-rabbitmq-consumer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="RabbitMQ" target="1.8" />
       <module name="rabbitmq" target="1.8" />
       <module name="springboot-order-rabbitmq-consumer" target="1.8" />
+      <module name="springboot-order-rabbitmq-producer" target="1.8" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="springboot-order-rabbitmq-consumer" options="-parameters" />
+      <module name="springboot-order-rabbitmq-producer" options="-parameters" />
+    </option>
   </component>
 </project>
