@@ -1,5 +1,8 @@
 package com.venns.service;
 
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,4 +75,32 @@ public class OrderService {
         rabbitTemplate.convertAndSend(exchangeName,"message",orderId);
         rabbitTemplate.convertAndSend(exchangeName,"email",orderId);
     }
+
+    public void makeOrderTtlMessage(String userid,String produceId,int num){
+        // 1. 根据商品id查询库存是否充足
+        // 2. 保存订单
+        String orderId = UUID.randomUUID().toString();
+        System.out.println("订单生成成功:" + orderId);
+        // 3. 通过MQ来完成消息的分发
+        /**
+         * @param1 交换机
+         * @param2 路由key / 队列名称
+         * @param3 消息内容
+         */
+        String exchangeName = "ttl_direct_exchange";
+        String routingKey = "ttlmessage";
+
+        // 给消息队列设置过期时间
+        MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
+            @Override
+            public Message postProcessMessage(Message message) throws AmqpException {
+                message.getMessageProperties().setExpiration("5000");
+                message.getMessageProperties().setContentEncoding("UTF-8");
+                return message;
+            }
+        };
+
+        rabbitTemplate.convertAndSend(exchangeName,routingKey,orderId,messagePostProcessor);
+    }
+
 }

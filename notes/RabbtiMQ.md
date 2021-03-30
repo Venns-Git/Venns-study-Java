@@ -1141,3 +1141,85 @@ public class SMSConsumer {
 - 第二种方法是对消息进行单独设置，每条消息TTL可以不同。
 
 如果上述两种方法同时使用，则消息的过期时间以两者之间TTL较小的那个数值为准。消息在队列的生存时间一旦超过设置的TTL值，就称为dead message被投递到死信队列， 消费者将无法再收到该消息。 
+
+### 通过队列属性设置
+
+```java
+@Configuration
+public class TTLRabbitMqConfig {
+
+    // 1. 声明注册direct模式的交换机
+    @Bean
+    public DirectExchange ttldirectExchange(){
+        return new DirectExchange("ttl_direct_order_exchange",true,false);
+    }
+
+    // 2. 设置队列过期时间
+    @Bean
+    public Queue directTTLqueue(){
+        Map<String,Object> args = new HashMap<>();
+        args.put("x-message-ttl",5000); //一定是int类型
+        return new Queue("ttl.direct.queue",true);
+    }
+
+    // 3. 将队列绑定到交换机
+    @Bean
+    public Binding directsmsBingding(){
+        return BindingBuilder.bind(directTTLqueue()).to(ttldirectExchange()).with("ttl");
+    }
+}
+```
+
+- 这样，这个消息种的每条消息都会有一个过期时间为5000毫秒
+
+### 单独给一条消息设置过期时间
+
+```java
+public void makeOrderTtlMessage(String userid,String produceId,int num){
+    // 1. 根据商品id查询库存是否充足
+    // 2. 保存订单
+    String orderId = UUID.randomUUID().toString();
+    System.out.println("订单生成成功:" + orderId);
+    // 3. 通过MQ来完成消息的分发
+    /**
+     * @param1 交换机
+     * @param2 路由key / 队列名称
+     * @param3 消息内容
+     */
+    String exchangeName = "ttl_direct_exchange";
+    String routingKey = "ttlmessage";
+
+    // 给消息队列设置过期时间
+    MessagePostProcessor messagePostProcessor = new MessagePostProcessor() {
+        @Override
+        public Message postProcessMessage(Message message) throws AmqpException {
+            message.getMessageProperties().setExpiration("5000"); //设置过期时间
+            message.getMessageProperties().setContentEncoding("UTF-8"); // 设置编码
+            return message;
+        }
+    };
+	rabbitTemplate.convertAndSend(exchangeName,routingKey,orderId,messagePostProcessor);
+}
+```
+
+### 总结
+
+- 具体使用哪种方式，以具体的场景来进行分析
+- 如果同时设置设置了队列属性，又单独设置了一条消息的过期时间，则会按照最短的时间来。
+
+## 死信队列
+
+### 概述
+
+DLX，全称为Dead-Letter-Exchange , 可以称之为死信交换机，也有人称之为死信邮箱。当消息在一个队列中变成死信(dead message)之后，它能被重新发送到另一个交换机中，这个交换机就是DLX ，绑定DLX的队列就称之为死信队列。
+消息变成死信，可能是由于以下的原因：
+
+- 消息被拒绝
+- 消息过期
+- 队列达到最大长度
+
+DLX也是一个正常的交换机，和一般的交换机没有区别，它能在任何的队列上被指定，实际上就是设置某一个队列的属性。当这个队列中存在死信时，Rabbitmq就会自动地将这个消息重新发布到设置的DLX上去，进而被路由到另一个队列，即死信队列。
+要想使用死信队列，只需要在定义队列的时候设置队列参数 `x-dead-letter-exchange` 指定交换机即可。
+
+![image-20210330233923598](image-20210330233923598.png)
+
