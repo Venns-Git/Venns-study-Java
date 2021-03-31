@@ -1155,11 +1155,11 @@ public class TTLRabbitMqConfig {
     }
 
     // 2. 设置队列过期时间
-    @Bean
+   	@Bean
     public Queue directTTLqueue(){
         Map<String,Object> args = new HashMap<>();
-        args.put("x-message-ttl",5000); //一定是int类型
-        return new Queue("ttl.direct.queue",true);
+        args.put("x-message-ttl",5000); //设置过期时间
+        return new Queue("ttl.direct.queue",true,false,false,args);
     }
 
     // 3. 将队列绑定到交换机
@@ -1223,3 +1223,48 @@ DLX也是一个正常的交换机，和一般的交换机没有区别，它能�
 
 ![image-20210330233923598](image-20210330233923598.png)
 
+### 流程
+
+![image-20210331012856785](image-20210331012856785.png)
+
+### 简单应用
+
+1. 注册一个死信交换机，绑定死信队列
+
+	```java
+	@Configuration
+	public class DeadRabbitMqConfig {
+	
+	    // 1. 注册死信交换机 为direct模式
+	    @Bean
+	    public DirectExchange deadDirectExchange(){
+	        return new DirectExchange("dead_direct_exchange",true,true);
+	    }
+	
+	    // 2. 设置队列
+	    @Bean
+	    public Queue deadQueue(){
+	        return new Queue("dead.direct.queue",true);
+	    }
+	
+	    // 3. 交换机绑定队列
+	    public Binding deadBinding(){
+	        return BindingBuilder.bind(deadQueue()).to(deadDirectExchange()).with("dead");
+	    }
+	}
+	```
+
+2. 将设置有过期时间的队列绑定上死信交换机
+
+	```java
+	@Bean
+	public Queue directTTLqueue(){
+	    Map<String,Object> args = new HashMap<>();
+	    args.put("x-message-ttl",5000); //设置过期时间
+	    args.put("x-dead-letter-exchange","dead_direct_exchange"); //设置死信交换机
+	    args.put("x-dead-letter-routing-key","dead"); // 因为死信交换机是direct模式，所以需要routingkey
+	    return new Queue("ttl.direct.queue",true,false,false,args);
+	}
+	```
+
+	

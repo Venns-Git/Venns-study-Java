@@ -27,8 +27,10 @@ public class TTLRabbitMqConfig {
     @Bean
     public Queue directTTLqueue(){
         Map<String,Object> args = new HashMap<>();
-        args.put("x-message-ttl",5000); //一定是int类型
-        return new Queue("ttl.direct.queue",true);
+        args.put("x-message-ttl",5000); //设置过期时间
+        args.put("x-dead-letter-exchange","dead_direct_exchange"); //设置死信交换机
+        args.put("x-dead-letter-routing-key","dead"); //以为死信交换机是direct模式，所以需要routingkey
+        return new Queue("ttl.direct.queue",true,false,false,args);
     }
 
     // 3. 将队列绑定到交换机
