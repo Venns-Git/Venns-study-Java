@@ -423,3 +423,241 @@ GET venns/user/_search?q=desc:hello
 可以根据映射规则,产生基本的查询
 
 > 复杂查询
+
+1. 使用json查询
+
+    ```json
+    GET venns/user/_search
+    {
+      "query": {
+        "match": {
+          "desc": "hello world"
+        }
+      }
+    }
+    ```
+
+    查询的参数使用json构建
+
+    hits:索引和文档信息,查询的结果总数,然后就是查询出来具体的文档,数据中的东西都可以遍历出来
+
+    score:分数,可以理解为匹配度,可以通过分数来判断谁更加符合结果
+
+2. 显示部分
+
+	```json
+	GET venns/user/_search
+	{
+	  "query": {
+	    "match": {
+	      "desc": "hello"
+	    }
+	  },
+	  "_source": ["name","desc"]
+	}
+	```
+
+	查询出来的结果只显示name和desc
+
+3. 排序
+
+	```json
+	GET venns/user/_search
+	{
+	  "query": {
+	    "match": {
+	      "desc": "hello"
+	    }
+	  },
+	  "sort": [
+	    {
+	      "age": {
+	        "order": "asc"
+	      }
+	    }
+	  ]
+	}
+	```
+
+	按照age进行升序排序,如果order的值为desc,则为降序
+
+4. 分页
+
+	```json
+	GET venns/user/_search
+	{
+	  "query": {
+	    "match": {
+	      "desc": "hello"
+	    }
+	  },
+	  "from": 0,
+	  "size": 1
+	}
+	```
+
+	form:起始值 size:每页的数据量
+
+5. 布尔值查询
+
+	```json
+	GET venns/user/_search
+	{
+	  "query": {
+	    "bool": {
+	      "must": [
+	        {
+	          "match": {
+	            "desc": "hello"
+	          }
+	        },
+	        {
+	          "match": {
+	            "age": "20"
+	          }
+	        }
+	      ]
+	    }
+	  }
+	}
+	```
+
+	must:所有的条件都要符合,类似于and
+
+	```json
+	GET venns/user/_search
+	{
+	  "query": {
+	    "bool": {
+	      "should": [
+	        {
+	          "match": {
+	            "desc": "hello"
+	          }
+	        },
+	        {
+	          "match": {
+	            "age": "20"
+	          }
+	        }
+	      ]
+	    }
+	  }
+	}
+	```
+
+	should:满足条件其一即可,类似于or
+
+	```json
+	GET venns/user/_search
+	{
+	  "query": {
+	    "bool": {
+	      "must_not": [
+	        {
+	          "match": {
+	            "desc": "hello"
+	          }
+	        },
+	        {
+	          "match": {
+	            "age": "20"
+	          }
+	        }
+	      ]
+	    }
+	  }
+	}
+	```
+
+	must_not:查询不满足条件的,类似于not
+
+6. 过滤器
+
+	```json
+	GET venns/user/_search
+	{
+	  "query": {
+	    "bool": {
+	      "must": [
+	        {
+	          "match": {
+	            "desc": "hello"
+	          }
+	        }
+	      ],
+	      "filter": {
+	        "range": {
+	          "age": {
+	            "gte": 10,
+	            "lte": 20
+	          }
+	        }
+	      }
+	    }
+	  }
+	}
+	```
+
+	可以使用filter进行数据过滤
+
+	- gt 大于
+	- gte 大于等于
+	- lt 小于
+	- lte 小于等于
+
+7. 匹配多个条件
+
+	```json
+	GET venns/user/_search
+	{
+	  "query": {
+	    "match": {
+	      "tags": "男 程序"
+	    }
+	  }
+	}
+	```
+
+	多个条件使用空格隔开,只要满足其一即可,可以按照分组进行判断
+
+8. 精确查询
+
+	- trem:直接查询精确的
+	- match:会使用分词器解析(先分析文档,然后再通过分析的文档进行查询)
+
+	- text类型会被分词器解析,keyword不会被分词器解析
+
+## 集成SpringBoot
+
+1. 新建springboot项目,导入elasticsearch依赖,保持和自己安装的版本一致.
+
+	```xml
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+	</dependency>
+	```
+
+2. 编写配置类
+
+	```java
+	@Configuration
+	public class ElasticSearchClientConfig {
+	
+	    @Bean
+	    public RestHighLevelClient restHighLevelClient(){
+	        RestHighLevelClient client = new RestHighLevelClient(
+	                RestClient.builder(
+	                        new HttpHost("localhost",9200,"http")
+	                )
+	        );
+	        return client;
+	    }
+	}
+	```
+
+### 关于索引的api操作
+
+### 关于文档的api操作
+
