@@ -4,6 +4,8 @@
 
 个人博客同步更新：[venns.cn](https://www.venns.cn)
 
+国内[Gitee](https://gitee.com/venns/venns-study)
+
 - [H5&CSS3](notes/H5&CSS3.md)
 - [前端框架-jQuery自学笔记](notes/jquery.md)
 - [前端框架-Bootstrap自学笔记](notes/Bootstrap.md)
