@@ -2,9 +2,9 @@
 
 > 各技术栈学习为独立文件夹,notes存放学习记录md文档
 
-个人博客同步更新：[venns.cn](https://www.venns.cn),欢迎访问
-
 国内站:[Gitee](https://gitee.com/venns/venns-study)
+
+个人博客同步更新：[venns.cn](https://www.venns.cn),欢迎访问!
 
 - [H5&CSS3](notes/H5&CSS3.md)
 - [前端框架-jQuery自学笔记](notes/jquery.md)
