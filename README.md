@@ -1,4 +1,4 @@
-## 记录我自己学习软件开发的过程 Record my own coding process
+## Venns'notes
 
 > 各技术栈学习为独立文件夹,notes存放学习记录md文档
 
