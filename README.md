@@ -2,7 +2,7 @@
 
 > 各技术栈学习为独立文件夹,notes存放学习记录md文档
 
-国内站:[Gitee](https://gitee.com/venns/venns-study)
+国内站: [Gitee](https://gitee.com/venns/venns-study)
 
 个人博客同步更新：[venns.cn](https://www.venns.cn) 欢迎访问!
 
