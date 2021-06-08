@@ -1,4 +1,4 @@
-package com.venns;
+package com.venns.helloworld;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandlerContext;
