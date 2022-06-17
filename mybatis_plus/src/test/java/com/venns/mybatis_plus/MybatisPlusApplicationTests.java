@@ -32,4 +32,13 @@ class MybatisPlusApplicationTests {
         System.out.println(user); // 发现自动生成了一个id
     }
 
+    @Test
+    void updateTest(){
+        User user = new User();
+        //通过条件自动拼接动态sql
+        user.setId(5);
+        user.setName("venns");
+        int i = userMapper.updateById(user);
+        System.out.println(i);
+    }
 }

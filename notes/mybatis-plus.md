@@ -107,7 +107,7 @@ mybatis本来就是简化JDBC操作的，mybatis-plus即简化mybatis操作。
 		}
 		```
 
-		在启动类上加上**@mapperScan**注解，参数为包路径
+		在启动类上加上`@mapperScan`注解，参数为包路径
 
 	- 使用
 
@@ -143,7 +143,91 @@ void insertTest(){
 }
 ```
 
-- 这里是采用了主键生成策略中的雪花算法
+- 这里是采用了主键生成策略中的雪花算法（默认）
 
-更改主键生成策略，可以在实体类的主键上加上**@TableId(TYPE = )**注解，其中有,AUTO（自增，其中数据库字段也必须有自增属性），NONE（未设置），INPUT（手动输入），ID_WORKER(雪花算法)，UUID，ID_WORKER_STR(雪花算法转字符串)
+更改主键生成策略，可以在实体类的主键上加上`@TableId(TYPE = )`注解，其中有,`AUTO`（自增，其中数据库字段也必须有自增属性），`NONE`（未设置），`INPUT`（手动输入），`ID_WORKER`(雪花算法)，`UUID`，`ID_WORKER_STR`(雪花算法转字符串)
 
+> update更新
+
+```java
+@Test
+void updateTest(){
+    User user = new User();
+    //通过条件自动拼接动态sql
+    user.setId(5);
+    user.setName("venns");
+    int i = userMapper.updateById(user);
+    System.out.println(i);
+}
+```
+
+查询，新增也是如此
+
+> 自动填充
+
+创建时间，更新时间等等诸如此类的操作都是自动化完成的，我们不用手动更新
+
+1. 数据库级别：即在数据库中创建字段，每次操作都需要进行更新时间
+
+2. 代码级别：
+
+	1. 只需要实体类的对应属性上加上相应的注解即可
+
+		```java
+		@TableField(fill = FieldFill.INSERT)
+		private Date createTime;
+		@TableField(fill = FieldFill.INSERT_UPDATE)
+		private Date updateTime;
+		```
+
+		`@TbaleField`表示这是一个数据库字段`fill`为填充方式`INSERT`表示插入的时候添加，`INSERT_UPDATE`为插入和更新的时候添加，还有`DEFAULT`默认不添加，`UPDATE`表示更新的时候添加
+
+	2. 编写处理器处理注解
+
+		```java
+		@Component
+		@Slf4j
+		public class MyMetaObjectHandler implements MetaObjectHandler {
+		
+		    /*
+		        插入时的填充策略
+		     */
+		    @Override
+		    public void insertFill(MetaObject metaObject) {
+		        log.info("==========start insert fill==========");
+		        /**
+		         * @filedName 需要处理的字段
+		         * @fileVal 填充的值
+		         * @metaObject 元数据
+		         */
+		        this.setFieldValByName("createTime",new Date(),metaObject);
+		        this.setFieldValByName("updateTime",new Date(),metaObject);
+		    }
+		
+		    @Override
+		    public void updateFill(MetaObject metaObject) {
+		        log.info("========start update fill=============");
+		        this.setFieldValByName("updateTime",new Date(),metaObject);
+		    }
+		}
+		```
+
+		
+
+## 乐观锁
+
+意图：当要更新一条记录的时候，希望这条记录没有被别人更新
+
+实现方式：
+
+- 取出记录时，获取当前 version
+- 更新时，带上这个 version
+- 执行更新时， set version = newVersion where version = oldVersion
+- 如果 version 不对，就更新失败
+
+> 具体实现
+
+1. 给数据库添加version字段，默认值为1，实体类加上对应属性
+2. 给实体类的对应属性加上`@version`属性，表示这是一个乐观锁
+
+3. 注册组件
