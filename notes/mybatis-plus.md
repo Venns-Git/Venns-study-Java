@@ -161,7 +161,7 @@ void updateTest(){
 }
 ```
 
-查询，新增也是如此
+查询，新增也是如此,也支持批量操作
 
 > 自动填充
 
@@ -228,6 +228,173 @@ void updateTest(){
 > 具体实现
 
 1. 给数据库添加version字段，默认值为1，实体类加上对应属性
+
 2. 给实体类的对应属性加上`@version`属性，表示这是一个乐观锁
 
+	```java
+	@Version
+	private int version;
+	```
+
 3. 注册组件
+
+	```java
+	@EnableTransactionManagement
+	// 扫描我们的mapper包 不用在启动类上加注解了
+	@MapperScan("com.venns.mybatis_plus.mapper")
+	@Configuration
+	public class MyBatisPlusConfig {
+	    @Bean
+	    public OptimisticLockerInterceptor optimisticLockerInterceptor() {
+	        return new OptimisticLockerInterceptor();
+	    }
+	}
+	```
+
+4. 测试
+
+	```java
+	@Test
+	void optimisticLockerTest(){
+	    // 1.查询用户信息
+	    User user1 = userMapper.selectById(1);
+	
+	    // 2.修改用户信息
+	    user1.setName("Venns1");
+	
+	    // 4.模拟另外一个线程进行操作
+	    User user2 = userMapper.selectById(1);
+	    user2.setName("venns2");
+	    userMapper.updateById(user2);
+	
+	    // 3.执行更新操作,由于存在乐观锁,会操作失败
+	    userMapper.updateById(user1);
+	}
+	```
+
+	
+
+## 分页查询
+
+1. 配置拦截器组件
+
+	```java
+	@Bean
+	public PaginationInterceptor paginationInterceptor(){
+	    return new PaginationInterceptor();
+	}
+	```
+
+2. 使用page对象即可
+
+	```java
+	@Test
+	void  paginationTest(){
+	    /**
+	         * @cureent 当前页
+	         * @size 页面大小
+	         */
+	    Page<User> page = new Page<>(1,5);
+	    userMapper.selectPage(page,null);
+	    page.getRecords().forEach(System.out::println);
+	}
+	```
+
+	
+
+## 条件构造器(warppr)
+
+通过自带的方法，我们可以进行简单的操作，如果是要进行复杂的条件操作，则需要条件构造器--warpper
+
+例如：我们需要查询名字非空，年龄大于12的数据
+
+```java
+/**
+     * 查询名字非空，年龄大于12的数据
+     */
+@Test
+void wrapperQueryTest(){
+    QueryWrapper<User> wrapper = new QueryWrapper<>();
+    wrapper.isNotNull("name").ge("age",12);
+    userMapper.selectList(wrapper).forEach(System.out::println);
+}
+```
+
+warpper里面内置了很多条件，如：
+
+<img src="image-20220620162647236.png" alt="image-20220620162647236"  />
+
+等等，几乎涵盖了所有的条件。
+
+## 代码生成器
+
+通过代码生成器，我们可以自动生成简单的mapper,service,controller的代码
+
+> 安装
+
+```xml
+<!--代码生成器-->
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-generator</artifactId>
+    <version>3.2.0</version>
+</dependency>
+```
+
+> 使用
+
+```java
+public class AutoGeneratorTest {
+    public static void main(String[] args) {
+        // 1. 构建一个代码生成器对象
+        AutoGenerator ag = new AutoGenerator();
+
+        // 2. 配置策略
+        // 2.1 全局配置
+        GlobalConfig gc = new GlobalConfig();
+        String projectPath = System.getProperty("user.dir"); //获取当前项目路径
+        gc.setOutputDir(projectPath+"/src/main/java"); // 将代码生成到项目路径下
+        gc.setAuthor("Venns"); // 设置作者
+        gc.setOpen(false); // 生成完是否打开文件夹
+        gc.setFileOverride(true); // 是否覆盖文件
+        gc.setServiceName("%sService"); // service文件名字格式
+        gc.setIdType(IdType.ID_WORKER); // 主键生成策略
+        gc.setDateType(DateType.ONLY_DATE); // 日期格式
+        gc.setSwagger2(true); // 是否配置swagger
+        ag.setGlobalConfig(gc);
+        // 2.2 数据源配置
+        DataSourceConfig dsc = new DataSourceConfig();
+        dsc.setDbType(DbType.MYSQL); // 数据库类型
+        dsc.setDriverName("com.mysql.cj.jdbc.Driver"); // 驱动名字
+        dsc.setUrl("jdbc:mysql://localhost:3306/mybatis_plus?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"); // url
+        dsc.setUsername("root");
+        dsc.setPassword("123456");
+        ag.setDataSource(dsc);
+        // 2.3 包配置
+        PackageConfig pc = new PackageConfig();
+        pc.setModuleName("generator"); // 模块名
+        pc.setParent("com.venns"); // 包路径
+        pc.setEntity("entity"); // 实体类包命名
+        pc.setMapper("mapper");
+        pc.setService("service");
+        pc.setController("controller");
+        ag.setPackageInfo(pc);
+        // 2.4 策略配置
+        StrategyConfig sc = new StrategyConfig();
+        sc.setInclude("user"); // 设置要映射的表名
+        sc.setNaming(NamingStrategy.underline_to_camel); // 设置类命名规则-下划线转驼峰
+        sc.setColumnNaming(NamingStrategy.underline_to_camel); //设置字段命名规则
+        sc.setEntityLombokModel(true); //是否使用Lombok
+        sc.setRestControllerStyle(true); // controller采用restful风格
+        //同时,也可以配置自动填充,逻辑删除,乐观锁等等...
+        ag.setStrategy(sc);
+
+        // 3. 执行代码生成器
+        ag.execute();
+    }
+}
+```
+
+> 结果
+
+![image-20220620174956424](image-20220620174956424.png)

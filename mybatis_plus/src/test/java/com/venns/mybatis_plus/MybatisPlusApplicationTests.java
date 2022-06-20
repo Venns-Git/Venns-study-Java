@@ -1,10 +1,13 @@
 package com.venns.mybatis_plus;
 
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.venns.mybatis_plus.mapper.UserMapper;
 import com.venns.mybatis_plus.pojo.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
 
 import java.util.List;
 
@@ -41,4 +44,33 @@ class MybatisPlusApplicationTests {
         int i = userMapper.updateById(user);
         System.out.println(i);
     }
+
+    @Test
+    void optimisticLockerTest(){
+        // 1.查询用户信息
+        User user1 = userMapper.selectById(1);
+
+        // 2.修改用户信息
+        user1.setName("Venns1");
+
+        // 4.模拟另外一个线程进行操作
+        User user2 = userMapper.selectById(1);
+        user2.setName("venns2");
+        userMapper.updateById(user2);
+
+        // 3.执行更新操作,由于存在乐观锁,会操作失败
+        userMapper.updateById(user1);
+    }
+
+    @Test
+    void  paginationTest(){
+        /**
+         * @cureent 当前页
+         * @size 页面大小
+         */
+        Page<User> page = new Page<>(1,5);
+        userMapper.selectPage(page,null);
+        page.getRecords().forEach(System.out::println);
+    }
+
 }
