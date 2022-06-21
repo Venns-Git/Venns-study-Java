@@ -23,5 +23,6 @@
 - [SpringCloud学习笔记](notes/SpringCloud.md)
 - [RabbitMQ学习笔记](notes/RabbitMQ.md)
 - [ElaticSearch学习笔记](notes/ElaticSearch.md)
-- 持续更新中....
+- [Mybatis-Plus学习笔记](notes/mybatis-plus.md)
+- 还有一些没列举出来,可以关注我的个人网站,持续更新中....
 
